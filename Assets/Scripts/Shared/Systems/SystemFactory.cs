@@ -27,6 +27,8 @@ namespace CCGP.Shared
             var dataSystem = new DataSystem(matchID, players);
             gameSystem.AddAspect(dataSystem);
             gameSystem.AddAspect<MatchSystem>();
+            gameSystem.AddAspect<ActionSystem>();
+            gameSystem.AddAspect<FlowSystem>();
 
             return gameSystem;
         }

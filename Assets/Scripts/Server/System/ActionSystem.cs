@@ -54,23 +54,23 @@ namespace CCGP.Server
             }
 
             openReactions = new();
-            action.PostNotification(Global.PrepareNotification(action.GetType()));
+            Entity.PostNotification(Global.PrepareNotification(action.GetType()));
             ProcessReactions();
 
             if (action.IsCanceled)
             {
-                action.PostNotification(Global.CancelNotification(action.GetType()));
+                Entity.PostNotification(Global.CancelNotification(action.GetType()));
                 ProcessReactions();
             }
             else
             {
-                action.PostNotification(Global.PerformNotification(action.GetType()));
+                Entity.PostNotification(Global.PerformNotification(action.GetType()));
                 ProcessReactions();
             }
 
             if (action == rootAction)
             {
-                action.PostNotification(deathRepaerNotification, action);
+                Entity.PostNotification(deathRepaerNotification, action);
                 ProcessReactions();
             }
 

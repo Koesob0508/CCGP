@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using CCGP.Shared;
+using CCGP.Server;
 
 namespace CCGP.Tests
 {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CCGP.Shared
+namespace CCGP.Server
 {
     public static class Global
     {

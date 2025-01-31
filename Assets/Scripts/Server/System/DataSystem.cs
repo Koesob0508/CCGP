@@ -8,8 +8,15 @@ namespace CCGP.Server
     {
         public Match match;
 
-        public DataSystem(uint id, List<ulong> players)
+        public DataSystem(uint id, List<ulong> playerIDs)
         {
+            List<Player> players = new();
+
+            for(int i = 0; i < playerIDs.Count; i++)
+            {
+                players.Add(new Player(playerIDs[i]));
+            }
+
             match = new Match(id, players);
         }
     }

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using CCGP.Shared;
+using System;
 using System.Collections.Generic;
 
-namespace CCGP.Shared
+namespace CCGP.Server
 {
     using Handler = Action<object, object>;
     using SenderTable = Dictionary<object, List<Action<object, object>>>;

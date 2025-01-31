@@ -67,7 +67,10 @@ namespace CCGP.Server
 
                 var id = (uint)Games.Count;
                 var game = GameSystemFactory.Create(id, players);
+                game.Awake();
                 Games.Add(id, game);
+                game.TryGetAspect<FlowSystem>(out var flow);
+                flow.StartGame();
             }
         }
     }
