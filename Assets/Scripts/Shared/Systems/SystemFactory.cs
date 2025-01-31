@@ -29,6 +29,7 @@ namespace CCGP.Shared
             gameSystem.AddAspect<MatchSystem>();
             gameSystem.AddAspect<ActionSystem>();
             gameSystem.AddAspect<FlowSystem>();
+            gameSystem.AddAspect<OpenMarketSystem>();
 
             return gameSystem;
         }

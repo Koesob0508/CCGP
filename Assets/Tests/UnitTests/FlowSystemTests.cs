@@ -56,7 +56,6 @@ namespace CCGP.Tests
             // FirstPlayerIndex는 0~3 중 랜덤한 값이어야 한다.
             Assert.GreaterOrEqual(match.FirstPlayerIndex, 0, "FirstPlayerIndex는 0 이상이어야 합니다.");
             Assert.Less(match.FirstPlayerIndex, 4, "FirstPlayerIndex는 4 미만이어야 합니다.");
-            Assert.AreEqual(match.FirstPlayerIndex, match.CurrentPlayerIndex, "게임 시작시 FirstPlayerIndex와 CurrentPlayerIndex는 같아야한다.");
 
             // ActionSystem과 연결됐는지 테스트
             Assert.IsTrue(isPerform, "GameStartAction이 ActionSystem에 의해 Perform 돼야함");
@@ -93,21 +92,57 @@ namespace CCGP.Tests
         public void TurnStartsCorrectly()
         {
             flowSystem.StartGame();
-            Assert.DoesNotThrow(() => flowSystem.OnPerformTurnStart(null, null));
+            var match = game.GetMatch();
+            LogAssert.Expect(UnityEngine.LogType.Log, $"[FlowSystem] <color=black><b>{match.CurrentPlayerIndex}번째 플레이어 턴 시작</b></color>");
         }
 
         [Test]
         public void TurnEndsCorrectly()
         {
+            // Arrange
+            int turnEndCount = 0;
+            this.AddObserver((sender, obj) =>
+            {
+                turnEndCount++;
+            }, Global.PerformNotification<TurnEndAction>());
+
             flowSystem.StartGame();
-            Assert.DoesNotThrow(() => flowSystem.OnPerformTurnEnd(null, null));
+
+            var match = game.GetMatch();
+            var targetIndex = match.CurrentPlayerIndex;
+            var nextIndex = (match.CurrentPlayerIndex + 1) % match.Players.Count;
+            flowSystem.EndTurn(nextIndex);
+
+            flowSystem.EndTurn(match.CurrentPlayerIndex);
+
+
+            // Assert
+            Assert.AreEqual(1, turnEndCount, "자신의 차례가 아닌 경우 턴 종료를 할 수 없습니다.");
+            LogAssert.Expect(UnityEngine.LogType.Log, $"[FlowSystem] <color=black><b>{targetIndex}번째 플레이어 턴 종료</b></color>");
+            Assert.AreEqual(nextIndex, match.CurrentPlayerIndex, "다음 차례에게 넘어가야합니다.");
+            LogAssert.Expect(UnityEngine.LogType.Log, $"[FlowSystem] <color=black><b>{nextIndex}번째 플레이어 턴 시작</b></color>");
         }
 
         [Test]
         public void RoundEndsCorrectly()
         {
+            // Arrange
+            bool isTriggered = false;
+            this.AddObserver((sender, args) =>
+            {
+                isTriggered = true;
+            }, Global.PerformNotification<RoundEndAction>(), game);
+
+            // Act
+            var match = game.GetMatch();
             flowSystem.StartGame();
-            Assert.DoesNotThrow(() => flowSystem.OnPerformRoundEnd(null, null));
+            flowSystem.EndTurn(match.CurrentPlayerIndex);
+            flowSystem.EndTurn(match.CurrentPlayerIndex);
+            flowSystem.EndTurn(match.CurrentPlayerIndex);
+            flowSystem.EndTurn(match.CurrentPlayerIndex);
+
+            Assert.IsFalse(match.Opened.Contains(false), "모든 Open이 막혀야함");
+            Assert.IsTrue(isTriggered, "모든 턴 실행 이후 Round End Action이 수행되어야 합니다.");
         }
 
         [Test]

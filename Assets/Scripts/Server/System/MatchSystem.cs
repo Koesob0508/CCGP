@@ -22,8 +22,12 @@ namespace CCGP.Server
             // match의 FirstPlayerIndex를 무작위로 정한다.
             var random = new Random();
             match.FirstPlayerIndex = random.Next(0, match.Players.Count);
-            // 정해진 FirstPlayerIndex에 따라서 match의 CurrentPlayerIndex도 정한다.
-            match.CurrentPlayerIndex = match.FirstPlayerIndex;
+            match.Opened = new();
+
+            for (int i = 0; i < match.Players.Count; i++)
+            {
+                match.Opened.Add(false);
+            }
 
             Logger.Log<MatchSystem>($"게임 시작 - 첫 번째 플레이어: {match.FirstPlayerIndex}");
         }

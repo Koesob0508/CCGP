@@ -8,6 +8,7 @@ namespace CCGP.Server
         public List<Player> Players;
         public int FirstPlayerIndex;
         public int CurrentPlayerIndex;
+        public List<bool> Opened;
 
         public Match(uint id, List<Player> players)
         {
