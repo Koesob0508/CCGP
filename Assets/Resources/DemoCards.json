@@ -1,0 +1,206 @@
+{
+    "cards": [
+        {
+            "id": "Card1",
+            "type": "Spell",
+            "name": "Shoots A Lot",
+            "text": "3 damage to random enemies.",
+            "cost": 1,
+            "abilities": [
+                {
+                    "action": "DamageAction",
+                    "info": 1,
+                    "targetSelector": {
+                        "type": "RandomTarget",
+                        "mark": {
+                            "alliance": "Enemy",
+                            "zone": "Active"
+                        },
+                        "count": 3
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Card2",
+            "type": "Minion",
+            "name": "Grunt 1",
+            "text": "",
+            "cost": 1,
+            "attack": 2,
+            "hit points": 1
+        },
+        {
+            "id": "Card3",
+            "type": "Spell",
+            "name": "Wide Boom",
+            "text": "1 damage to all enemy minions.",
+            "cost": 2,
+            "abilities": [
+                {
+                    "action": "DamageAction",
+                    "info": 1,
+                    "targetSelector": {
+                        "type": "AllTarget",
+                        "mark": {
+                            "alliance": "Enemy",
+                            "zone": "Battlefield"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Card4",
+            "type": "Minion",
+            "name": "Grunt 2",
+            "text": "",
+            "cost": 2,
+            "attack": 3,
+            "hit points": 2
+        },
+        {
+            "id": "Card5",
+            "type": "Minion",
+            "name": "Rich Grunt",
+            "text": "Draw a card when summoned.",
+            "cost": 2,
+            "attack": 1,
+            "hit points": 1,
+            "abilities": [
+                {
+                    "action": "DrawCardsAction",
+                    "info": 1
+                }
+            ]
+        },
+        {
+            "id": "Card6",
+            "type": "Minion",
+            "name": "Grunt 3",
+            "text": "",
+            "cost": 2,
+            "attack": 2,
+            "hit points": 3
+        },
+        {
+            "id": "Card7",
+            "type": "Spell",
+            "name": "Card Lovin",
+            "text": "Draw 2 cards",
+            "cost": 3,
+            "abilities": [
+                {
+                    "action": "DrawCardsAction",
+                    "info": 2
+                }
+            ]
+        },
+        {
+            "id": "Card8",
+            "type": "Minion",
+            "name": "Grunt 4",
+            "text": "Taunt",
+            "cost": 3,
+            "attack": 2,
+            "hit points": 2,
+            "taunt": {}
+        },
+        {
+            "id": "Card9",
+            "type": "Minion",
+            "name": "Grunt 5",
+            "text": "Taunt",
+            "cost": 3,
+            "attack": 1,
+            "hit points": 3,
+            "taunt": {}
+        },
+        {
+            "id": "Card10",
+            "type": "Spell",
+            "name": "Focus Beam",
+            "text": "6 damage",
+            "cost": 4,
+            "target": {
+                "allowed": {
+                    "alliance": "Any",
+                    "zone": "Active"
+                },
+                "preferred": {
+                    "alliance": "Enemy",
+                    "zone": "Active"
+                }
+            },
+            "abilities": [
+                {
+                    "action": "DamageAction",
+                    "info": 6,
+                    "targetSelector": {
+                        "type": "ManualTarget"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Card11",
+            "type": "Minion",
+            "name": "Grunt 6",
+            "text": "",
+            "cost": 4,
+            "attack": 2,
+            "hit points": 7
+        },
+        {
+            "id": "Card12",
+            "type": "Minion",
+            "name": "Grunt 7",
+            "text": "Taunt",
+            "cost": 5,
+            "attack": 2,
+            "hit points": 7,
+            "taunt": {}
+        },
+        {
+            "id": "Card13",
+            "type": "Minion",
+            "name": "Grunt 8",
+            "text": "Taunt",
+            "cost": 4,
+            "attack": 3,
+            "hit points": 5,
+            "taunt": {}
+        },
+        {
+            "id": "Card14",
+            "type": "Minion",
+            "name": "Grunt 9",
+            "text": "3 Damage to Opponent",
+            "cost": 5,
+            "attack": 4,
+            "hit points": 4,
+            "abilities": [
+                {
+                    "action": "DamageAction",
+                    "info": 3,
+                    "targetSelector": {
+                        "type": "AllTarget",
+                        "mark": {
+                            "alliance": "Enemy",
+                            "zone": "Hero"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Card15",
+            "type": "Minion",
+            "name": "Big Grunt",
+            "text": "",
+            "cost": 6,
+            "attack": 6,
+            "hit points": 7
+        }
+    ]
+}

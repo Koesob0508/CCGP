@@ -9,7 +9,7 @@ namespace CCGP
 
     public static class AwakeExtensions
     {
-        public static void Awake(this IEntity container)
+        public static void Awake(this IContainer container)
         {
             foreach (IAspect aspect in container.Aspects)
             {

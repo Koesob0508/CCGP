@@ -9,7 +9,7 @@ namespace CCGP
 
     public static class SleepExtensions
     {
-        public static void Sleep(this IEntity container)
+        public static void Sleep(this IContainer container)
         {
             foreach (IAspect aspect in container.Aspects)
             {

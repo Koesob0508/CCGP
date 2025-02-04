@@ -10,7 +10,7 @@ namespace CCGP.Shared
 
     public static class NetworkSystemExtensions
     {
-        public static NetworkSystem GetNetwork(this IEntity system)
+        public static NetworkSystem GetNetwork(this IContainer system)
         {
             if(system.TryGetAspect<NetworkSystem>(out var networkSystem))
             {

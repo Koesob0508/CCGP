@@ -14,7 +14,12 @@ namespace CCGP.Server
 
             for(int i = 0; i < playerIDs.Count; i++)
             {
-                players.Add(new Player(playerIDs[i]));
+                List<Card> initialDeck = CardFactory.CreateDeck("InitialDeck", i);
+
+                var player = new Player(playerIDs[i], i);
+                player[Zone.Deck].AddRange(initialDeck);
+
+                players.Add(player);
             }
 
             match = new Match(id, players);
@@ -23,7 +28,7 @@ namespace CCGP.Server
 
     public static class DataSystemExtensions
     {
-        public static Match GetMatch(this IEntity game)
+        public static Match GetMatch(this IContainer game)
         {
             if(game.TryGetAspect<DataSystem>(out var dataSystem))
             {

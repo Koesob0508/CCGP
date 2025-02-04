@@ -9,12 +9,12 @@ namespace CCGP.Client
 {
     public class ClientSystem : MonoBehaviour, IAspect
     {
-        IEntity _container;
+        IContainer _container;
         [SerializeField] int Count = 0;
         [SerializeField] Button button_StartGame;
         [SerializeField] TMP_Text Text_StartGame;
 
-        public IEntity Entity
+        public IContainer Container
         {
             get
             {
@@ -35,8 +35,8 @@ namespace CCGP.Client
 
         private void Awake()
         {
-            Entity.Awake();
-            network = Entity.GetNetwork();
+            Container.Awake();
+            network = Container.GetNetwork();
             network.NetworkManager.OnClientConnectedCallback += OnConnect;
         }
 

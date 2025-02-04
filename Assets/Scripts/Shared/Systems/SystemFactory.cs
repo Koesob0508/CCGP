@@ -6,9 +6,9 @@ namespace CCGP.Shared
 {
     public static class MainSystemFactory
     {
-        public static Entity Create()
+        public static Container Create()
         {
-            Entity mainSystem = new Entity();
+            Container mainSystem = new Container();
 
             mainSystem.AddAspect<ServerSystem>();
             mainSystem.AddAspect<NetworkSystem>();
@@ -20,9 +20,9 @@ namespace CCGP.Shared
 
     public static class GameSystemFactory
     {
-        public static Entity Create(uint matchID, List<ulong> players)
+        public static Container Create(uint matchID, List<ulong> players)
         {
-            Entity gameSystem = new Entity();
+            Container gameSystem = new Container();
 
             var dataSystem = new DataSystem(matchID, players);
             gameSystem.AddAspect(dataSystem);
@@ -30,6 +30,8 @@ namespace CCGP.Shared
             gameSystem.AddAspect<ActionSystem>();
             gameSystem.AddAspect<FlowSystem>();
             gameSystem.AddAspect<OpenMarketSystem>();
+            gameSystem.AddAspect<PlayerSystem>();
+            gameSystem.AddAspect<CardSystem>();
 
             return gameSystem;
         }

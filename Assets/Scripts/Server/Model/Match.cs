@@ -14,6 +14,8 @@ namespace CCGP.Server
         {
             ID = id;
             Players = players;
+            Opened = new(players.Count);
+            Opened.AddRange(new bool[players.Count]);
         }
     }
 }

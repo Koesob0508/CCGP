@@ -2,10 +2,10 @@
 {
     public interface IAspect
     {
-        IEntity Entity { get; set; }
+        IContainer Container { get; set; }
     }
     public class Aspect : IAspect
     {
-        public IEntity Entity { get; set; }
+        public IContainer Container { get; set; }
     }
 }

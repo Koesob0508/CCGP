@@ -8,11 +8,11 @@ namespace CCGP.Server
     {
         private NetworkSystem network;
         private Queue<ulong> ReadyPlayers;
-        private Dictionary<uint, IEntity> Games;
+        private Dictionary<uint, IContainer> Games;
 
         public void Awake()
         {
-            network = Entity.GetNetwork();
+            network = Container.GetNetwork();
             // network.NetworkManager.OnClientConnectedCallback += OnConnect;
         }
 

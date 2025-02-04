@@ -8,26 +8,20 @@ namespace CCGP.Server
     {
         public void Awake()
         {    
-            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Entity);
+            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
         }
 
         public void Sleep()
         {
-            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Entity);
+            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
         }
 
         private void OnPerformGameStart(object sender, object args)
         {
-            var match = Entity.GetMatch();
+            var match = Container.GetMatch();
             // match의 FirstPlayerIndex를 무작위로 정한다.
             var random = new Random();
             match.FirstPlayerIndex = random.Next(0, match.Players.Count);
-            match.Opened = new();
-
-            for (int i = 0; i < match.Players.Count; i++)
-            {
-                match.Opened.Add(false);
-            }
 
             Logger.Log<MatchSystem>($"게임 시작 - 첫 번째 플레이어: {match.FirstPlayerIndex}");
         }

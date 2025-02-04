@@ -54,23 +54,23 @@ namespace CCGP.Server
             }
 
             openReactions = new();
-            Entity.PostNotification(Global.PrepareNotification(action.GetType()), action);
+            Container.PostNotification(Global.PrepareNotification(action.GetType()), action);
             ProcessReactions();
 
             if (action.IsCanceled)
             {
-                Entity.PostNotification(Global.CancelNotification(action.GetType()), action);
+                Container.PostNotification(Global.CancelNotification(action.GetType()), action);
                 ProcessReactions();
             }
             else
             {
-                Entity.PostNotification(Global.PerformNotification(action.GetType()), action);
+                Container.PostNotification(Global.PerformNotification(action.GetType()), action);
                 ProcessReactions();
             }
 
             if (action == rootAction)
             {
-                Entity.PostNotification(deathRepaerNotification, action);
+                Container.PostNotification(deathRepaerNotification, action);
                 ProcessReactions();
             }
 
@@ -88,13 +88,7 @@ namespace CCGP.Server
         {
             openReactions.Sort((x, y) => x.OrderOfPlay.CompareTo(y.OrderOfPlay));
 
-            var sortedReactions = new SortedList<int, GameAction>();
             foreach (var reaction in openReactions)
-            {
-                sortedReactions.Add(reaction.OrderOfPlay, reaction);
-            }
-
-            foreach (var reaction in sortedReactions.Values)
             {
                 Sequence(reaction);
             }
@@ -103,7 +97,7 @@ namespace CCGP.Server
 
     public static class ActionSystemExtensions
     {
-        public static void Perform(this IEntity game, GameAction action)
+        public static void Perform(this AspectContainer.IContainer game, GameAction action)
         {
             if (game.TryGetAspect<ActionSystem>(out var system))
             {
@@ -111,7 +105,7 @@ namespace CCGP.Server
             }
         }
 
-        public static void AddReaction(this IEntity game, GameAction action)
+        public static void AddReaction(this AspectContainer.IContainer game, GameAction action)
         {
             if (game.TryGetAspect<ActionSystem>(out var system))
             {

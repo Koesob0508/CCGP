@@ -11,7 +11,7 @@ namespace CCGP.Tests
     [TestFixture]
     public class FlowSystemTests
     {
-        private Entity game;
+        private Container game;
         private FlowSystem flowSystem;
 
         [SetUp]
@@ -51,7 +51,8 @@ namespace CCGP.Tests
             var match = game.GetMatch();
             Assert.NotNull(match, "Match 데이터가 존재해야 합니다.");
             Assert.NotNull(match.Players, "Players 리스트가 초기화되어 있어야 합니다.");
-            Assert.AreEqual(4, match.Players.Count, "게임에는 4명의 플레이어가 참가해야 합니다.");
+            Assert.GreaterOrEqual(match.Players.Count, 3, "게임에는 3~4명의 플레이어가 참가해야 합니다.");
+            Assert.LessOrEqual(match.Players.Count, 4);
 
             // FirstPlayerIndex는 0~3 중 랜덤한 값이어야 한다.
             Assert.GreaterOrEqual(match.FirstPlayerIndex, 0, "FirstPlayerIndex는 0 이상이어야 합니다.");
@@ -59,6 +60,11 @@ namespace CCGP.Tests
 
             // ActionSystem과 연결됐는지 테스트
             Assert.IsTrue(isPerform, "GameStartAction이 ActionSystem에 의해 Perform 돼야함");
+
+            foreach(var player in match.Players)
+            {
+                Assert.AreEqual(Player.InitialDeck - Player.InitialHand, player[Zone.Deck].Count);
+            }
         }
 
         [Test]
@@ -83,6 +89,12 @@ namespace CCGP.Tests
             flowSystem.StartGame();
 
             LogAssert.Expect(UnityEngine.LogType.Log, "[FlowSystem] <color=black><b>라운드 시작</b></color>");
+
+            var match = game.GetMatch();
+            foreach (var player in match.Players)
+            {
+                Assert.AreEqual(Player.InitialHand, player[Zone.Hand].Count);
+            }
 
             // Start 이후에 RoundStart가 관측되는지 확인
             Assert.IsTrue(isRoundStartTriggered, "RoundStartAction이 ActionSystem에 의해 Perform 되어야 합니다.");

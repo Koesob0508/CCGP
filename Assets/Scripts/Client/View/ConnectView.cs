@@ -6,13 +6,13 @@ namespace CCGP.Client
 {
     public class ConnectView : MonoBehaviour
     {
-        IEntity system;
+        IContainer system;
 
         #region Unity Callbacks
 
         private void Awake()
         {
-            system = GetComponentInParent<ClientSystem>().Entity;
+            system = GetComponentInParent<ClientSystem>().Container;
         }
 
         #endregion

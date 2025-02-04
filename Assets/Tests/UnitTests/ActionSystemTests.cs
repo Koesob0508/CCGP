@@ -12,7 +12,7 @@ namespace CCGP.Tests
     public class ActionSystemTests
     {
         private ActionSystem actionSystem;
-        private Mock<IEntity> mockEntity;
+        private Mock<IContainer> mockContainer;
 
         class TestAction1 : GameAction
         {
@@ -32,7 +32,7 @@ namespace CCGP.Tests
         public void SetUp()
         {
             actionSystem = new ActionSystem();
-            mockEntity = new Mock<IEntity>();
+            mockContainer = new Mock<IContainer>();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace CCGP.Tests
             var action = new GameAction();
             bool notificationReceived = false;
 
-            mockEntity.Object.AddObserver((sender, e) => { notificationReceived = true; }, Global.PerformNotification(action.GetType()));
+            mockContainer.Object.AddObserver((sender, e) => { notificationReceived = true; }, Global.PerformNotification(action.GetType()));
 
             actionSystem.Perform(action);
 
@@ -73,7 +73,7 @@ namespace CCGP.Tests
             var action = new GameAction();
             bool reactionObserved = false;
 
-            mockEntity.Object.AddObserver((sender, e) => { reactionObserved = true; }, Global.PrepareNotification(action.GetType()));
+            mockContainer.Object.AddObserver((sender, e) => { reactionObserved = true; }, Global.PrepareNotification(action.GetType()));
 
             actionSystem.Perform(action);
 
@@ -110,7 +110,7 @@ namespace CCGP.Tests
             var cancelAction = new GameAction();
             bool actionCancelled = false;
 
-            mockEntity.Object.AddObserver((sender, e) => { actionCancelled = true; action.Cancel(); }, Global.PrepareNotification(action.GetType()));
+            mockContainer.Object.AddObserver((sender, e) => { actionCancelled = true; action.Cancel(); }, Global.PrepareNotification(action.GetType()));
 
             actionSystem.Perform(action);
 
@@ -133,13 +133,13 @@ namespace CCGP.Tests
 
             List<string> executionOrder = new();
 
-            var entity1 = new Mock<IEntity>();
-            var entity2 = new Mock<IEntity>();
-            var entity3 = new Mock<IEntity>();
+            var container1 = new Mock<IContainer>();
+            var container2 = new Mock<IContainer>();
+            var container3 = new Mock<IContainer>();
 
-            entity1.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction1 Executed"); }, Global.PerformNotification(testAction1.GetType()));
-            entity2.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction2 Executed"); }, Global.PerformNotification(testAction2.GetType()));
-            entity3.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction3 Executed"); }, Global.PerformNotification(testAction3.GetType()));
+            container1.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction1 Executed"); }, Global.PerformNotification(testAction1.GetType()));
+            container2.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction2 Executed"); }, Global.PerformNotification(testAction2.GetType()));
+            container3.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction3 Executed"); }, Global.PerformNotification(testAction3.GetType()));
 
             actionSystem.Perform(testAction1);
             actionSystem.Perform(testAction2);
