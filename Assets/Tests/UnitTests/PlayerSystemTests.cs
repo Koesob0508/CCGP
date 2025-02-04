@@ -4,7 +4,7 @@ using CCGP.Shared;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     public class PlayerSystemTests
     {

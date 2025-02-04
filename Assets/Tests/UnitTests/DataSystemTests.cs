@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     [TestFixture]
     public class DataSystemTests

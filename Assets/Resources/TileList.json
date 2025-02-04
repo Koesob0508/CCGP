@@ -1,0 +1,119 @@
+{
+    "Tiles": [
+        {
+            "ID": "00-001",
+            "Name": "IMPERIAL BASIN",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-002",
+            "Name": "HAGGA BASIN",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-003",
+            "Name": "THE GREAT FLAT",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-004",
+            "Name": "ARRAKEEN",
+            "Space": "Blue"
+        },
+        {
+            "ID": "00-005",
+            "Name": "CARTHAG",
+            "Space": "Blue"
+        },
+        {
+            "ID": "00-006",
+            "Name": "RESEARCH STATION",
+            "Space": "Blue"
+        },
+        {
+            "ID": "00-007",
+            "Name": "SIETCH TABR",
+            "Space": "Blue"
+        },
+        {
+            "ID": "00-008",
+            "Name": "SELL MELANGE",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-009",
+            "Name": "SECURE CONTRACT",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-010",
+            "Name": "HIGHT COUNCIL",
+            "Space": "Green"
+        },
+        {
+            "ID": "00-011",
+            "Name": "MENTAT",
+            "Space": "Green"
+        },
+        {
+            "ID": "00-012",
+            "Name": "RALLY TROOPS",
+            "Space": "Green"
+        },
+        {
+            "ID": "00-013",
+            "Name": "HALL OF ORATORY",
+            "Space": "Green"
+        },
+        {
+            "ID": "00-014",
+            "Name": "SWOARDMASTER",
+            "Space": "Green"
+        },
+        {
+            "ID": "00-015",
+            "Name": "IMPERIAL BASIN",
+            "Space": "Yellow"
+        },
+        {
+            "ID": "00-016",
+            "Name": "CONSPIRE",
+            "Space": "Emperor"
+        },
+        {
+            "ID": "00-017",
+            "Name": "WEALTH",
+            "Space": "Emperor"
+        },
+        {
+            "ID": "00-018",
+            "Name": "HEIGHLINER",
+            "Space": "SpacingGuild"
+        },
+        {
+            "ID": "00-019",
+            "Name": "FOLDSPACE",
+            "Space": "SpacingGuild"
+        },
+        {
+            "ID": "00-020",
+            "Name": "SELECTIVE BREEDING",
+            "Space": "BeneGesserit"
+        },
+        {
+            "ID": "00-021",
+            "Name": "SECRETS",
+            "Space": "BeneGesserit"
+        },
+        {
+            "ID": "00-022",
+            "Name": "HARDY WARRIORS",
+            "Space": "Fremen"
+        },
+        {
+            "ID": "00-023",
+            "Name": "STILLSUITS",
+            "Space": "Fremen"
+        }
+    ]
+}

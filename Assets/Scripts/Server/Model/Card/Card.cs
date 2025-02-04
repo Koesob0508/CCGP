@@ -36,34 +36,11 @@ namespace CCGP.Server
 
             foreach (var space in spaces)
             {
-                switch (space)
+                if(Enum.TryParse<Space>(space.ToString(), out var parsed))
                 {
-                    case "Yellow":
-                        Space |= Space.Yellow;
-                        break;
-                    case "Blue":
-                        Space |= Space.Blue;
-                        break;
-                    case "Green":
-                        Space |= Space.Green;
-                        break;
-                    case "Emperor":
-                        Space |= Space.Emperor;
-                        break;
-                    case "Guild":
-                        Space |= Space.Guild;
-                        break;
-                    case "BeneGesserit":
-                        Space |= Space.BeneGesserit;
-                        break;
-                    case "Fremen":
-                        Space |= Space.Fremen;
-                        break;
-                    default:
-                        break;
+                    Space |= parsed;
                 }
             }
-
         }
     }
 }

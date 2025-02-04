@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using CCGP.AspectContainer;
 using UnityEngine.TestTools;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     [TestFixture]
     public class FlowSystemTests

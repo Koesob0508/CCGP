@@ -1,5 +1,6 @@
 ﻿using CCGP.Server;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 
 namespace CCGP.Shared
@@ -148,9 +149,69 @@ namespace CCGP.Shared
         }
     }
 
+    public class SerializedTile : INetworkSerializable
+    {
+        public string Name;
+        public Space Space;
+        public int AgentIndex;
+        public SerializedTile() { }
+
+        public SerializedTile(Tile tile)
+        {
+            Name = tile.Name;
+            Space = tile.Space;
+            AgentIndex = tile.AgentIndex;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Name);
+            serializer.SerializeValue(ref Space);
+            serializer.SerializeValue(ref AgentIndex);
+        }
+    }
+
+    public class SerializedBoard : INetworkSerializable
+    {
+        public List<SerializedTile> Tiles;
+        public SerializedBoard() { }
+        public SerializedBoard(Board board)
+        {
+            Tiles = board.Tiles.Select(tile => new SerializedTile(tile)).ToList();
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            if(serializer.IsWriter)
+            {
+                int count = (Tiles != null) ? Tiles.Count : 0;
+                serializer.SerializeValue(ref count);
+                for(int i = 0; i < count; i++)
+                {
+                    SerializedTile tile = Tiles[i];
+                    serializer.SerializeNetworkSerializable(ref tile);
+                    Tiles[i] = tile;
+                }
+            }
+            else
+            {
+                int count = 0;
+                serializer.SerializeValue(ref count);
+                Tiles = new List<SerializedTile>(count);
+                for(int i = 0; i < count; i++)
+                {
+                    SerializedTile tile = new();
+                    serializer.SerializeNetworkSerializable(ref tile);
+                    Tiles.Add(tile);
+                }
+            }
+        }
+    }
+
     public class SerializedMatch : INetworkSerializable
     {
         public uint ID;
+        public SerializedBoard Board;
         public List<SerializedPlayer> Players;
         public int FirstPlayerIndex;
         public int CurrentPlayerIndex;
@@ -161,6 +222,7 @@ namespace CCGP.Shared
         public SerializedMatch(Match match)
         {
             ID = match.ID;
+            Board = new SerializedBoard(match.Board);
             Players = new();
             foreach (var player in match.Players)
             {
@@ -174,6 +236,7 @@ namespace CCGP.Shared
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref ID);
+            serializer.SerializeNetworkSerializable(ref Board);
             serializer.SerializeValue(ref FirstPlayerIndex);
             serializer.SerializeValue(ref CurrentPlayerIndex);
 

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     [TestFixture]
     public class SerializedDataTests
@@ -87,31 +87,51 @@ namespace CCGP.Tests
             }
         }
 
+        public class TestTile : Tile { }
+
         [Test]
         public void SerializedMatch()
         {
             List<ulong> IDs = new() { 1, 2, 3, 4 };
             var dataSystem = new DataSystem(1, IDs);
             var originalMatch = dataSystem.match;
+
+            var tile1 = new TestTile() { Name = "Imperial Basin", Space = Space.Yellow };
+            var tile2 = new TestTile() { Name = "Sietch Tabr", Space = Space.Blue };
+            var tile3 = new TestTile() { Name = "Swordmaster", Space = Space.Green };
+
+            originalMatch.Board.AddAspect(tile1, tile1.Name);
+            originalMatch.Board.AddAspect(tile2, tile2.Name);
+            originalMatch.Board.AddAspect(tile3, tile3.Name);
+
             var sMatch = new SerializedMatch(dataSystem.match);
 
             using (FastBufferWriter writer = new FastBufferWriter(4096, Unity.Collections.Allocator.Temp, maxSize: 8192))
             {
                 writer.WriteNetworkSerializable(sMatch);
 
-                // 3. FastBuffer를 사용하여 역직렬화
+                // FastBuffer를 사용하여 역직렬화
                 using (FastBufferReader reader = new FastBufferReader(writer, Unity.Collections.Allocator.Temp))
                 {
                     SerializedMatch desMatch = new();
                     reader.ReadNetworkSerializable(out desMatch);
 
-                    // 4. 검증
-                    Assert.AreEqual(sMatch.ID, desMatch.ID);
-                    Assert.AreEqual(sMatch.Players[0].ID, desMatch.Players[0].ID);
-                    Assert.AreEqual(sMatch.Players[sMatch.Players.Count - 1].Deck.Count, desMatch.Players[desMatch.Players.Count - 1].Deck.Count);
-                    Assert.AreEqual(sMatch.FirstPlayerIndex, desMatch.FirstPlayerIndex);
-                    Assert.AreEqual(sMatch.CurrentPlayerIndex, desMatch.CurrentPlayerIndex);
-                    Assert.AreEqual(sMatch.Opened, desMatch.Opened);
+                    // 검증: Match의 기본 필드들
+                    Assert.AreEqual(originalMatch.ID, desMatch.ID);
+                    Assert.AreEqual(originalMatch.FirstPlayerIndex, desMatch.FirstPlayerIndex);
+                    Assert.AreEqual(originalMatch.CurrentPlayerIndex, desMatch.CurrentPlayerIndex);
+                    Assert.AreEqual(originalMatch.Players[0].ID, desMatch.Players[0].ID);
+                    Assert.AreEqual(originalMatch.Players[originalMatch.Players.Count - 1][Zone.Deck].Count,
+                                    desMatch.Players[desMatch.Players.Count - 1].Deck.Count);
+                    Assert.AreEqual(originalMatch.Opened, desMatch.Opened);
+
+                    // 검증: Board의 Tiles 데이터
+                    Assert.AreEqual(originalMatch.Board.Tiles.Count, desMatch.Board.Tiles.Count);
+                    for (int i = 0; i < originalMatch.Board.Tiles.Count; i++)
+                    {
+                        Assert.AreEqual(originalMatch.Board.Tiles[i].AgentIndex, desMatch.Board.Tiles[i].AgentIndex);
+                        Assert.AreEqual(originalMatch.Board.Tiles[i].Space, desMatch.Board.Tiles[i].Space);
+                    }
                 }
             }
         }

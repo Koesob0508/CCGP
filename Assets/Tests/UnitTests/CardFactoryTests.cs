@@ -3,7 +3,7 @@ using CCGP.Shared;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     [TestFixture]
     public class CardFactoryTests

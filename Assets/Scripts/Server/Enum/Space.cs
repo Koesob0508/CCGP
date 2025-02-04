@@ -11,7 +11,7 @@ namespace CCGP.Server
         Blue = 1 << 1,
         Green = 1 << 2,
         Emperor = 1 << 3,
-        Guild = 1 << 4,
+        SpacingGuild = 1 << 4,
         BeneGesserit = 1 << 5,
         Fremen = 1 << 6
     }

@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using CCGP.Server;
 
-namespace CCGP.Tests
+namespace CCGP.Tests.Unit
 {
     [TestFixture]
     public class NotificationSystemTests

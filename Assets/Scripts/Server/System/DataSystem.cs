@@ -10,6 +10,8 @@ namespace CCGP.Server
 
         public DataSystem(uint id, List<ulong> playerIDs)
         {
+            var board = BoardFactory.Create();
+
             List<Player> players = new();
 
             for(int i = 0; i < playerIDs.Count; i++)
@@ -22,7 +24,7 @@ namespace CCGP.Server
                 players.Add(player);
             }
 
-            match = new Match(id, players);
+            match = new Match(id, board, players);
         }
     }
 
