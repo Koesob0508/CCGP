@@ -13,13 +13,15 @@ namespace CCGP.Server
         Emperor = 1 << 3,
         SpacingGuild = 1 << 4,
         BeneGesserit = 1 << 5,
-        Fremen = 1 << 6
+        Fremen = 1 << 6,
+        Any = ~0
     }
 
     public static class SpaceExtensions
     {
         public static bool Contains(this Space source, Space target)
         {
+            if (target == Space.None) return false;
             return (source & target) == target;
         }
     }

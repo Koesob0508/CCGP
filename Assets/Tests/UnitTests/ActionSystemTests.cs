@@ -1,152 +1,173 @@
-﻿using NUnit.Framework;
-using Moq;
-using CCGP.Server;
-using CCGP.Shared;
-using System.Collections.Generic;
-using CCGP.AspectContainer;
-using System;
+﻿using System.Collections;
+using NUnit.Framework;
+using UnityEngine.TestTools;
+
+using CCGP.AspectContainer;  // Container, IContainer
+using CCGP.Server;           // ActionSystem, GameAction, CardPlayAction 등
+using UnityEngine;
 
 namespace CCGP.Tests.Unit
 {
-    [TestFixture]
     public class ActionSystemTests
     {
-        private ActionSystem actionSystem;
-        private Mock<IContainer> mockContainer;
-
-        class TestAction1 : GameAction
-        {
-
-        }
-        class TestAction2 : GameAction
-        {
-
-        }
-
-        class TestAction3 : GameAction
-        {
-
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            actionSystem = new ActionSystem();
-            mockContainer = new Mock<IContainer>();
-        }
-
         /// <summary>
-        ///     각각의 GameAction은 Type에 따라 다른 ID를 가져야 한다.
+        /// 1) 별도의 Waiter(입력 대기) 없이 즉시 완료되는 GameAction 테스트
         /// </summary>
         [Test]
-        public void ActionTypesHaveUniqueIDs()
+        public void SimpleAction_FinishesQuickly()
         {
-            var action1 = new GameAction();
-            var action2 = new GameAction();
-            var action3 = new TestAction1();
-            Assert.AreEqual(action1.ID, action2.ID, "GameAction IDs should be unique per Type.");
-            Assert.AreNotEqual(action2.ID, action3.ID, "GameAction IDs should be unique per Type.");
+            // 1. 컨테이너, 액션 시스템 준비
+            var container = new Container();
+            var actionSystem = container.AddAspect<ActionSystem>();
+
+            // 2. 간단한 GameAction 생성
+            var simpleAction = new GameAction();
+
+            // 3. 액션 등록 (Perform → 내부 큐)
+            container.Perform(simpleAction);
+
+            // 4. Update()를 여러 번 호출해 코루틴 한 스텝씩 진행
+            for (int i = 0; i < 10; i++)
+            {
+                actionSystem.Update();
+            }
+
+            // 5. 액션이 완료되었는지 확인
+            Assert.IsFalse(actionSystem.IsActive, "SimpleAction should have finished");
+        }
+        public class TestCardPlayAction : GameAction
+        {
+            public bool ConditionMet { get; set; } = false;
+
+            public TestCardPlayAction()
+            {
+                // PerformPhase에 Waiter를 넣어 사용자 입력(또는 임의 조건)이 충족될 때까지 대기
+                this.PerformPhase.Waiter = WaitForCondition;
+            }
+
+            private IEnumerator WaitForCondition(IContainer game, GameAction action)
+            {
+                // ConditionMet == false면 계속 대기
+                while (!ConditionMet)
+                {
+                    yield return false;
+                }
+                // true가 되면 Phase.Flow 내부에서 handler가 호출됨
+                yield return true;
+            }
         }
 
-        /// <summary>
-        ///     Perform 이후 Notification이 이뤄지는 Observe로 확인한다.
-        /// </summary>
         [Test]
-        public void Notifications()
+        public void TestCardPlayAction_WaitsAndThenCompletes()
         {
-            var action = new GameAction();
-            bool notificationReceived = false;
+            // 1. 컨테이너, 액션 시스템 준비
+            var container = new Container();
+            var actionSystem = container.AddAspect<ActionSystem>();
 
-            mockContainer.Object.AddObserver((sender, e) => { notificationReceived = true; }, Global.PerformNotification(action.GetType()));
+            // 2. TestCardPlayAction 생성 (perform 단계에서 ConditionMet을 기다림)
+            var testAction = new TestCardPlayAction
+            {
+                Priority = 1,
+                OrderOfPlay = 0
+            };
 
-            actionSystem.Perform(action);
+            // 3. 큐에 등록
+            container.Perform(testAction);
 
-            Assert.IsTrue(notificationReceived, "Perform notification should be observed.");
+            // 4. 아직 ConditionMet == false이므로 몇 번 Update해도 끝나지 않음
+            for (int i = 0; i < 5; i++)
+            {
+                actionSystem.Update();
+            }
+
+            Assert.IsTrue(actionSystem.IsActive, "Action should still be active (waiting).");
+
+            // 5. ConditionMet = true 로 설정 → 다음 Update 이후 액션 완료
+            testAction.ConditionMet = true;
+
+            // 6. 다시 Update 여러 번
+            for (int i = 0; i < 5; i++)
+            {
+                actionSystem.Update();
+            }
+
+            Assert.IsFalse(actionSystem.IsActive, "Action should be finished after ConditionMet=true.");
+            Assert.IsFalse(testAction.IsCanceled, "Action shouldn't be canceled.");
         }
 
-        /// <summary>
-        ///     특정 액션의 Prepare를 Observe하고 Observe를 하고 있는지 확인한다.
-        /// </summary>
-        [Test]
-        public void ReactionNotifications()
+        // 테스트용 TestTargetSystem: Validation 알림을 구독하여 TestCardPlayAction의 PreparePhase.Waiter에 WaitTargetSelect 코루틴을 등록
+        private class TestTargetSystem : Aspect, IObserve
         {
-            var action = new GameAction();
-            bool reactionObserved = false;
+            public void Awake()
+            {
+                // Global.ValidationNotification(TestCardPlayAction2)를 관찰하도록 등록
+                this.AddObserver(OnValidateTestCardAction, Global.ValidationNotification(typeof(TestCardPlayAction2)));
+            }
 
-            mockContainer.Object.AddObserver((sender, e) => { reactionObserved = true; }, Global.PrepareNotification(action.GetType()));
+            public void Sleep()
+            {
+                this.RemoveObserver(OnValidateTestCardAction, Global.ValidationNotification(typeof(TestCardPlayAction2)));
+            }
 
-            actionSystem.Perform(action);
+            // 수정된 부분: sender를 GameAction으로 캐스팅
+            private void OnValidateTestCardAction(object sender, object args)
+            {
+                var action = sender as GameAction;
+                if (action != null)
+                {
+                    action.PreparePhase.Waiter = WaitTargetSelect;
+                }
+            }
 
-            Assert.IsTrue(reactionObserved, "Prepare notification should be observed.");
+            // WaitTargetSelect 코루틴: 5프레임 대기한 후 액션을 Cancel시키고, true를 yield하여 Phase의 Handler 실행 신호 전달
+            private IEnumerator WaitTargetSelect(IContainer game, GameAction action)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    yield return false; // 각 루프당 하나의 "프레임" 대기
+                }
+                action.Cancel();
+                yield return true;
+            }
         }
 
-        /// <summary>
-        ///     특정 액션의 Prepare에 대해 OrderOfPlay 값이 다른 여러 Reaction을 등록하고,
-        ///     이 Reaction들이 순차적으로 동작하는지 확인
-        /// </summary>
+        // 테스트 전용 액션 클래스 (실제 게임 로직과 분리)
+        private class TestCardPlayAction2 : GameAction { }
+
         [Test]
-        public void ReactionsAreSorted()
+        public void Test_TargetSelection_PreparePhase_Waiter_CancelsAction_After5Frames()
         {
-            var mainAction = new GameAction { OrderOfPlay = 0 };
-            var reaction1 = new GameAction { OrderOfPlay = 2 };
-            var reaction2 = new GameAction { OrderOfPlay = 1 };
+            // 1. Container 생성 및 ActionSystem 추가
+            IContainer container = new Container();
+            var actionSystem = container.AddAspect<ActionSystem>();
 
-            actionSystem.AddReaction(reaction1);
-            actionSystem.AddReaction(reaction2);
-            actionSystem.Perform(mainAction);
+            // 2. TestTargetSystem를 Container에 추가 (Validation 알림 구독)
+            var targetSystem = container.AddAspect<TestTargetSystem>();
 
-            Assert.That(actionSystem.IsActive, Is.False, "All reactions should have been processed in order.");
-        }
+            container.Awake();
 
-        /// <summary>
-        ///     특정 액션 Perform
-        ///     해당 액션 Prepare 단에서 이 액션을 Cancel 시키는 액션을 등록
-        ///     Cancel이 제대로 이뤄지는지 확인
-        /// </summary>
-        [Test]
-        public void CancelAction()
-        {
-            var action = new GameAction();
-            var cancelAction = new GameAction();
-            bool actionCancelled = false;
+            // 3. 테스트용 액션(TestCardPlayAction2) 생성 및 기본 속성 설정
+            var testAction = new TestCardPlayAction2()
+            {
+                Priority = 1,
+                OrderOfPlay = 0
+            };
 
-            mockContainer.Object.AddObserver((sender, e) => { actionCancelled = true; action.Cancel(); }, Global.PrepareNotification(action.GetType()));
+            // 4. Perform으로 액션을 큐에 등록
+            container.Perform(testAction);
 
-            actionSystem.Perform(action);
+            // 5. for 루프를 통해 Update()를 여러 번 호출하여 "프레임" 흐름 시뮬레이션
+            for (int frame = 0; frame < 10; frame++)
+            {
+                actionSystem.Update();
+            }
 
-            Assert.IsTrue(actionCancelled, "Action should be cancelled during Prepare phase.");
-        }
-
-        /// <summary>
-        ///     클래스 TestAction1, TestAction2, TestAction3가 있다.
-        ///     Entity 또는 Aspect가 각각의 Action의 다양한 알림에 대해 Observe하고 있다.
-        ///     TestAction1, 2, 3가 Perform으로 등록됐을 때,
-        ///     이 처리가 DFS, 즉 TestAction1 실행 - 관측하고 있던 동작 수행, 2 실행 - 관측 실행, 3 실행 - 관측 실행
-        ///     의 순서로 동작해야한다.
-        /// </summary>
-        [Test]
-        public void DepthFirstReactions()
-        {
-            var testAction1 = new TestAction1 { OrderOfPlay = 0 };
-            var testAction2 = new TestAction2 { OrderOfPlay = 1 };
-            var testAction3 = new TestAction3 { OrderOfPlay = 2 };
-
-            List<string> executionOrder = new();
-
-            var container1 = new Mock<IContainer>();
-            var container2 = new Mock<IContainer>();
-            var container3 = new Mock<IContainer>();
-
-            container1.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction1 Executed"); }, Global.PerformNotification(testAction1.GetType()));
-            container2.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction2 Executed"); }, Global.PerformNotification(testAction2.GetType()));
-            container3.Object.AddObserver((sender, e) => { executionOrder.Add("TestAction3 Executed"); }, Global.PerformNotification(testAction3.GetType()));
-
-            actionSystem.Perform(testAction1);
-            actionSystem.Perform(testAction2);
-            actionSystem.Perform(testAction3);
-
-            List<string> expectedOrder = new() { "TestAction1 Executed", "TestAction2 Executed", "TestAction3 Executed" };
-            Assert.AreEqual(expectedOrder, executionOrder, $"Actions should execute in depth-first order.");
+            // 6. 5프레임 후 WaitTargetSelect가 실행되어 Cancel이 호출되었으므로,
+            //    testAction.IsCanceled가 true여야 함
+            Assert.IsTrue(testAction.IsCanceled, "TestCardPlayAction should be canceled after 5 frames waiting in PreparePhase.Waiter.");
+            // 또한 ActionSystem의 루트 액션이 해제되었음을 확인 (즉, 처리 완료)
+            Assert.IsFalse(actionSystem.IsActive, "ActionSystem should not be active after the action is canceled.");
         }
     }
+
 }

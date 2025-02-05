@@ -1,9 +1,6 @@
 ﻿using CCGP.AspectContainer;
-using CCGP.Shared;
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting.YamlDotNet.Core.Events;
 
 namespace CCGP.Server
 {
@@ -12,92 +9,137 @@ namespace CCGP.Server
         #region Notifications
         private const string beginSequenceNotification = "ActionSystem.BeginSequenceNotification";
         private const string endSequenceNotification = "ActionSystem.EndSequenceNotification";
-        private const string deathRepaerNotification = "ActionSystem.DeathReaperNotification";
+        private const string deathReaperNotification = "ActionSystem.DeathReaperNotification";
         private const string completeNotification = "ActionSystem.CompleteNotification";
         #endregion
 
         private Queue<GameAction> actionQueue = new();
         private GameAction rootAction;
+        private IEnumerator rootSequence;
         private List<GameAction> openReactions;
+
+        public GameAction CurrentAction => rootAction;
         public bool IsActive => rootAction != null;
 
         public void Perform(GameAction action)
         {
             actionQueue.Enqueue(action);
-            while (actionQueue.Count > 0)
+        }
+
+        public void Update()
+        {
+            if (rootSequence == null && actionQueue.Count > 0)
             {
-                if (rootAction == null)
+                rootAction = actionQueue.Dequeue();
+                rootSequence = Sequence(rootAction);
+            }
+
+            if (rootSequence != null)
+            {
+                if (!rootSequence.MoveNext())
                 {
-                    rootAction = actionQueue.Dequeue();
-                    Sequence(rootAction);
+                    rootAction = null;
+                    rootSequence = null;
+                    openReactions = null;
+                    this.PostNotification(completeNotification);
                 }
             }
         }
 
         public void AddReaction(GameAction action)
         {
-            if (openReactions == null)
-            {
-                openReactions = new();
-            }
-
+            openReactions ??= new List<GameAction>();
             openReactions.Add(action);
         }
 
-        private void Sequence(GameAction action)
+        private IEnumerator Sequence(GameAction action)
         {
             this.PostNotification(beginSequenceNotification, action);
 
-            if (action.Validate() == false)
+            // 1) Validate
+            if (!action.Validate())
             {
                 action.Cancel();
             }
 
-            openReactions = new();
-            Container.PostNotification(Global.PrepareNotification(action.GetType()), action);
-            ProcessReactions();
+            // 2) Prepare(phase)
+            var phase = MainPhase(action.PreparePhase);
+            while (phase.MoveNext()) { yield return null; }
 
-            if (action.IsCanceled)
-            {
-                Container.PostNotification(Global.CancelNotification(action.GetType()), action);
-                ProcessReactions();
-            }
-            else
-            {
-                Container.PostNotification(Global.PerformNotification(action.GetType()), action);
-                ProcessReactions();
-            }
+            // 3) Perform(phase)
+            phase = MainPhase(action.PerformPhase);
+            while (phase.MoveNext()) { yield return null; }
 
+            // 4) Cancel(phase)
+            phase = MainPhase(action.CancelPhase);
+            while (phase.MoveNext()) { yield return null; }
+
+            // (루트 액션만 deathReaper 등 처리)
             if (action == rootAction)
             {
-                Container.PostNotification(deathRepaerNotification, action);
-                ProcessReactions();
+                phase = EventPhase(deathReaperNotification, action, true);
+                while (phase.MoveNext()) { yield return null; }
             }
 
             this.PostNotification(endSequenceNotification, action);
+        }
 
-            if (action == rootAction)
+        private IEnumerator MainPhase(Phase phase)
+        {
+            // 취소 여부와 cancel Phase인지 여부 확인
+            bool isActionCancelled = phase.Owner.IsCanceled;
+            bool isCancelPhase = (phase.Owner.CancelPhase == phase);
+            // 취소/취소단계 불일치면 skip
+            if (isActionCancelled ^ isCancelPhase)
+                yield break;
+
+            // 현 Phase 실행
+            openReactions = new List<GameAction>();
+            var flow = phase.Flow(Container);
+            while (flow.MoveNext()) { yield return null; }
+
+            // Reaction 처리
+            var react = ReactPhase(openReactions);
+            while (react.MoveNext()) { yield return null; }
+        }
+
+        private IEnumerator ReactPhase(List<GameAction> reactions)
+        {
+            reactions.Sort(SortActions);
+            foreach (var reaction in reactions)
             {
-                rootAction = null;
-                openReactions = null;
-                this.PostNotification(completeNotification);
+                var subFlow = Sequence(reaction);
+                while (subFlow.MoveNext())
+                    yield return null;
             }
         }
 
-        private void ProcessReactions()
+        private IEnumerator EventPhase(string notification, GameAction action, bool repeats = false)
         {
-            openReactions.Sort((x, y) => x.OrderOfPlay.CompareTo(y.OrderOfPlay));
-
-            foreach (var reaction in openReactions)
+            List<GameAction> reactions;
+            do
             {
-                Sequence(reaction);
+                reactions = openReactions = new List<GameAction>();
+                this.PostNotification(notification, action);
+
+                var phase = ReactPhase(reactions);
+                while (phase.MoveNext()) { yield return null; }
             }
+            while (repeats && reactions.Count > 0);
+        }
+
+        private int SortActions(GameAction x, GameAction y)
+        {
+            // 우선순위 정렬
+            if (x.Priority != y.Priority)
+                return y.Priority.CompareTo(x.Priority);
+            return x.OrderOfPlay.CompareTo(y.OrderOfPlay);
         }
     }
 
     public static class ActionSystemExtensions
     {
-        public static void Perform(this AspectContainer.IContainer game, GameAction action)
+        public static void Perform(this IContainer game, GameAction action)
         {
             if (game.TryGetAspect<ActionSystem>(out var system))
             {
@@ -105,7 +147,7 @@ namespace CCGP.Server
             }
         }
 
-        public static void AddReaction(this AspectContainer.IContainer game, GameAction action)
+        public static void AddReaction(this IContainer game, GameAction action)
         {
             if (game.TryGetAspect<ActionSystem>(out var system))
             {

@@ -32,6 +32,7 @@ namespace CCGP.Shared
             gameSystem.AddAspect<OpenMarketSystem>();
             gameSystem.AddAspect<PlayerSystem>();
             gameSystem.AddAspect<CardSystem>();
+            gameSystem.AddAspect<TargetSystem>();
 
             return gameSystem;
         }

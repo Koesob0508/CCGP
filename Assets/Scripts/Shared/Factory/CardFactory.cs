@@ -67,6 +67,7 @@ namespace CCGP.Shared
         {
             var cardData = Cards[id];
             Card card = CreateCard(cardData, ownerIndex);
+            card.AddAspect<Target>();
 
             return card;
         }
