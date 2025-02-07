@@ -42,7 +42,7 @@ namespace CCGP.AspectContainer
             }
             else
             {
-                Logger.Log<Container>($"Container didn't has aspect {key}");
+                LogUtility.Log<Container>($"Container didn't has aspect {key}");
                 aspect = default;
                 return false;
             }

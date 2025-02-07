@@ -12,7 +12,7 @@ namespace CCGP.Tests.Unit
         [Test]
         public void InitializeTest()
         {
-            var system = new DataSystem(1, ids);
+            var system = new DataSystem();
 
             Assert.IsNotNull(system.match);
             Assert.IsNotNull(system.match.Players);

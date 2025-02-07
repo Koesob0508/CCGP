@@ -12,11 +12,11 @@ namespace CCGP.Tests.Unit
         public void LogTest()
         {
             var card = new Card();
-            Logger.Log<CardFactoryTests>($"{card.Space}");
+            LogUtility.Log<CardFactoryTests>($"{card.Space}");
             card.Space |= Space.Yellow;
             card.Space |= Space.BeneGesserit;
             card.Space |= Space.Fremen;
-            Logger.Log<CardFactoryTests>($"{card.Space}");
+            LogUtility.Log<CardFactoryTests>($"{card.Space}");
 
             LogAssert.Expect(UnityEngine.LogType.Log, "[CardFactoryTests] <color=black><b>Yellow, BeneGesserit, Fremen</b></color>");
         }
@@ -26,8 +26,8 @@ namespace CCGP.Tests.Unit
         {
             var card = CardFactory.CreateCard("00-001", 1);
 
-            Logger.Log<CardFactoryTests>(card.Name);
-            Logger.Log<CardFactoryTests>(card.Space.ToString());
+            LogUtility.Log<CardFactoryTests>(card.Name);
+            LogUtility.Log<CardFactoryTests>(card.Space.ToString());
 
             LogAssert.Expect("[CardFactoryTests] <color=black><b>Signet Ring</b></color>");
             LogAssert.Expect("[CardFactoryTests] <color=black><b>Yellow, Blue, Green</b></color>");

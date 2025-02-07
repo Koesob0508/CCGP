@@ -17,9 +17,8 @@ namespace CCGP.Tests.Unit
         [SetUp]
         public void SetUp()
         {
-            uint matchID = 1;
             List<ulong> players = new() { 1001, 1002, 1003, 1004 };
-            game = GameSystemFactory.Create(matchID, players);
+            game = GameFactory.Create();
             game.Awake();
             game.TryGetAspect(out flowSystem);
         }

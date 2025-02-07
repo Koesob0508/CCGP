@@ -15,7 +15,8 @@ namespace CCGP.Tests.Unit
         [Test]
         public void AccessTests()
         {
-            var player = new Player(ID, Index);
+            var playerInfo = PlayerInfo.CreatePlayerInfo("asdf", ID);
+            var player = new Player(Index, playerInfo);
             var leader = player[Zone.Leader];
             var deck = player[Zone.Deck];
             var hand = player[Zone.Hand];

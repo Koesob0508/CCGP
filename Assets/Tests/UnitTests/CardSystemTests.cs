@@ -10,13 +10,12 @@ namespace CCGP.Tests.Unit
     public class CardSystemTests
     {
         private Container game;
-        private uint matchID = 1;
         private List<ulong> ids = new() { 1, 2, 3, 4 };
 
         [SetUp]
         public void SetUp()
         {
-            game = GameSystemFactory.Create(matchID, ids);
+            game = GameFactory.Create();
             game.Awake();
             game.TryGetAspect<FlowSystem>(out var flow);
             flow.StartGame();

@@ -5,13 +5,41 @@ using Unity.Netcode;
 
 namespace CCGP.Shared
 {
-    public class SerializedData : INetworkSerializable
+    public class SerializedData
     {
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        private FastBufferReader reader;
+
+        public SerializedData(FastBufferReader reader)
         {
-            throw new System.NotImplementedException();
+            this.reader = reader;
+        }
+        public T Get<T>() where T : INetworkSerializable, new()
+        {
+            reader.ReadNetworkSerializable(out T val);
+
+            return val;
         }
     }
+    public class SerializedPlayerInfo : INetworkSerializable
+    {
+        public string LobbyID;
+        public ulong ClientID;
+
+        public SerializedPlayerInfo() { }
+
+        public SerializedPlayerInfo(PlayerInfo playerInfo)
+        {
+            LobbyID = playerInfo.LobbyID;
+            ClientID = playerInfo.ClientID;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref LobbyID);
+            serializer.SerializeValue(ref ClientID);
+        }
+    }
+
     public class SerializedCard : INetworkSerializable
     {
         public string GUID;
@@ -210,7 +238,6 @@ namespace CCGP.Shared
 
     public class SerializedMatch : INetworkSerializable
     {
-        public uint ID;
         public SerializedBoard Board;
         public List<SerializedPlayer> Players;
         public int FirstPlayerIndex;
@@ -221,7 +248,6 @@ namespace CCGP.Shared
 
         public SerializedMatch(Match match)
         {
-            ID = match.ID;
             Board = new SerializedBoard(match.Board);
             Players = new();
             foreach (var player in match.Players)
@@ -235,7 +261,6 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeValue(ref ID);
             serializer.SerializeNetworkSerializable(ref Board);
             serializer.SerializeValue(ref FirstPlayerIndex);
             serializer.SerializeValue(ref CurrentPlayerIndex);

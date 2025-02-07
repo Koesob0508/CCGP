@@ -32,13 +32,13 @@ namespace CCGP.Server
         {
             if (handler == null)
             {
-                Logger.LogWarning<NotificationCenter>($"Can't add a null event handler for notification, {notificationName}");
+                LogUtility.LogWarning<NotificationCenter>($"Can't add a null event handler for notification, {notificationName}");
                 return;
             }
 
             if (string.IsNullOrEmpty(notificationName))
             {
-                Logger.LogWarning<NotificationCenter>("Can't observe an unnamed notification");
+                LogUtility.LogWarning<NotificationCenter>("Can't observe an unnamed notification");
                 return;
             }
 
@@ -66,13 +66,13 @@ namespace CCGP.Server
         {
             if (handler == null)
             {
-                Logger.LogWarning<NotificationCenter>("Can't remove a null event handler for notification, " + notificationName);
+                LogUtility.LogWarning<NotificationCenter>("Can't remove a null event handler for notification, " + notificationName);
                 return;
             }
 
             if (string.IsNullOrEmpty(notificationName))
             {
-                Logger.LogWarning<NotificationCenter>("A notification name is required to stop observation");
+                LogUtility.LogWarning<NotificationCenter>("A notification name is required to stop observation");
                 return;
             }
 
@@ -126,7 +126,7 @@ namespace CCGP.Server
         {
             if (string.IsNullOrEmpty(notificationName))
             {
-                Logger.LogWarning<NotificationCenter>("A notification name is required");
+                LogUtility.LogWarning<NotificationCenter>("A notification name is required");
                 return;
             }
 

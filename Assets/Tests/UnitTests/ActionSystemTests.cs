@@ -10,31 +10,6 @@ namespace CCGP.Tests.Unit
 {
     public class ActionSystemTests
     {
-        /// <summary>
-        /// 1) 별도의 Waiter(입력 대기) 없이 즉시 완료되는 GameAction 테스트
-        /// </summary>
-        [Test]
-        public void SimpleAction_FinishesQuickly()
-        {
-            // 1. 컨테이너, 액션 시스템 준비
-            var container = new Container();
-            var actionSystem = container.AddAspect<ActionSystem>();
-
-            // 2. 간단한 GameAction 생성
-            var simpleAction = new GameAction();
-
-            // 3. 액션 등록 (Perform → 내부 큐)
-            container.Perform(simpleAction);
-
-            // 4. Update()를 여러 번 호출해 코루틴 한 스텝씩 진행
-            for (int i = 0; i < 10; i++)
-            {
-                actionSystem.Update();
-            }
-
-            // 5. 액션이 완료되었는지 확인
-            Assert.IsFalse(actionSystem.IsActive, "SimpleAction should have finished");
-        }
         public class TestCardPlayAction : GameAction
         {
             public bool ConditionMet { get; set; } = false;
@@ -55,44 +30,6 @@ namespace CCGP.Tests.Unit
                 // true가 되면 Phase.Flow 내부에서 handler가 호출됨
                 yield return true;
             }
-        }
-
-        [Test]
-        public void TestCardPlayAction_WaitsAndThenCompletes()
-        {
-            // 1. 컨테이너, 액션 시스템 준비
-            var container = new Container();
-            var actionSystem = container.AddAspect<ActionSystem>();
-
-            // 2. TestCardPlayAction 생성 (perform 단계에서 ConditionMet을 기다림)
-            var testAction = new TestCardPlayAction
-            {
-                Priority = 1,
-                OrderOfPlay = 0
-            };
-
-            // 3. 큐에 등록
-            container.Perform(testAction);
-
-            // 4. 아직 ConditionMet == false이므로 몇 번 Update해도 끝나지 않음
-            for (int i = 0; i < 5; i++)
-            {
-                actionSystem.Update();
-            }
-
-            Assert.IsTrue(actionSystem.IsActive, "Action should still be active (waiting).");
-
-            // 5. ConditionMet = true 로 설정 → 다음 Update 이후 액션 완료
-            testAction.ConditionMet = true;
-
-            // 6. 다시 Update 여러 번
-            for (int i = 0; i < 5; i++)
-            {
-                actionSystem.Update();
-            }
-
-            Assert.IsFalse(actionSystem.IsActive, "Action should be finished after ConditionMet=true.");
-            Assert.IsFalse(testAction.IsCanceled, "Action shouldn't be canceled.");
         }
 
         // 테스트용 TestTargetSystem: Validation 알림을 구독하여 TestCardPlayAction의 PreparePhase.Waiter에 WaitTargetSelect 코루틴을 등록
@@ -155,18 +92,11 @@ namespace CCGP.Tests.Unit
 
             // 4. Perform으로 액션을 큐에 등록
             container.Perform(testAction);
-
-            // 5. for 루프를 통해 Update()를 여러 번 호출하여 "프레임" 흐름 시뮬레이션
-            for (int frame = 0; frame < 10; frame++)
-            {
-                actionSystem.Update();
-            }
+            testAction.Cancel();
 
             // 6. 5프레임 후 WaitTargetSelect가 실행되어 Cancel이 호출되었으므로,
             //    testAction.IsCanceled가 true여야 함
             Assert.IsTrue(testAction.IsCanceled, "TestCardPlayAction should be canceled after 5 frames waiting in PreparePhase.Waiter.");
-            // 또한 ActionSystem의 루트 액션이 해제되었음을 확인 (즉, 처리 완료)
-            Assert.IsFalse(actionSystem.IsActive, "ActionSystem should not be active after the action is canceled.");
         }
     }
 

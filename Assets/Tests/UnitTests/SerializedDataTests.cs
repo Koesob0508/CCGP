@@ -57,7 +57,7 @@ namespace CCGP.Tests.Unit
         public void SerializedPlayer()
         {
             List<ulong> IDs = new() { 1, 2, 3, 4 };
-            var dataSystem = new DataSystem(1, IDs);
+            var dataSystem = new DataSystem();
             var originalMatch = dataSystem.match;
 
             var originalPlayer = originalMatch.Players[0];
@@ -93,7 +93,7 @@ namespace CCGP.Tests.Unit
         public void SerializedMatch()
         {
             List<ulong> IDs = new() { 1, 2, 3, 4 };
-            var dataSystem = new DataSystem(1, IDs);
+            var dataSystem = new DataSystem();
             var originalMatch = dataSystem.match;
 
             var tile1 = new TestTile() { Name = "Imperial Basin", Space = Space.Yellow };
@@ -117,7 +117,6 @@ namespace CCGP.Tests.Unit
                     reader.ReadNetworkSerializable(out desMatch);
 
                     // 검증: Match의 기본 필드들
-                    Assert.AreEqual(originalMatch.ID, desMatch.ID);
                     Assert.AreEqual(originalMatch.FirstPlayerIndex, desMatch.FirstPlayerIndex);
                     Assert.AreEqual(originalMatch.CurrentPlayerIndex, desMatch.CurrentPlayerIndex);
                     Assert.AreEqual(originalMatch.Players[0].ID, desMatch.Players[0].ID);

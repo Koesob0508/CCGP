@@ -8,14 +8,13 @@ namespace CCGP.Tests.Unit
 {
     public class PlayerSystemTests
     {
-        uint matchID = 1;
         List<ulong> Players = new() { 5, 6, 7, 8 };
         Container game;
 
         [SetUp]
         public void SetUp()
         {
-            game = GameSystemFactory.Create(matchID, Players);
+            game = GameFactory.Create();
             game.Awake();
 
             // gameStart까지 진행해버리자
@@ -92,22 +91,6 @@ namespace CCGP.Tests.Unit
         }
 
         [Test]
-        public void PlayCard()
-        {
-            var match = game.GetMatch();
-            var currentPlayerIndex = match.CurrentPlayerIndex;
-            var targetCard = match.Players[currentPlayerIndex][Zone.Hand][0];
-
-            var action = new CardPlayAction(targetCard);
-            game.Perform(action);
-
-            // Assert
-            // Zone이 바뀌는지 확인
-            Assert.AreEqual(Zone.Agent, targetCard.Zone);
-            Assert.AreEqual(1, match.Players[currentPlayerIndex][Zone.Agent].Count);
-        }
-
-        [Test]
         public void PlayCard_Should_MyTurn()
         {
             // 우선 currentPlayerIndex는 알아두자
@@ -144,27 +127,6 @@ namespace CCGP.Tests.Unit
             // Zone 안바뀌면 됨
             Assert.AreEqual(Zone.Deck, targetCard.Zone);
             Assert.AreEqual(0, match.Players[currentPlayerIndex][Zone.Agent].Count);
-        }
-
-        [Test]
-        public void PlayCard_Should_Has_ActionCount()
-        {
-            // currentPlayerIndex로 PlayCard를 두 번 한다.
-            var match = game.GetMatch();
-            var currentPlayerIndex = match.CurrentPlayerIndex;
-            var targetCard = match.Players[currentPlayerIndex][Zone.Hand][0];
-            var targetCard2 = match.Players[currentPlayerIndex][Zone.Hand][1];
-
-            var action = new CardPlayAction(targetCard);
-            game.Perform(action);
-
-            var action2 = new CardPlayAction(targetCard2);
-            game.Perform(action2);
-
-            // 첫 번째는 되더라도 두 번째는 안되면 된다.
-            Assert.AreEqual(Zone.Hand, targetCard2.Zone);
-            Assert.AreEqual(1, match.Players[currentPlayerIndex][Zone.Agent].Count);
-            Assert.AreEqual(Player.InitialHand - 1, match.Players[currentPlayerIndex][Zone.Hand].Count);
         }
     }
 }

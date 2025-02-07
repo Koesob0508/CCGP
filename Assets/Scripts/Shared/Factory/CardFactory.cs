@@ -25,7 +25,7 @@ namespace CCGP.Shared
 
             if(file == null)
             {
-                Logger.LogError<Card>("CardList.json을 찾을 수 없습니다!");
+                LogUtility.LogError<Card>("CardList.json을 찾을 수 없습니다!");
                 return null;
             }
 
