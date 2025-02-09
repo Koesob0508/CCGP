@@ -2,6 +2,7 @@
 using CCGP.Shared;
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 
 namespace CCGP.Server
@@ -15,6 +16,7 @@ namespace CCGP.Server
             Handlers = new();
 
             RegisterBaseHandler();
+            RegisterObserver();
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToServerGame", OnReceivedMessage);
         }
@@ -49,5 +51,39 @@ namespace CCGP.Server
         private void RegisterBaseHandler()
         {
         }
+
+        private void RegisterObserver()
+        {
+            this.AddObserver(OnSendStartGame, Global.PerformNotification<GameStartAction>(), Container);
+        }
+
+        private void OnSendStartGame(object sender, object args)
+        {
+            var game = Container as Game;
+            var match = Container.GetMatch();
+
+            foreach (var playerInfo in game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send(GameCommand.StartGameToClient, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        #region Send Utilities
+
+        private void Send(ushort tag, ulong clientID, INetworkSerializable data = null, NetworkDelivery delivery = NetworkDelivery.ReliableSequenced)
+        {
+            using (var writer = new FastBufferWriter(128, Allocator.Temp, 1024 * 1024))
+            {
+                writer.WriteValueSafe(tag);
+                if (data != null)
+                {
+                    writer.WriteNetworkSerializable(data);
+                }
+                NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage("ToClientGame", clientID, writer, delivery);
+            }
+        }
+
+        #endregion
     }
 }

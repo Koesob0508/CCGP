@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CCGP.Shared;
+using System.Collections.Generic;
 
 namespace CCGP.Server
 {
@@ -12,7 +13,7 @@ namespace CCGP.Server
         public readonly int Index;
         public uint AgentCount;
 
-        private PlayerInfo playerInfo;
+        public PlayerInfo PlayerInfo;
 
         private List<Card> leader = new List<Card>(1);
         private List<Card> deck = new List<Card>(InitialDeck);
@@ -25,7 +26,7 @@ namespace CCGP.Server
         {
             ID = playerInfo.ClientID;
             Index = index;
-            this.playerInfo = playerInfo;
+            PlayerInfo = playerInfo;
             AgentCount = InitialAgentCount;
         }
 

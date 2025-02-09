@@ -5,6 +5,7 @@ using UnityEngine.TestTools;
 using CCGP.AspectContainer;  // Container, IContainer
 using CCGP.Server;           // ActionSystem, GameAction, CardPlayAction 등
 using UnityEngine;
+using CCGP.Shared;
 
 namespace CCGP.Tests.Unit
 {
@@ -17,7 +18,7 @@ namespace CCGP.Tests.Unit
             public TestCardPlayAction()
             {
                 // PerformPhase에 Waiter를 넣어 사용자 입력(또는 임의 조건)이 충족될 때까지 대기
-                this.PerformPhase.Waiter = WaitForCondition;
+                this.PerformPhase.Awaiter = WaitForCondition;
             }
 
             private IEnumerator WaitForCondition(IContainer game, GameAction action)
@@ -52,7 +53,7 @@ namespace CCGP.Tests.Unit
                 var action = sender as GameAction;
                 if (action != null)
                 {
-                    action.PreparePhase.Waiter = WaitTargetSelect;
+                    action.PreparePhase.Awaiter = WaitTargetSelect;
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using CCGP.Server;
+﻿using CCGP.Shared;
+using CCGP.Server;
 using NUnit.Framework;
 using System.Collections.Generic;
 

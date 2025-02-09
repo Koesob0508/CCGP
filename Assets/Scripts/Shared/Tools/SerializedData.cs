@@ -84,8 +84,9 @@ namespace CCGP.Shared
     {
         public ulong ID;
         public int Index;
+        public string LobbyID;
         public uint AgentCount;
-        public List<SerializedCard> leader;
+        public List<SerializedCard> Leader;
         public List<SerializedCard> Deck;
         public List<SerializedCard> Hand;
         public List<SerializedCard> Graveyard;
@@ -98,12 +99,13 @@ namespace CCGP.Shared
         {
             ID = player.ID;
             Index = player.Index;
+            LobbyID = player.PlayerInfo.LobbyID;
             AgentCount = player.AgentCount;
 
-            leader = new();
+            Leader = new();
             foreach (var card in player[Zone.Leader])
             {
-                leader.Add(new SerializedCard(card));
+                Leader.Add(new SerializedCard(card));
             }
 
             Deck = new();
@@ -141,11 +143,15 @@ namespace CCGP.Shared
         {
             serializer.SerializeValue(ref ID);
             serializer.SerializeValue(ref Index);
+            serializer.SerializeValue(ref LobbyID);
+            serializer.SerializeValue(ref AgentCount);
 
-            SerializeList(serializer, ref leader);
+            SerializeList(serializer, ref Leader);
             SerializeList(serializer, ref Deck);
             SerializeList(serializer, ref Hand);
             SerializeList(serializer, ref Graveyard);
+            SerializeList(serializer, ref Agent);
+            SerializeList(serializer, ref Open);
         }
 
         private void SerializeList<T>(BufferSerializer<T> serializer, ref List<SerializedCard> list) where T : IReaderWriter
@@ -238,6 +244,8 @@ namespace CCGP.Shared
 
     public class SerializedMatch : INetworkSerializable
     {
+        private ulong targetClientID;
+        public int YourIndex;
         public SerializedBoard Board;
         public List<SerializedPlayer> Players;
         public int FirstPlayerIndex;
@@ -246,8 +254,10 @@ namespace CCGP.Shared
 
         public SerializedMatch() { }
 
-        public SerializedMatch(Match match)
+        public SerializedMatch(ulong targetClientID, Match match)
         {
+            this.targetClientID = targetClientID;
+
             Board = new SerializedBoard(match.Board);
             Players = new();
             foreach (var player in match.Players)
@@ -267,8 +277,12 @@ namespace CCGP.Shared
 
             if (serializer.IsWriter)
             {
+                YourIndex = (int)targetClientID;
+                serializer.SerializeValue(ref YourIndex);
+
                 int count = (Players != null) ? Players.Count : 0;
                 serializer.SerializeValue(ref count);
+
                 for (int i = 0; i < count; i++)
                 {
                     SerializedPlayer player = Players[i];
@@ -278,8 +292,11 @@ namespace CCGP.Shared
             }
             else
             {
+                serializer.SerializeValue(ref YourIndex);
+
                 int count = 0;
                 serializer.SerializeValue(ref count);
+
                 Players = new List<SerializedPlayer>(count);
                 for (int i = 0; i < count; i++)
                 {

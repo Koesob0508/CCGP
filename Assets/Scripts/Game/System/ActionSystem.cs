@@ -95,10 +95,10 @@ namespace CCGP.Server
         private IEnumerator MainPhase(Phase phase)
         {
             // 취소 여부와 cancel Phase인지 여부 확인
-            bool isActionCancelled = phase.Owner.IsCanceled;
+            bool isActionCanceled = phase.Owner.IsCanceled;
             bool isCancelPhase = (phase.Owner.CancelPhase == phase);
             // 취소/취소단계 불일치면 skip
-            if (isActionCancelled ^ isCancelPhase)
+            if (isActionCanceled ^ isCancelPhase)
                 yield break;
 
             // 현 Phase 실행

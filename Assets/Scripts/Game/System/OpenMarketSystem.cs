@@ -1,4 +1,5 @@
 ﻿using CCGP.AspectContainer;
+using CCGP.Shared;
 
 namespace CCGP.Server
 {

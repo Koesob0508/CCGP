@@ -9,7 +9,7 @@ namespace CCGP.Server
         public readonly GameAction Owner;
         public readonly Action<IContainer> Handler;
 
-        public Func<IContainer, GameAction, IEnumerator> Waiter;
+        public Func<IContainer, GameAction, IEnumerator> Awaiter;
 
         public Phase(GameAction owner, Action<IContainer> handler)
         {
@@ -22,13 +22,13 @@ namespace CCGP.Server
         {
             bool keyFrameHit = false;
 
-            if(Waiter != null)
+            if(Awaiter != null)
             {
-                var sequence = Waiter(game, Owner);
-                while(sequence.MoveNext())
+                var awaitSequence = Awaiter(game, Owner);
+                while(awaitSequence.MoveNext())
                 {
                     // 만약 sequence.Current가 bool이라면, true를 키프레임(조건 충족) 신호로 사용
-                    bool isKeyFrame = (sequence.Current is bool b) ? b : false;
+                    bool isKeyFrame = (awaitSequence.Current is bool b) ? b : false;
                     if(isKeyFrame)
                     {
                         keyFrameHit = true;

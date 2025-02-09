@@ -4,9 +4,12 @@ namespace CCGP.Client
 {
     public static class ClientFactory
     {
-        public static Container Create()
+        public static Client Create()
         {
-            return null;
+            var client = new Client();
+            client.AddAspect<ClientMessageSystem>();
+
+            return client;
         }
     }
 }

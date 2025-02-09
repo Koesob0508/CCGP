@@ -1,6 +1,6 @@
 ﻿namespace CCGP.Shared
 {
-    public class GmaeCommand
+    public class GameCommand
     {
         public const ushort None = 0;
 
@@ -8,7 +8,7 @@
 
 
         // Server to Client
-        public const ushort ServerStartGame = 1000;
+        public const ushort StartGameToClient = 1000;
 
     }
 }

@@ -10,17 +10,20 @@ namespace CCGP.Server
 {
     public class Server : Container
     {
+        private Dictionary<string, bool> attendances;
         private Dictionary<string, PlayerInfo> playerInfos;
 
         public void Init()
         {
             playerInfos = new();
+            attendances = new();
             NetworkManager.Singleton.OnClientConnectedCallback += OnConnect;
         }
 
         public void Clear()
         {
             playerInfos = null;
+            attendances = null;
             NetworkManager.Singleton.OnClientConnectedCallback -= OnConnect;
         }
 
@@ -45,17 +48,18 @@ namespace CCGP.Server
 
         private async void RegisterHost()
         {
+            LogUtility.Log<Server>("Register this server : Host", ColorCodes.Server);
+
             try
             {
                 Lobby lobby = await LobbyUtility.GetCurrentLobbyAsync();
                 if (lobby != null)
                 {
-                    LogUtility.Log<Server>($"현재 속한 로비 : {lobby.Name}");
+                    LogUtility.Log<Server>($"로비 등록 완료. 현재 속한 로비 : {lobby.Name}, 참가자 숫자 : {lobby.Players.Count}", ColorCodes.Server);
                     foreach(var player in lobby.Players)
                     {
-                        playerInfos.Add(player.Id, null);
+                        attendances.Add(player.Id, false);
                     }
-
 
                     // CustomMessage Awake
                     NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToHost", OnReceivedMessage);
@@ -74,17 +78,19 @@ namespace CCGP.Server
                 }
                 else
                 {
-                    LogUtility.Log<Server>("현재 참가한 로비가 없습니다.");
+                    LogUtility.Log<Server>("현재 참가한 로비가 없습니다.", ColorCodes.Server);
                 }
             }
             catch (System.Exception e)
             {
-                LogUtility.LogError($"현재 로비 정보를 가져오는 중 오류 발생 : {e.Message}");
+                LogUtility.LogError($"현재 로비 정보를 가져오는 중 오류 발생 : {e.Message}", ColorCodes.Server);
             }
         }
 
         private void RegisterClient()
         {
+            LogUtility.Log<Server>("Register this server : Client", ColorCodes.Server);
+
             // Host에게 Player 정보 보내기
             var lobbyID = AuthenticationService.Instance.PlayerId;
             var clientID = NetworkManager.Singleton.LocalClientId;
@@ -103,13 +109,14 @@ namespace CCGP.Server
             var sData = new SerializedData(reader);
             var sPlayerInfo = sData.Get<SerializedPlayerInfo>();
 
-            LogUtility.Log($"{sPlayerInfo.LobbyID} {sPlayerInfo.ClientID}");
+            LogUtility.Log<Server>($"ToHost 메시지 수신\n- Lobby ID {sPlayerInfo.LobbyID}\n- Client ID {sPlayerInfo.ClientID}", ColorCodes.Server);
 
-            playerInfos[sPlayerInfo.LobbyID] = PlayerInfo.CreatePlayerInfo(sPlayerInfo.LobbyID, sPlayerInfo.ClientID);
+            playerInfos.Add(sPlayerInfo.LobbyID, PlayerInfo.CreatePlayerInfo(sPlayerInfo.LobbyID, sPlayerInfo.ClientID));
+            attendances[sPlayerInfo.LobbyID] = true;
 
             if(CheckAttendance())
             {
-                LogUtility.Log("게임 스타트~");
+                LogUtility.Log<Server>("모든 참가자 접속 완료. 게임 시작", ColorCodes.Server);
                 TryGetAspect<Game>(out var game);
                 game.PlayerInfos = playerInfos.Values.ToList();
                 game.Awake();
@@ -117,17 +124,17 @@ namespace CCGP.Server
                 game.TryGetAspect<FlowSystem>(out var flowSystem);
                 flowSystem.StartGame();
             }
+            else
+            {
+                LogUtility.Log<Server>("다른 참가자의 접속을 기다려야 합니다.", ColorCodes.Server);
+            }
         }
 
         private bool CheckAttendance()
         {
-            foreach(var playerInfo in playerInfos)
+            if(attendances.Values.Contains(false))
             {
-                if(playerInfo.Value == null)
-                {
-                    LogUtility.Log($"{playerInfo.Key} did not set");
-                    return false;
-                }
+                return false;
             }
 
             return true;

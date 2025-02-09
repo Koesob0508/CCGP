@@ -104,7 +104,7 @@ namespace CCGP.Tests.Unit
             originalMatch.Board.AddAspect(tile2, tile2.Name);
             originalMatch.Board.AddAspect(tile3, tile3.Name);
 
-            var sMatch = new SerializedMatch(dataSystem.match);
+            var sMatch = new SerializedMatch(0, dataSystem.match);
 
             using (FastBufferWriter writer = new FastBufferWriter(4096, Unity.Collections.Allocator.Temp, maxSize: 8192))
             {

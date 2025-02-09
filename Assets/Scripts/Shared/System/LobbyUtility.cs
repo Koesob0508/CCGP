@@ -11,6 +11,8 @@ namespace CCGP.Shared
             try
             {
                 var lobbyIDs = await LobbyService.Instance.GetJoinedLobbiesAsync();
+                await Task.Delay(16);
+
                 if (lobbyIDs.Count > 0)
                 {
                     string lobbyID = lobbyIDs[0];

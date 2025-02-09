@@ -22,7 +22,7 @@ namespace CCGP.Server
             var action = sender as CardPlayAction;
             if (action != null)
             {
-                action.PreparePhase.Waiter = WaitTargetSelect;
+                action.PreparePhase.Awaiter = WaitTargetSelect;
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using CCGP.AspectContainer;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,11 +7,8 @@ using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using Unity.Services.Relay;
-using Unity.Services.Relay.Models;
 using TMPro;
 using Unity.Netcode;
-using Unity.Networking.Transport.Relay;
 using Unity.Netcode.Transports.UTP;
 using CCGP.Shared;
 
@@ -66,6 +62,8 @@ namespace CCGP.Client
 
             // 시작 시 로비 목록 갱신
             await RefreshLobbyListAsync();
+
+            this.AddObserver(OnGameStart, "StartGame");
         }
 
         #region 로비 목록 관련
@@ -330,6 +328,15 @@ namespace CCGP.Client
             {
                 Debug.LogError("게임 시작 실패: " + e.Message);
             }
+        }
+        #endregion
+
+
+        #region On Notify
+        private void OnGameStart(object sender, object args)
+        {
+            lobbyListPanel.SetActive(false);
+            lobbyRoomPanel.SetActive(false);
         }
         #endregion
 
