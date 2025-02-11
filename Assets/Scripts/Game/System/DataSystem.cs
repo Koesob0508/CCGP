@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace CCGP.Server
 {
-    public class DataSystem : Aspect, IObserve
+    public class DataSystem : Aspect, IActivatable
     {
         Game Game => Container as Game;
         public Match match;
 
-        public void Awake()
+        public void Activate()
         {
             var board = BoardFactory.Create();
 
@@ -28,7 +28,7 @@ namespace CCGP.Server
             match = new Match(board, players);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             throw new System.NotImplementedException();
         }

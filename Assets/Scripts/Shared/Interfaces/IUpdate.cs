@@ -4,6 +4,7 @@ namespace CCGP.Shared
 {
     public interface IUpdate
     {
+        bool Enabled { get; }
         void Update();
     }
 
@@ -13,8 +14,7 @@ namespace CCGP.Shared
         {
             foreach(IAspect aspect in container.Aspects)
             {
-                var item = aspect as IUpdate;
-                if (item != null) item.Update();
+                if (aspect is IUpdate item && item.Enabled) item.Update();
             }
         }
     }

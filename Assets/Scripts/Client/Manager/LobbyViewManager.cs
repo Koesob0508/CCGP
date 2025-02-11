@@ -14,8 +14,10 @@ using CCGP.Shared;
 
 namespace CCGP.Client
 {
-    public class LobbyManager : MonoBehaviour
+    public class LobbyViewManager : MonoBehaviour
     {
+        private GameView View;
+
         [Header("Pannel Settings")]
         public GameObject lobbyListPanel;       // 로비 목록이 보이는 패널
         public GameObject lobbyRoomPanel;       // 로비에 입장했을 때 보이는 패널
@@ -44,6 +46,8 @@ namespace CCGP.Client
 
         async void Start()
         {
+            View = GetComponentInParent<GameView>();
+            
             // Unity Services 초기화 및 익명 로그인
             await UnityServices.InitializeAsync();
             if (!AuthenticationService.Instance.IsSignedIn)
@@ -63,7 +67,7 @@ namespace CCGP.Client
             // 시작 시 로비 목록 갱신
             await RefreshLobbyListAsync();
 
-            this.AddObserver(OnGameStart, "StartGame");
+            this.AddObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), View.Container);
         }
 
         #region 로비 목록 관련
@@ -116,7 +120,7 @@ namespace CCGP.Client
             }
             catch (System.Exception e)
             {
-                Shared.LogUtility.Log<LobbyManager>("로비 생성 실패 : " + e.Message);
+                Shared.LogUtility.Log<LobbyViewManager>("로비 생성 실패 : " + e.Message);
             }
         }
 
@@ -132,7 +136,7 @@ namespace CCGP.Client
             }
             catch (System.Exception e)
             {
-                Shared.LogUtility.Log<LobbyManager>("로비 참가 실패 : " + e.Message);
+                Shared.LogUtility.Log<LobbyViewManager>("로비 참가 실패 : " + e.Message);
             }
         }
 

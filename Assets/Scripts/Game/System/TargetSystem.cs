@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace CCGP.Server
 {
-    public class TargetSystem : Aspect, IObserve
+    public class TargetSystem : Aspect, IActivatable
     {
-        public void Awake()
+        public void Activate()
         {
             this.AddObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             this.RemoveObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
         }

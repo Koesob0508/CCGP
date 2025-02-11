@@ -3,7 +3,7 @@ using CCGP.Shared;
 
 namespace CCGP.Server
 {
-    public class FlowSystem : Aspect, IObserve
+    public class FlowSystem : Aspect, IActivatable
     {
         public void StartGame()
         {
@@ -47,7 +47,7 @@ namespace CCGP.Server
             //Entity.Perform(action);
         }
 
-        public void Awake()
+        public void Activate()
         {
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
@@ -57,7 +57,7 @@ namespace CCGP.Server
             this.AddObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);

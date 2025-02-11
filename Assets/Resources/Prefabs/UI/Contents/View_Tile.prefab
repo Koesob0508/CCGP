@@ -148,8 +148,9 @@ GameObject:
   - component: {fileID: 5796148505111801522}
   - component: {fileID: 2948785747919081185}
   - component: {fileID: 9160690537251504874}
+  - component: {fileID: 1945585995828889261}
   m_Layer: 5
-  m_Name: Button_Tile
+  m_Name: View_Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -260,6 +261,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1945585995828889261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 986589372621769548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4725670bae794274f98b962c4bb90990, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: {fileID: 1673216649624265449}
+  Icon: {fileID: 7556125611583003238}
+  IconSprites:
+  - {fileID: 21300000, guid: ffa5168f6d4abf542af1d78a1809708b, type: 3}
+  - {fileID: 21300000, guid: 4dfc1032f5a1dcd40af51d4063ae8df1, type: 3}
+  - {fileID: 21300000, guid: 2b1b462a8d4e2b74bbf0896752ce0e44, type: 3}
+  - {fileID: 21300000, guid: 9f37352d7960b0542887850dd5940a62, type: 3}
+  - {fileID: 21300000, guid: 683a50fcd851d6d45ac0a67c123f2a04, type: 3}
+  - {fileID: 21300000, guid: d9c34e3dd92c08d479c93826f3ad9a01, type: 3}
+  - {fileID: 21300000, guid: 902c955805daa664683fc8908452e390, type: 3}
 --- !u!1 &1939271500886122225
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +318,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 48, y: 80}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2289686600712953930
 CanvasRenderer:

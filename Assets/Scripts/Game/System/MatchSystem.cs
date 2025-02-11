@@ -4,14 +4,14 @@ using System;
 
 namespace CCGP.Server
 {
-    public class MatchSystem : Aspect, IObserve
+    public class MatchSystem : Aspect, IActivatable
     {
-        public void Awake()
+        public void Activate()
         {    
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
         }

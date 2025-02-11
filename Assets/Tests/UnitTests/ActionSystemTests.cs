@@ -34,15 +34,15 @@ namespace CCGP.Tests.Unit
         }
 
         // 테스트용 TestTargetSystem: Validation 알림을 구독하여 TestCardPlayAction의 PreparePhase.Waiter에 WaitTargetSelect 코루틴을 등록
-        private class TestTargetSystem : Aspect, IObserve
+        private class TestTargetSystem : Aspect, IActivatable
         {
-            public void Awake()
+            public void Activate()
             {
                 // Global.ValidationNotification(TestCardPlayAction2)를 관찰하도록 등록
                 this.AddObserver(OnValidateTestCardAction, Global.ValidationNotification(typeof(TestCardPlayAction2)));
             }
 
-            public void Sleep()
+            public void Deactivate()
             {
                 this.RemoveObserver(OnValidateTestCardAction, Global.ValidationNotification(typeof(TestCardPlayAction2)));
             }
@@ -82,7 +82,7 @@ namespace CCGP.Tests.Unit
             // 2. TestTargetSystem를 Container에 추가 (Validation 알림 구독)
             var targetSystem = container.AddAspect<TestTargetSystem>();
 
-            container.Awake();
+            container.Activate();
 
             // 3. 테스트용 액션(TestCardPlayAction2) 생성 및 기본 속성 설정
             var testAction = new TestCardPlayAction2()

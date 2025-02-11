@@ -26,7 +26,7 @@ namespace CCGP.Server
             ID = (string)data["ID"];
             Name = (string)data["Name"];
             Cost = Convert.ToInt32(data["Cost"]);
-            Persuasion = Convert.ToInt32(data["Cost"]);
+            Persuasion = Convert.ToInt32(data["Persuasion"]);
 
             Space = Space.None;
 

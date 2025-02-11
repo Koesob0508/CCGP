@@ -23,13 +23,13 @@ namespace CCGP.Tests.Integration
         public void SetUp()
         {
             game = GameFactory.Create();
-            game.Awake();
+            game.Activate();
         }
 
         [TearDown]
         public void TearDown()
         {
-            game.Sleep();
+            game.Deactivate();
             game = null;
         }
 

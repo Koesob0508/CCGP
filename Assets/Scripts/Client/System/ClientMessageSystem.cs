@@ -7,25 +7,20 @@ using Unity.Netcode;
 
 namespace CCGP.Client
 {
-    public class ClientMessageSystem : Aspect, IObserve
+    public class ClientMessageSystem : Aspect, IActivatable
     {
         private Dictionary<ushort, Action<ulong, SerializedData>> Handlers;
 
-        public void Awake()
+        public void Activate()
         {
             Handlers = new();
-
-            RegisterBaseHandler();
-            RegisterObserver();
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToClientGame", OnReceivedMessage);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
-            NetworkManager.Singleton.CustomMessagingManager.UnregisterNamedMessageHandler("ToClientGame");
 
-            Handlers = null;
         }
 
         public void RegisterHandler(ushort type, Action<ulong, SerializedData> callback)
@@ -35,36 +30,10 @@ namespace CCGP.Client
 
         private void OnReceivedMessage(ulong clientID, FastBufferReader reader)
         {
-            reader.ReadValueSafe(out ushort gameCommand);
+            reader.ReadValueSafe(out ushort command);
             SerializedData sdata = new SerializedData(reader);
-
-            if (Handlers.TryGetValue(gameCommand, out var handler))
-            {
-                handler(clientID, sdata);
-            }
-            else
-            {
-                LogUtility.LogWarning<ClientMessageSystem>($"Unknown command received : {gameCommand}");
-            }
-        }
-
-        private void RegisterBaseHandler()
-        {
-            RegisterHandler(GameCommand.StartGameToClient, OnReceivedStartGame);
-        }
-
-        private void RegisterObserver()
-        {
-
-        }
-
-        private void OnReceivedStartGame(ulong clientID, SerializedData sData)
-        {
-            var sMatch = sData.Get<SerializedMatch>();
-            var match = new MatchView(sMatch);
-
-            LogUtility.Log<ClientMessageSystem>($"게임 시작, {match.YourIndex} {match.Players[match.YourIndex].LobbyID}", ColorCodes.Client);
-            Container.PostNotification("StartGame");
+            // LogUtility.Log($"{(GameCommand)command}");
+            Container.PostNotification(Global.MessageNotification((GameCommand)command), sdata);
         }
 
         #region Send Utilities

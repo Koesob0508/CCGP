@@ -13,7 +13,7 @@ namespace CCGP.Tests.Integration
         public void InitialLoadCount()
         {
             var game = GameFactory.Create();
-            game.Awake();
+            game.Activate();
 
             var match = game.GetMatch();
 

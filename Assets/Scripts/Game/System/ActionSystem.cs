@@ -1,4 +1,5 @@
 ﻿using CCGP.AspectContainer;
+using CCGP.Shared;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -74,13 +75,18 @@ namespace CCGP.Server
             var phase = MainPhase(action.PreparePhase);
             while (phase.MoveNext()) { yield return null; }
 
-            // 3) Perform(phase)
-            phase = MainPhase(action.PerformPhase);
-            while (phase.MoveNext()) { yield return null; }
-
-            // 4) Cancel(phase)
-            phase = MainPhase(action.CancelPhase);
-            while (phase.MoveNext()) { yield return null; }
+            if(!action.IsCanceled)
+            {
+                // 3) Perform(phase)
+                phase = MainPhase(action.PerformPhase);
+                while (phase.MoveNext()) { yield return null; }
+            }
+            else
+            {
+                // 4) Cancel(phase)
+                phase = MainPhase(action.CancelPhase);
+                while (phase.MoveNext()) { yield return null; }
+            }
 
             // (루트 액션만 deathReaper 등 처리)
             if (action == rootAction)
@@ -94,12 +100,12 @@ namespace CCGP.Server
 
         private IEnumerator MainPhase(Phase phase)
         {
-            // 취소 여부와 cancel Phase인지 여부 확인
-            bool isActionCanceled = phase.Owner.IsCanceled;
-            bool isCancelPhase = (phase.Owner.CancelPhase == phase);
-            // 취소/취소단계 불일치면 skip
-            if (isActionCanceled ^ isCancelPhase)
-                yield break;
+            //// 취소 여부와 cancel Phase인지 여부 확인
+            //bool isActionCanceled = phase.Owner.IsCanceled;
+            //bool isCancelPhase = (phase.Owner.CancelPhase == phase);
+            //// 취소/취소단계 불일치면 skip
+            //if (isActionCanceled ^ isCancelPhase)
+            //    yield break;
 
             // 현 Phase 실행
             openReactions = new List<GameAction>();

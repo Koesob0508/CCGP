@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace CCGP.Client
 {
-    public class CardView
+    public class CardViewModel
     {
         public string GUID { get; }
         public int OwnerIndex { get; }
@@ -17,9 +17,9 @@ namespace CCGP.Client
 
         public Zone Zone { get; }
 
-        public CardView() { }
+        public CardViewModel() { }
 
-        public CardView(SerializedCard sCard)
+        public CardViewModel(SerializedCard sCard)
         {
             GUID = sCard.GUID;
             OwnerIndex = sCard.OwnerIndex;
@@ -34,34 +34,34 @@ namespace CCGP.Client
         }
     }
 
-    public class PlayerView
+    public class PlayerViewModel
     {
         public ulong ID { get; }
         public int Index { get; }
         public string LobbyID { get; }
         public uint AgentCount { get; }
 
-        private readonly List<CardView> _leader = new();
-        public ReadOnlyCollection<CardView> Leader => _leader.AsReadOnly();
+        private readonly List<CardViewModel> _leader = new();
+        public ReadOnlyCollection<CardViewModel> Leader => _leader.AsReadOnly();
 
-        private readonly List<CardView> _deck = new();
-        public ReadOnlyCollection<CardView> Deck => _deck.AsReadOnly();
+        private readonly List<CardViewModel> _deck = new();
+        public ReadOnlyCollection<CardViewModel> Deck => _deck.AsReadOnly();
 
-        private readonly List<CardView> _hand = new();
-        public ReadOnlyCollection<CardView> Hand => _hand.AsReadOnly();
+        private readonly List<CardViewModel> _hand = new();
+        public ReadOnlyCollection<CardViewModel> Hand => _hand.AsReadOnly();
 
-        private readonly List<CardView> _graveyard = new();
-        public ReadOnlyCollection<CardView> Graveyard => _graveyard.AsReadOnly();
+        private readonly List<CardViewModel> _graveyard = new();
+        public ReadOnlyCollection<CardViewModel> Graveyard => _graveyard.AsReadOnly();
 
-        private readonly List<CardView> _agent = new();
-        public ReadOnlyCollection<CardView> Agent => _agent.AsReadOnly();
+        private readonly List<CardViewModel> _agent = new();
+        public ReadOnlyCollection<CardViewModel> Agent => _agent.AsReadOnly();
 
-        private readonly List<CardView> _open = new();
-        public ReadOnlyCollection<CardView> Open => _open.AsReadOnly();
+        private readonly List<CardViewModel> _open = new();
+        public ReadOnlyCollection<CardViewModel> Open => _open.AsReadOnly();
 
-        public PlayerView() { }
+        public PlayerViewModel() { }
 
-        public PlayerView(SerializedPlayer sPlayer)
+        public PlayerViewModel(SerializedPlayer sPlayer)
         {
             ID = sPlayer.ID;
             Index = sPlayer.Index;
@@ -77,44 +77,44 @@ namespace CCGP.Client
 
             foreach (var card in sPlayer.Leader)
             {
-                _leader.Add(new CardView(card));
+                _leader.Add(new CardViewModel(card));
             }
 
             foreach (var card in sPlayer.Deck)
             {
-                _deck.Add(new CardView(card));
+                _deck.Add(new CardViewModel(card));
             }
 
             foreach (var card in sPlayer.Hand)
             {
-                _hand.Add(new CardView(card));
+                _hand.Add(new CardViewModel(card));
             }
 
             foreach (var card in sPlayer.Graveyard)
             {
-                _graveyard.Add(new CardView(card));
+                _graveyard.Add(new CardViewModel(card));
             }
 
             foreach (var card in sPlayer.Agent)
             {
-                _agent.Add(new CardView(card));
+                _agent.Add(new CardViewModel(card));
             }
 
             foreach (var card in sPlayer.Open)
             {
-                _open.Add(new CardView(card));
+                _open.Add(new CardViewModel(card));
             }
         }
     }
 
-    public class TileView
+    public class TileViewModel
     {
         public string Name { get; }
         public Space Space { get; }
         public int AgentIndex { get;}
 
-        public TileView() { }
-        public TileView(SerializedTile sTile)
+        public TileViewModel() { }
+        public TileViewModel(SerializedTile sTile)
         {
             Name = sTile.Name;
             Space = sTile.Space;
@@ -122,43 +122,43 @@ namespace CCGP.Client
         }
     }
 
-    public class BoardView
+    public class BoardViewModel
     {
-        private readonly List<TileView> _tiles;
-        public ReadOnlyCollection<TileView> Tiles => _tiles.AsReadOnly();
-        public BoardView() { }
+        private readonly List<TileViewModel> _tiles;
+        public ReadOnlyCollection<TileViewModel> Tiles => _tiles.AsReadOnly();
+        public BoardViewModel() { }
 
-        public BoardView(SerializedBoard sBoard)
+        public BoardViewModel(SerializedBoard sBoard)
         {
             _tiles = new();
             foreach(var tile in sBoard.Tiles)
             {
-                _tiles.Add(new TileView(tile));
+                _tiles.Add(new TileViewModel(tile));
             }
         }
     }
 
-    public class MatchView
+    public class MatchViewModel
     {
         public int YourIndex { get; }
-        public BoardView Board { get; }
-        private readonly List<PlayerView> _players;
-        public ReadOnlyCollection<PlayerView> Players => _players.AsReadOnly();
+        public BoardViewModel Board { get; }
+        private readonly List<PlayerViewModel> _players;
+        public ReadOnlyCollection<PlayerViewModel> Players => _players.AsReadOnly();
         public int FirstPlayerIndex { get; }
         public int CurrentPlayerIndex { get; }
         private readonly List<bool> _opened;
         public ReadOnlyCollection<bool> Opened => _opened.AsReadOnly();
-        public MatchView() { }
-        public MatchView(SerializedMatch sMatch)
+        public MatchViewModel() { }
+        public MatchViewModel(SerializedMatch sMatch)
         {
             YourIndex = sMatch.YourIndex;
 
-            Board = new BoardView(sMatch.Board);
+            Board = new BoardViewModel(sMatch.Board);
             
             _players = new();
             foreach(var player in sMatch.Players)
             {
-                _players.Add(new PlayerView(player));
+                _players.Add(new PlayerViewModel(player));
             }
             
             FirstPlayerIndex = sMatch.FirstPlayerIndex;

@@ -1,4 +1,6 @@
 ﻿using CCGP.AspectContainer;
+using CCGP.Shared;
+using UnityEngine;
 
 namespace CCGP.Client
 {
@@ -9,6 +11,16 @@ namespace CCGP.Client
             var client = new Client();
             client.AddAspect<ClientMessageSystem>();
 
+            var gameView = Object.FindFirstObjectByType<GameView>();
+            var matchView = Object.FindFirstObjectByType<MatchView>();
+            var boardView = Object.FindFirstObjectByType<BoardView>();
+            var playerView = Object.FindFirstObjectByType<PlayerView>();
+
+            client.AddAspect(gameView);
+            client.AddAspect(matchView);
+            client.AddAspect(boardView);
+            client.AddAspect(playerView);
+            
             return client;
         }
     }

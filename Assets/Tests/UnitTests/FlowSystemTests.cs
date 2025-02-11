@@ -19,7 +19,7 @@ namespace CCGP.Tests.Unit
         {
             List<ulong> players = new() { 1001, 1002, 1003, 1004 };
             game = GameFactory.Create();
-            game.Awake();
+            game.Activate();
             game.TryGetAspect(out flowSystem);
         }
 

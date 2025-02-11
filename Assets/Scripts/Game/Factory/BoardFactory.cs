@@ -6,7 +6,7 @@
         {
             var board = new Board();
 
-            for (int i = 1; i <= 23; i++)
+            for (int i = 1; i <= 22; i++)
             {
                 string id = $"00-{i:D3}";
                 var tile = TileFactory.CreateTile(id);

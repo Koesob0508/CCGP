@@ -3,14 +3,14 @@ using CCGP.Shared;
 
 namespace CCGP.Server
 {
-    public class OpenMarketSystem : Aspect, IObserve
+    public class OpenMarketSystem : Aspect, IActivatable
     {
-        public void Awake()
+        public void Activate()
         {
             this.AddObserver(OnPrepareTurnEnd, Global.PrepareNotification<TurnEndAction>(), Container);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             this.RemoveObserver(OnPrepareTurnEnd, Global.PrepareNotification<TurnEndAction>(), Container);
         }

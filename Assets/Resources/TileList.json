@@ -72,46 +72,41 @@
         },
         {
             "ID": "00-015",
-            "Name": "IMPERIAL BASIN",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-016",
             "Name": "CONSPIRE",
             "Space": "Emperor"
         },
         {
-            "ID": "00-017",
+            "ID": "00-016",
             "Name": "WEALTH",
             "Space": "Emperor"
         },
         {
-            "ID": "00-018",
+            "ID": "00-017",
             "Name": "HEIGHLINER",
             "Space": "SpacingGuild"
         },
         {
-            "ID": "00-019",
+            "ID": "00-018",
             "Name": "FOLDSPACE",
             "Space": "SpacingGuild"
         },
         {
-            "ID": "00-020",
+            "ID": "00-019",
             "Name": "SELECTIVE BREEDING",
             "Space": "BeneGesserit"
         },
         {
-            "ID": "00-021",
+            "ID": "00-020",
             "Name": "SECRETS",
             "Space": "BeneGesserit"
         },
         {
-            "ID": "00-022",
+            "ID": "00-021",
             "Name": "HARDY WARRIORS",
             "Space": "Fremen"
         },
         {
-            "ID": "00-023",
+            "ID": "00-022",
             "Name": "STILLSUITS",
             "Space": "Fremen"
         }

@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace CCGP.Server
 {
-    public class PlayerSystem : Aspect, IObserve
+    public class PlayerSystem : Aspect, IActivatable
     {
-        public void Awake()
+        public void Activate()
         {
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
@@ -16,7 +16,7 @@ namespace CCGP.Server
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);

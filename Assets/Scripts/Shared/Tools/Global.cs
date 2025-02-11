@@ -34,6 +34,11 @@ namespace CCGP.Shared
             return $"{type.Name}.PerformNotification";
         }
 
+        public static string MessageNotification(System.Enum type)
+        {
+            return $"{type}.PerformNotification";
+        }
+
         public static string ValidationNotification<T>()
         {
             return ValidationNotification(typeof(T));
@@ -52,6 +57,11 @@ namespace CCGP.Shared
         public static string CancelNotification(System.Type type)
         {
             return $"{type.Name}.CancelNotification";
+        }
+
+        public static string CancelNotification(System.Enum type)
+        {
+            return $"{type}.CancelNotification";
         }
     }
 }

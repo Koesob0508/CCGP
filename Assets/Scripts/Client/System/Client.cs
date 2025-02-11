@@ -15,7 +15,13 @@ namespace CCGP.Client
         {
             if (clientID != NetworkManager.Singleton.LocalClientId) return;
 
-            this.Awake();
+            this.Activate();
+        }
+
+        public void Clear()
+        {
+
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnConnect;
         }
 
         public void Upate()

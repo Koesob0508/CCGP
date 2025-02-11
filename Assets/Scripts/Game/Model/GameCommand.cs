@@ -1,14 +1,15 @@
 ﻿namespace CCGP.Shared
 {
-    public class GameCommand
+    public enum GameCommand : ushort
     {
-        public const ushort None = 0;
+        None = 0,
 
         // Client to Server
 
-
         // Server to Client
-        public const ushort StartGameToClient = 1000;
-
+        StartGame = 1000,
+        StartRound = 1100,
+        StartTurn = 1200,
+        DrawCards = 1210,
     }
 }

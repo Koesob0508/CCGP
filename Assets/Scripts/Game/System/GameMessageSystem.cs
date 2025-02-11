@@ -7,11 +7,12 @@ using Unity.Netcode;
 
 namespace CCGP.Server
 {
-    public class GameMessageSystem : Aspect, IObserve
+    public class GameMessageSystem : Aspect, IActivatable
     {
         private Dictionary<ushort, Action<ulong, SerializedData>> Handlers;
+        private Game Game => Container as Game;
 
-        public void Awake()
+        public void Activate()
         {
             Handlers = new();
 
@@ -21,7 +22,7 @@ namespace CCGP.Server
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToServerGame", OnReceivedMessage);
         }
 
-        public void Sleep()
+        public void Deactivate()
         {
             NetworkManager.Singleton.CustomMessagingManager.UnregisterNamedMessageHandler("ToServerGame");
 
@@ -54,18 +55,46 @@ namespace CCGP.Server
 
         private void RegisterObserver()
         {
-            this.AddObserver(OnSendStartGame, Global.PerformNotification<GameStartAction>(), Container);
+            this.AddObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
+            this.AddObserver(OnStartRound, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnDrawCards, Global.PerformNotification<CardsDrawAction>(), Container);
         }
 
-        private void OnSendStartGame(object sender, object args)
+        private void OnStartGame(object sender, object args)
         {
-            var game = Container as Game;
+            LogUtility.Log<GameMessageSystem>("OnGameStart Send", colorName: ColorCodes.Server);
             var match = Container.GetMatch();
 
-            foreach (var playerInfo in game.PlayerInfos)
+            foreach (var playerInfo in Game.PlayerInfos)
             {
                 var sMatch = new SerializedMatch(playerInfo.ClientID, match);
-                Send(GameCommand.StartGameToClient, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+                Send((ushort)GameCommand.StartGame, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnStartRound(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("OnRoundStart Send", colorName: ColorCodes.Server);
+
+            var match = Container.GetMatch();
+
+            foreach(var playerInfo in Game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send((ushort)GameCommand.StartRound, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnDrawCards(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("OnCardDraw Send", colorName: ColorCodes.Server);
+
+            var action = args as CardsDrawAction;
+            var sAction = new SerializedCardsDrawAction(action);
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                Send((ushort)GameCommand.DrawCards, playerInfo.ClientID, sAction, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }
 

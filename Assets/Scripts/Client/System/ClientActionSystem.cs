@@ -13,6 +13,8 @@ namespace CCGP.Client
         private const string completeNotification = "ClientActionSystem.CompleteNotification";
         #endregion
 
+        public bool Enabled { get; private set; }
+
         private Queue<ViewAction> actionQueue = new();
         private ViewAction rootAction;
         private IEnumerator rootSequence;

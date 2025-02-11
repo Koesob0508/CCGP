@@ -119,7 +119,7 @@ namespace CCGP.Server
                 LogUtility.Log<Server>("모든 참가자 접속 완료. 게임 시작", ColorCodes.Server);
                 TryGetAspect<Game>(out var game);
                 game.PlayerInfos = playerInfos.Values.ToList();
-                game.Awake();
+                game.Activate();
 
                 game.TryGetAspect<FlowSystem>(out var flowSystem);
                 flowSystem.StartGame();

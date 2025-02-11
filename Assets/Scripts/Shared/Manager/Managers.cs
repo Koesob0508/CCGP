@@ -9,7 +9,7 @@ namespace CCGP.Shared
         Server.Server Server;
         Client.Client Client;
 
-        private void Start()
+        private void Awake()
         {
             Server = ServerFactory.Create();
             Client = ClientFactory.Create();

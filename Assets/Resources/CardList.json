@@ -4,7 +4,7 @@
             "ID": "00-001",
             "Name": "Signet Ring",
             "Cost": 0,
-            "Persuation": 1,
+            "Persuasion": 1,
             "Space": [
                 "Yellow",
                 "Blue",
@@ -15,7 +15,7 @@
             "ID": "00-002",
             "Name": "Diplomacy",
             "Cost": 0,
-            "Persuation": 1,
+            "Persuasion": 1,
             "Space": [
                 "Emperor",
                 "Guild",
@@ -27,7 +27,7 @@
             "ID": "00-003",
             "Name": "Blue",
             "Cost": 0,
-            "Persuation": 1,
+            "Persuasion": 1,
             "Space": [
                 "Blue"
             ]
@@ -36,7 +36,7 @@
             "ID": "00-004",
             "Name": "Research",
             "Cost": 0,
-            "Persuation": 1,
+            "Persuasion": 1,
             "Space": [
                 "Yellow"
             ]
@@ -45,7 +45,7 @@
             "ID": "00-005",
             "Name": "Knife",
             "Cost": 0,
-            "Persuation": 0,
+            "Persuasion": 0,
             "Space": [
                 "Green"
             ]
@@ -54,14 +54,14 @@
             "ID": "00-006",
             "Name": "Speech",
             "Cost": 0,
-            "Persuation": 2,
+            "Persuasion": 2,
             "Space": []
         },
         {
             "ID": "00-007",
             "Name": "Invitation",
             "Cost": 0,
-            "Persuation": 0,
+            "Persuasion": 0,
             "Space": [
                 "Emperor",
                 "Guild",

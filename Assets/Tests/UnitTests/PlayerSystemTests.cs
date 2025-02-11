@@ -15,7 +15,7 @@ namespace CCGP.Tests.Unit
         public void SetUp()
         {
             game = GameFactory.Create();
-            game.Awake();
+            game.Activate();
 
             // gameStart까지 진행해버리자
             game.TryGetAspect<FlowSystem>(out var flow);
@@ -25,7 +25,7 @@ namespace CCGP.Tests.Unit
         [TearDown]
         public void TearDown()
         {
-            game.Sleep();
+            game.Deactivate();
             game = null;
         }
 
