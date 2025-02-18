@@ -4,8 +4,9 @@
     {
         public Card Card;
 
-        public CardPlayAction(Card card)
+        public CardPlayAction(Player player, Card card)
         {
+            Player = player;
             Card = card;
         }
     }

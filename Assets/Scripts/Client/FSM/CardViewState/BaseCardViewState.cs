@@ -4,7 +4,7 @@ namespace CCGP.Client
 {
     public abstract class BaseCardViewState : IState
     {
-        protected CardView Handler { get; }
+        public CardView Handler { get; }
         protected BaseStateMachine FSM { get; }
 
         protected BaseCardViewState(CardView handler, BaseStateMachine fsm)

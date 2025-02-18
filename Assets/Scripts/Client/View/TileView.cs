@@ -8,16 +8,19 @@ namespace CCGP.Client
 {
     public class TileView : MonoBehaviour
     {
-        public TileViewModel Data { get; private set; }
+        public SerializedTile Data { get; private set; }
         public TMP_Text Name;
         public Image Icon;
+        public GameObject BlockImage;
         public List<Sprite> IconSprites;
 
-        public void Refresh(TileViewModel vm)
+        public void Refresh(SerializedTile tile)
         {
-            Name.text = vm.Name;
+            Data = tile;
 
-            switch(vm.Space)
+            Name.text = tile.Name;
+
+            switch (tile.Space)
             {
                 case Shared.Space.Yellow:
                     Icon.sprite = IconSprites[6];

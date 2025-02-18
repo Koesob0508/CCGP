@@ -1,6 +1,7 @@
 ﻿using CCGP.Shared;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace CCGP.Client
 {
@@ -17,8 +18,8 @@ namespace CCGP.Client
             Handler.Input.OnPointerClick -= OnPointerClick;
             Handler.Input.OnPointerClick += OnPointerClick;
 
-            Handler.Input.OnDrag -= OnDrag;
-            Handler.Input.OnDrag += OnDrag;
+            //Handler.Input.OnDrag -= OnDrag;
+            //Handler.Input.OnDrag += OnDrag;
 
             SetScale();
             SetPosition();
@@ -32,7 +33,19 @@ namespace CCGP.Client
             Handler.HoverImage.transform.localRotation = Quaternion.identity;
             Handler.Input.OnPointerExit -= OnPointerExit;
             Handler.Input.OnPointerClick -= OnPointerClick;
-            Handler.Input.OnDrag -= OnDrag;
+            //Handler.Input.OnDrag -= OnDrag;
+
+            var raycaster = Handler.gameObject.GetComponent<GraphicRaycaster>();
+            if (raycaster != null)
+                Object.DestroyImmediate(raycaster);
+
+            var scaler = Handler.gameObject.GetComponent<CanvasScaler>();
+            if (scaler != null)
+                Object.DestroyImmediate(scaler);
+
+            var canvas = Handler.gameObject.GetComponent<Canvas>();
+            if (canvas != null)
+                Object.DestroyImmediate(canvas);
         }
         #endregion
 
@@ -50,8 +63,9 @@ namespace CCGP.Client
         {
             if (FSM.IsCurrent(this) && eventData.button == PointerEventData.InputButton.Left)
             {
-                //if (Managers.Instance.Client.Game.IsMyTurn())
-                if(false)
+                var match = Handler.GetComponentInParent<MatchView>();
+
+                if (match.Data.CurrentPlayerIndex == Handler.Data.OwnerIndex)
                 {
                     FSM.PopState();
 
@@ -60,30 +74,30 @@ namespace CCGP.Client
                 else
                 {
                     // 나중에 대사로 출력하세요.
-                    LogUtility.Log<CardViewHover>("그렇게는 할 수 없어요.", colorName: "red");
+                    LogUtility.Log<CardViewHover>("당신의 턴이 아닙니다.", colorName: "red");
                     FSM.PopState();
                 }
             }
         }
 
-        private void OnDrag(PointerEventData eventData)
-        {
-            if (FSM.IsCurrent(this) && eventData.button == PointerEventData.InputButton.Left)
-            {
-                //if (Managers.Instance.Client.Game.IsMyTurn())
-                if (false)
-                {
-                    FSM.PopState();
+        //private void OnDrag(PointerEventData eventData)
+        //{
+        //    if (FSM.IsCurrent(this) && eventData.button == PointerEventData.InputButton.Left)
+        //    {
+        //        //if (Managers.Instance.Client.Game.IsMyTurn())
+        //        if (false)
+        //        {
+        //            FSM.PopState();
 
-                    FSM.PushState<CardViewDrag>();
-                }
-                else
-                {
-                    LogUtility.Log<CardViewHover>("그렇게는 할 수 없어요.", colorName: "red");
-                    FSM.PopState();
-                }
-            }
-        }
+        //            FSM.PushState<CardViewDrag>();
+        //        }
+        //        else
+        //        {
+        //            LogUtility.Log<CardViewHover>("그렇게는 할 수 없어요.", colorName: "red");
+        //            FSM.PopState();
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Utils
@@ -112,7 +126,17 @@ namespace CCGP.Client
 
         private void SetOrder()
         {
-            //Handler.Order.SetMostFrontOrder(true);
+            var canvas = Handler.gameObject.AddComponent<Canvas>();
+            var scaler = Handler.gameObject.AddComponent<CanvasScaler>();
+            var raycaster = Handler.gameObject.AddComponent<GraphicRaycaster>();
+
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 100;
+
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0f;
         }
 
         #endregion

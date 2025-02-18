@@ -51,7 +51,7 @@ namespace CCGP.Shared
             stack.Push(state);
             state.OnEnter();
 
-            LogUtility.Log<BaseStateMachine>($"{Handler.Name}, {stack.Count}, Push state : ", "green", type);
+            // LogUtility.Log<BaseStateMachine>($"{Handler.Name}, {stack.Count}, Push state : ", "green", type);
         }
         public void PopState(bool isSilent = false)
         {
@@ -59,13 +59,13 @@ namespace CCGP.Shared
 
             var state = stack.Pop();
 
-            LogUtility.Log<BaseStateMachine>($"{Handler.Name}, {stack.Count}, Pop state : ", "purple", state.GetType());
+            // LogUtility.Log<BaseStateMachine>($"{Handler.Name}, {stack.Count}, Pop state : ", "purple", state.GetType());
             state.OnExit();
 
             if (!isSilent)
             {
                 Current?.OnEnter();
-                LogUtility.Log<BaseStateMachine>($"Current State : ", "purple", Current.GetType());
+                // LogUtility.Log<BaseStateMachine>($"Current State : ", "purple", Current.GetType());
             }
         }
         public virtual void Clear()

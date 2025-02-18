@@ -7,7 +7,7 @@ namespace CCGP.Server
     {
         public const int InitialDeck = 10;
         public const int InitialHand = 5;
-        public const int InitialAgentCount = 1;
+        public const int InitialAgentCount = 2;
 
         public ulong ID;
         public readonly int Index;
@@ -34,7 +34,7 @@ namespace CCGP.Server
         {
             get
             {
-                switch(z)
+                switch (z)
                 {
                     case Zone.Leader:
                         return leader;

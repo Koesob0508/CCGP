@@ -91,7 +91,10 @@ namespace CCGP.Server
             if (index != -1)
             {
                 if (_invoking.Contains(list))
+                {
                     subTable[key] = new List<Handler>(list);
+                    list = subTable[key];
+                }
                 list.RemoveAt(index);
             }
         }

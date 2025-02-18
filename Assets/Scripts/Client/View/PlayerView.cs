@@ -7,9 +7,10 @@ namespace CCGP.Client
 {
     public class PlayerView : BaseView
     {
-        public List<PlayerViewModel> Data { get; private set; }
+        public List<SerializedPlayer> Data { get; private set; }
         public GameObject Hand;
-        public CardView CardView;
+        public GameObject SelectedCard;
+        public CardView Prefab_CardView;
 
         public override void Activate()
         {
@@ -39,19 +40,13 @@ namespace CCGP.Client
             var sData = args as SerializedData;
             var sAction = sData.Get<SerializedCardsDrawAction>();
 
-            // 만일 내꺼라면,
-            // 카드를 뽑는다.
-            // 이 때, 카드 정보는 SerializedCard로 갱신
-            // 아 지금 당장은 SerializedCard가 아니라 CardViewModel이다.
-
-            if(sAction.Player.ID == NetworkManager.Singleton.LocalClientId)
+            if (sAction.Player.ID == NetworkManager.Singleton.LocalClientId)
             {
-                foreach(var card in sAction.Cards)
+                foreach (var card in sAction.Cards)
                 {
-                    var cardView = Instantiate(CardView, Hand.transform);
-                    var cardVM = new CardViewModel(card);
+                    var cardView = Instantiate(Prefab_CardView, Hand.transform);
                     cardView.Enable();
-                    cardView.Refresh(cardVM);
+                    cardView.Refresh(card);
                 }
             }
         }

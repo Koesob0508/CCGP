@@ -36,10 +36,10 @@ namespace CCGP.Shared
 
         public static string MessageNotification(System.Enum type)
         {
-            return $"{type}.PerformNotification";
+            return $"{type}.MessageNotification";
         }
 
-        public static string ValidationNotification<T>()
+        public static string ValidateNotification<T>()
         {
             return ValidationNotification(typeof(T));
         }

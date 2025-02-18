@@ -7,7 +7,7 @@ namespace CCGP.Server
     public class MatchSystem : Aspect, IActivatable
     {
         public void Activate()
-        {    
+        {
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
         }
 
@@ -21,9 +21,10 @@ namespace CCGP.Server
             var match = Container.GetMatch();
             // match의 FirstPlayerIndex를 무작위로 정한다.
             var random = new Random();
-            match.FirstPlayerIndex = random.Next(0, match.Players.Count);
+            //match.FirstPlayerIndex = random.Next(0, match.Players.Count);
+            match.FirstPlayerIndex = 0;
 
-            LogUtility.Log<MatchSystem>($"게임 시작 - 첫 번째 플레이어: {match.FirstPlayerIndex}");
+            LogUtility.Log<MatchSystem>($"게임 시작 - 첫 번째 플레이어: {match.FirstPlayerIndex}", colorName: ColorCodes.Logic);
         }
     }
 }

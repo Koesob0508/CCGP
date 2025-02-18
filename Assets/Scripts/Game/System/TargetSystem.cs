@@ -10,19 +10,36 @@ namespace CCGP.Server
         public void Activate()
         {
             this.AddObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
+            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
         }
 
         public void Deactivate()
         {
+            this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
             this.RemoveObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
         }
 
         private void OnValidateCardPlayAction(object sender, object args)
         {
             var action = sender as CardPlayAction;
-            if (action != null)
+            var validator = args as Validator;
+            if (action != null && validator.IsValid)
             {
                 action.PreparePhase.Awaiter = WaitTargetSelect;
+            }
+        }
+
+        private void OnSelectTile(object sender, object args)
+        {
+            var sData = args as SerializedData;
+            var sTile = sData.Get<SerializedTile>();
+
+            Container.TryGetAspect<ActionSystem>(out var actionSystem);
+            var action = actionSystem.CurrentAction as CardPlayAction;
+
+            if (action != null)
+            {
+                SetTarget(action, new Tile(sTile));
             }
         }
 
@@ -43,9 +60,10 @@ namespace CCGP.Server
             var log = "보낼 수 있는 지역 : \n";
             for (int i = 0; i < targetTiles.Count; i++)
             {
-                log += $"{i+1}. {targetTiles[i].Name} ";
+                log += $"{i + 1}. {targetTiles[i].Name} ";
             }
-            LogUtility.Log<TargetSystem>(log);
+            LogUtility.Log<TargetSystem>(log, colorName: ColorCodes.Logic);
+            Container.PostNotification(Global.MessageNotification(GameCommand.ShowAvailableTiles), targetTiles);
 
             while (target.Selected == null)
             {
@@ -65,6 +83,7 @@ namespace CCGP.Server
                 // 만일 잘못된 경우, action.Cancel()을 낸다.
                 LogUtility.LogWarning<TargetSystem>("잘못된 타겟이 선택됨. 카드 발동이 취소됩니다.");
                 action.Cancel();
+                target.Selected = null;
             }
 
             yield return true;

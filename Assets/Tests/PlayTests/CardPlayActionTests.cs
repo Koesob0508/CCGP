@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace CCGP.Tests.Integration
+namespace CCGP.Tests.Play
 {
     public class CardPlayActionTests
     {
@@ -15,9 +15,9 @@ namespace CCGP.Tests.Integration
         List<ulong> players = new() { 21, 32, 96, 72 };
 
         /// <summary>
-        /// ¸¸ÀÏ Scene Load¿Í °°Àº ºñµ¿±â ÀÛ¾÷ÀÌ ÇÊ¿äÇÏ´Ù¸é
-        /// UnitySetUp°ú
-        /// yield returnÀ» »ç¿ëÇÏ½Ã¿À.
+        /// ï¿½ï¿½ï¿½ï¿½ Scene Loadï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ñµ¿±ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½
+        /// UnitySetUpï¿½ï¿½
+        /// yield returnï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï½Ã¿ï¿½.
         /// </summary>
         [SetUp]
         public void SetUp()
@@ -46,7 +46,7 @@ namespace CCGP.Tests.Integration
             card.Zone = Zone.Hand;
             var space = card.Space;
 
-            var action = new CardPlayAction(card);
+            var action = new CardPlayAction(game.GetMatch().Players[index], card);
 
             game.Perform(action);
 
@@ -85,7 +85,7 @@ namespace CCGP.Tests.Integration
             card.Zone = Zone.Hand;
             var space = card.Space;
 
-            var action = new CardPlayAction(card);
+            var action = new CardPlayAction(game.GetMatch().Players[index], card);
 
             game.Perform(action);
 

@@ -103,7 +103,7 @@ namespace CCGP.Tests.Unit
 
             // 다시 기존 currentPlayerIndex로 CardPlay
             var targetCard = match.Players[currentPlayerIndex][Zone.Hand][0];
-            var action = new CardPlayAction(targetCard);
+            var action = new CardPlayAction(match.Players[currentPlayerIndex], targetCard);
             game.Perform(action);
 
             // Zone이 바뀌어선 안된다.
@@ -121,7 +121,7 @@ namespace CCGP.Tests.Unit
             var targetCard = match.Players[currentPlayerIndex][Zone.Deck][0];
 
             // 그리고 currentPlayerIndex로 CardPlay
-            var action = new CardPlayAction(targetCard);
+            var action = new CardPlayAction(match.Players[currentPlayerIndex], targetCard);
             game.Perform(action);
 
             // Zone 안바뀌면 됨

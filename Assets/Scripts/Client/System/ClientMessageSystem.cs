@@ -16,6 +16,8 @@ namespace CCGP.Client
             Handlers = new();
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToClientGame", OnReceivedMessage);
+            this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
         }
 
         public void Deactivate()
@@ -32,9 +34,27 @@ namespace CCGP.Client
         {
             reader.ReadValueSafe(out ushort command);
             SerializedData sdata = new SerializedData(reader);
-            // LogUtility.Log($"{(GameCommand)command}");
+            LogUtility.Log<ClientMessageSystem>($"On received {(GameCommand)command}", colorName: ColorCodes.Client);
             Container.PostNotification(Global.MessageNotification((GameCommand)command), sdata);
         }
+
+        #region Client Message
+
+        private void OnTryPlayCard(object sender, object args)
+        {
+            LogUtility.Log<ClientMessageSystem>($"Send TryPlayCard", colorName: ColorCodes.Client);
+            var data = args as SerializedCard;
+            SendToHost((ushort)GameCommand.TryPlayCard, data);
+        }
+
+        private void OnSelectTile(object sender, object args)
+        {
+            LogUtility.Log<ClientMessageSystem>($"Send SelectTile", colorName: ColorCodes.Client);
+            var data = args as SerializedTile;
+            SendToHost((ushort)GameCommand.SelectTile, data);
+        }
+
+        #endregion
 
         #region Send Utilities
 

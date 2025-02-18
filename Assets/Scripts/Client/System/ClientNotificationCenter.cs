@@ -1,6 +1,7 @@
 ﻿using CCGP.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CCGP.Client
 {
@@ -21,7 +22,7 @@ namespace CCGP.Client
         #region Singleton Pattern
         public static ClientNotificationCenter Instance { get; private set; } = new ClientNotificationCenter();
         private ClientNotificationCenter() { }
-        public static void ResetInstacne()
+        public static void ResetInstance()
         {
             Instance = new ClientNotificationCenter();
         }
@@ -91,8 +92,15 @@ namespace CCGP.Client
             if (index != -1)
             {
                 if (_invoking.Contains(list))
+                {
                     subTable[key] = new List<Handler>(list);
+                    list = subTable[key];
+                }
                 list.RemoveAt(index);
+            }
+            else
+            {
+                LogUtility.LogWarning<ClientNotificationCenter>($"Remove {handler.GetHashCode()} Observer failed", colorName: ColorCodes.Logic);
             }
         }
 
@@ -151,7 +159,9 @@ namespace CCGP.Client
                 List<Handler> handlers = subTable[this];
                 _invoking.Add(handlers);
                 for (int i = 0; i < handlers.Count; ++i)
+                {
                     handlers[i](sender, e);
+                }
                 _invoking.Remove(handlers);
             }
         }

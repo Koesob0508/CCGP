@@ -15,7 +15,7 @@ namespace CCGP.Server
         public string ID;
         public string Name;
         public Space Space;
-        
+
         public virtual void Load(Dictionary<string, object> data)
         {
             ID = (string)data["ID"];
@@ -23,6 +23,15 @@ namespace CCGP.Server
             var strSpace = (string)data["Space"];
             Enum.TryParse<Space>(strSpace.ToString(), out var result);
             Space = result;
+        }
+
+        public Tile() { }
+
+        public Tile(SerializedTile sTile)
+        {
+            Name = sTile.Name;
+            Space = sTile.Space;
+            AgentIndex = sTile.AgentIndex;
         }
     }
 }

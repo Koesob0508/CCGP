@@ -6,7 +6,7 @@ namespace CCGP.Client
     public class ViewAction
     {
         public readonly int ID;
-        public PlayerViewModel Player { get; set; }
+        public SerializedPlayer Player { get; set; }
         public int Priority { get; set; }
         public int OrderOfPlay { get; set; }
         public bool IsCanceled { get; protected set; }

@@ -1,18 +1,17 @@
 ﻿using CCGP.AspectContainer;
-using CCGP.Shared;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace CCGP.Server
 {
     public class ActionSystem : Aspect
     {
         #region Notifications
-        private const string beginSequenceNotification = "ActionSystem.BeginSequenceNotification";
-        private const string endSequenceNotification = "ActionSystem.EndSequenceNotification";
-        private const string deathReaperNotification = "ActionSystem.DeathReaperNotification";
-        private const string completeNotification = "ActionSystem.CompleteNotification";
+        public const string BeginSequenceNotification = "ActionSystem.BeginSequenceNotification";
+        public const string EndSequenceNotification = "ActionSystem.EndSequenceNotification";
+        public const string DeathReaperNotification = "ActionSystem.DeathReaperNotification";
+        public const string CompleteNotification = "ActionSystem.CompleteNotification";
         #endregion
 
         private Queue<GameAction> actionQueue = new();
@@ -27,13 +26,20 @@ namespace CCGP.Server
         {
             actionQueue.Enqueue(action);
 
-            while(rootSequence != null || actionQueue.Count > 0)
+            while (rootSequence != null || actionQueue.Count > 0)
             {
+                await UniTask.Yield();
                 Update();
-
-                await Task.Delay(8);
             }
         }
+
+        public void AddReaction(GameAction action)
+        {
+            openReactions ??= new List<GameAction>();
+            openReactions.Add(action);
+        }
+
+        #region Private Method
 
         private void Update()
         {
@@ -50,20 +56,14 @@ namespace CCGP.Server
                     rootAction = null;
                     rootSequence = null;
                     openReactions = null;
-                    this.PostNotification(completeNotification);
+                    this.PostNotification(CompleteNotification);
                 }
             }
         }
 
-        public void AddReaction(GameAction action)
-        {
-            openReactions ??= new List<GameAction>();
-            openReactions.Add(action);
-        }
-
         private IEnumerator Sequence(GameAction action)
         {
-            this.PostNotification(beginSequenceNotification, action);
+            this.PostNotification(BeginSequenceNotification, action);
 
             // 1) Validate
             if (!action.Validate())
@@ -75,7 +75,7 @@ namespace CCGP.Server
             var phase = MainPhase(action.PreparePhase);
             while (phase.MoveNext()) { yield return null; }
 
-            if(!action.IsCanceled)
+            if (!action.IsCanceled)
             {
                 // 3) Perform(phase)
                 phase = MainPhase(action.PerformPhase);
@@ -91,11 +91,11 @@ namespace CCGP.Server
             // (루트 액션만 deathReaper 등 처리)
             if (action == rootAction)
             {
-                phase = EventPhase(deathReaperNotification, action, true);
+                phase = EventPhase(DeathReaperNotification, action, true);
                 while (phase.MoveNext()) { yield return null; }
             }
 
-            this.PostNotification(endSequenceNotification, action);
+            this.PostNotification(EndSequenceNotification, action);
         }
 
         private IEnumerator MainPhase(Phase phase)
@@ -149,6 +149,8 @@ namespace CCGP.Server
                 return y.Priority.CompareTo(x.Priority);
             return x.OrderOfPlay.CompareTo(y.OrderOfPlay);
         }
+
+        #endregion
     }
 
     public static class ActionSystemExtensions

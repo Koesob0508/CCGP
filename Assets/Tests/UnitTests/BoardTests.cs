@@ -3,7 +3,7 @@ using CCGP.Shared;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace CCGP.Tests.Integration
+namespace CCGP.Tests.Play
 {
     [TestFixture]
     public class BoardTests

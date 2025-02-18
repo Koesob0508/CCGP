@@ -1,4 +1,5 @@
-﻿using CCGP.Server;
+﻿using CCGP.AspectContainer;
+using CCGP.Server;
 using CCGP.Shared;
 using NUnit.Framework;
 using System;
@@ -56,8 +57,18 @@ namespace CCGP.Tests.Unit
         [Test]
         public void SerializedPlayer()
         {
-            List<ulong> IDs = new() { 1, 2, 3, 4 };
-            var dataSystem = new DataSystem();
+            List<PlayerInfo> playerInfos = new()
+            {
+                new PlayerInfo(){ ClientID = 1, LobbyID = "Player1" },
+                new PlayerInfo(){ ClientID = 2, LobbyID = "Player2" },
+                new PlayerInfo(){ ClientID = 3, LobbyID = "Player3" },
+                new PlayerInfo(){ ClientID = 4, LobbyID = "Player4" }
+            };
+            var game = new Game();
+            game.PlayerInfos = playerInfos;
+            var dataSystem = game.AddAspect<DataSystem>();
+            game.Activate();
+
             var originalMatch = dataSystem.match;
 
             var originalPlayer = originalMatch.Players[0];
@@ -92,8 +103,18 @@ namespace CCGP.Tests.Unit
         [Test]
         public void SerializedMatch()
         {
-            List<ulong> IDs = new() { 1, 2, 3, 4 };
-            var dataSystem = new DataSystem();
+            List<PlayerInfo> playerInfos = new()
+            {
+                new PlayerInfo(){ ClientID = 1, LobbyID = "Player1" },
+                new PlayerInfo(){ ClientID = 2, LobbyID = "Player2" },
+                new PlayerInfo(){ ClientID = 3, LobbyID = "Player3" },
+                new PlayerInfo(){ ClientID = 4, LobbyID = "Player4" }
+            };
+            var game = new Game();
+            game.PlayerInfos = playerInfos;
+            var dataSystem = game.AddAspect<DataSystem>();
+            game.Activate();
+
             var originalMatch = dataSystem.match;
 
             var tile1 = new TestTile() { Name = "Imperial Basin", Space = Space.Yellow };

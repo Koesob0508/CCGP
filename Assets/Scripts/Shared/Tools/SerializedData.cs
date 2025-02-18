@@ -1,4 +1,5 @@
 ﻿using CCGP.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -7,17 +8,31 @@ namespace CCGP.Shared
 {
     public class SerializedData
     {
-        private FastBufferReader reader;
+        private byte[] data;
+        private int validLength;
 
         public SerializedData(FastBufferReader reader)
         {
-            this.reader = reader;
+            // FastBufferReader의 ToArray()로 전체 버퍼를 관리형 배열로 가져옵니다.
+            byte[] fullData = reader.ToArray();
+
+            // 남은 데이터 길이 계산
+            int remaining = reader.Length - reader.Position;
+            validLength = remaining;
+
+            // 현재 읽기 위치부터 남은 데이터만 복사합니다.
+            data = new byte[remaining];
+            Array.Copy(fullData, reader.Position, data, 0, remaining);
         }
+
         public T Get<T>() where T : INetworkSerializable, new()
         {
-            reader.ReadNetworkSerializable(out T val);
+            using (var newReader = new FastBufferReader(data, Unity.Collections.Allocator.Temp, validLength))
+            {
+                newReader.ReadNetworkSerializable(out T val);
 
-            return val;
+                return val;
+            }
         }
     }
     public class SerializedPlayerInfo : INetworkSerializable
@@ -197,11 +212,70 @@ namespace CCGP.Shared
             AgentIndex = tile.AgentIndex;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is SerializedTile tile &&
+                   Name == tile.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name);
+        }
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref Name);
             serializer.SerializeValue(ref Space);
             serializer.SerializeValue(ref AgentIndex);
+        }
+    }
+
+    public class SerializedTiles : INetworkSerializable
+    {
+        public List<SerializedTile> Tiles;
+
+        public SerializedTiles() { }
+        public SerializedTiles(List<Tile> tiles)
+        {
+            Tiles = new();
+            foreach (var tile in tiles)
+            {
+                Tiles.Add(new SerializedTile(tile));
+            }
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            SerializeList(serializer, ref Tiles);
+        }
+
+        private void SerializeList<T>(BufferSerializer<T> serializer, ref List<SerializedTile> list) where T : IReaderWriter
+        {
+            if (serializer.IsWriter)
+            {
+                int count = list.Count;
+                serializer.SerializeValue(ref count);
+
+                foreach (var tile in list)
+                {
+                    SerializedTile sTile = tile;
+                    serializer.SerializeNetworkSerializable(ref sTile);
+                }
+            }
+            else
+            {
+                int count = 0;
+                serializer.SerializeValue(ref count);
+
+                list = new List<SerializedTile>(count); // 크기에 맞게 새 리스트 생성
+                for (int i = 0; i < count; i++)
+                {
+                    SerializedTile sTile = new SerializedTile();
+                    serializer.SerializeNetworkSerializable(ref sTile);
+                    list.Add(sTile);
+                }
+            }
         }
     }
 
@@ -216,11 +290,11 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            if(serializer.IsWriter)
+            if (serializer.IsWriter)
             {
                 int count = (Tiles != null) ? Tiles.Count : 0;
                 serializer.SerializeValue(ref count);
-                for(int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     SerializedTile tile = Tiles[i];
                     serializer.SerializeNetworkSerializable(ref tile);
@@ -232,7 +306,7 @@ namespace CCGP.Shared
                 int count = 0;
                 serializer.SerializeValue(ref count);
                 Tiles = new List<SerializedTile>(count);
-                for(int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     SerializedTile tile = new();
                     serializer.SerializeNetworkSerializable(ref tile);
@@ -310,7 +384,7 @@ namespace CCGP.Shared
             {
                 int count = (Opened != null) ? Opened.Count : 0;
                 serializer.SerializeValue(ref count);
-                for(int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     bool value = Opened[i];
                     serializer.SerializeValue(ref value);
@@ -321,7 +395,7 @@ namespace CCGP.Shared
                 int count = 0;
                 serializer.SerializeValue(ref count);
                 Opened = new List<bool>(count);
-                for(int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     bool value = false;
                     serializer.SerializeValue(ref value);

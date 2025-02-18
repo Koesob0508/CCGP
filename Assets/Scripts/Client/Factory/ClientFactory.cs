@@ -9,7 +9,6 @@ namespace CCGP.Client
         public static Client Create()
         {
             var client = new Client();
-            client.AddAspect<ClientMessageSystem>();
 
             var gameView = Object.FindFirstObjectByType<GameView>();
             var matchView = Object.FindFirstObjectByType<MatchView>();
@@ -20,7 +19,8 @@ namespace CCGP.Client
             client.AddAspect(matchView);
             client.AddAspect(boardView);
             client.AddAspect(playerView);
-            
+            client.AddAspect<ClientMessageSystem>();
+
             return client;
         }
     }

@@ -12,7 +12,8 @@ namespace CCGP.Server
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
             this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
-            this.AddObserver(OnValidateCardPlay, Global.ValidationNotification<CardPlayAction>());
+            this.AddObserver(OnTryCardPlay, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
         }
 
@@ -21,7 +22,8 @@ namespace CCGP.Server
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
             this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
-            this.RemoveObserver(OnValidateCardPlay, Global.ValidationNotification<CardPlayAction>());
+            this.RemoveObserver(OnTryCardPlay, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
             this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
         }
 
@@ -49,20 +51,61 @@ namespace CCGP.Server
             action.Cards = Draw(action.Player, action.Amount);
         }
 
+        private void OnTryCardPlay(object sender, object args)
+        {
+            LogUtility.Log<PlayerSystem>("Received OnTryCardPlay", colorName: ColorCodes.Logic);
+            var sData = args as SerializedData;
+            var sCard = sData.Get<SerializedCard>();
+
+            // sCard 정보를 이용해서 Player로부터 해당 Card를 직접 찾아내야함
+            var match = Container.GetMatch();
+            var player = match.Players[sCard.OwnerIndex];
+
+            player[sCard.Zone].TryGetCard(sCard.GUID, out var card);
+
+            var action = new CardPlayAction(player, card);
+
+            Container.Perform(action);
+        }
+
         private void OnValidateCardPlay(object sender, object args)
         {
             var action = sender as CardPlayAction;
             var validator = args as Validator;
 
-            if (action.Card.OwnerIndex != Container.GetMatch().CurrentPlayerIndex)
+            if (action.Card == null)
+            {
                 validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Card is null", colorName: ColorCodes.Red);
+                return;
+            }
+
+            if (action.Card.OwnerIndex != Container.GetMatch().CurrentPlayerIndex)
+            {
+                validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Not your turn", colorName: ColorCodes.Red);
+                return;
+            }
 
             if (action.Card.Zone != Zone.Hand)
+            {
                 validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Card is not in Hand", colorName: ColorCodes.Red);
+                return;
+            }
+
+            if (action.Card.Space == Shared.Space.None)
+            {
+                validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Card has no space", colorName: ColorCodes.Red);
+                return;
+            }
 
             if (Container.GetMatch().Players[action.Card.OwnerIndex].AgentCount == 0)
             {
                 validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Agent action count is 0", colorName: ColorCodes.Red);
+                return;
             }
         }
 
@@ -72,6 +115,9 @@ namespace CCGP.Server
 
             PayAgentCount(Container.GetMatch().Players[action.Card.OwnerIndex]);
             ChangeZone(action.Card, Zone.Agent);
+
+            action.Card.TryGetAspect(out Target target);
+            LogUtility.Log<PlayerSystem>($"Player {action.Card.OwnerIndex} played {action.Card.Name} to {target.Selected.Name}", colorName: ColorCodes.Logic);
         }
 
         private void ShuffleDeck(Player player)

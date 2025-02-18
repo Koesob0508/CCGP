@@ -20,6 +20,19 @@ namespace CCGP.Server
 
         public Zone Zone = Zone.Deck;
 
+        public Card() { }
+        public Card(SerializedCard sCard)
+        {
+            GUID = sCard.GUID;
+            OwnerIndex = sCard.OwnerIndex;
+            ID = sCard.ID;
+            Name = sCard.Name;
+            Cost = sCard.Cost;
+            Persuasion = sCard.Persuasion;
+            Space = sCard.Space;
+            Zone = sCard.Zone;
+        }
+
         public virtual void Load(Dictionary<string, object> data)
         {
             GUID = Guid.NewGuid().ToString();

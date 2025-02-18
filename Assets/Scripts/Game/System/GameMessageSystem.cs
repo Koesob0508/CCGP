@@ -2,6 +2,7 @@
 using CCGP.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Collections;
 using Unity.Netcode;
 
@@ -16,7 +17,6 @@ namespace CCGP.Server
         {
             Handlers = new();
 
-            RegisterBaseHandler();
             RegisterObserver();
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToServerGame", OnReceivedMessage);
@@ -36,21 +36,10 @@ namespace CCGP.Server
 
         private void OnReceivedMessage(ulong clientID, FastBufferReader reader)
         {
-            reader.ReadValueSafe(out ushort gameCommand);
+            reader.ReadValueSafe(out ushort command);
             SerializedData sdata = new SerializedData(reader);
-
-            if (Handlers.TryGetValue(gameCommand, out var handler))
-            {
-                handler(clientID, sdata);
-            }
-            else
-            {
-                LogUtility.LogWarning<GameMessageSystem>($"Unknown command received : {gameCommand}");
-            }
-        }
-
-        private void RegisterBaseHandler()
-        {
+            LogUtility.Log<GameMessageSystem>($"On received {(GameCommand)command}", colorName: ColorCodes.Server);
+            Container.PostNotification(Global.MessageNotification((GameCommand)command), sdata);
         }
 
         private void RegisterObserver()
@@ -58,11 +47,14 @@ namespace CCGP.Server
             this.AddObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnStartRound, Global.PerformNotification<RoundStartAction>(), Container);
             this.AddObserver(OnDrawCards, Global.PerformNotification<CardsDrawAction>(), Container);
+            this.AddObserver(OnPlayCard, Global.PerformNotification<CardPlayAction>(), Container);
+            this.AddObserver(OnCancelPlayCard, Global.CancelNotification<CardPlayAction>(), Container);
+            this.AddObserver(OnShowAvailableTiles, Global.MessageNotification(GameCommand.ShowAvailableTiles), Container);
         }
 
         private void OnStartGame(object sender, object args)
         {
-            LogUtility.Log<GameMessageSystem>("OnGameStart Send", colorName: ColorCodes.Server);
+            LogUtility.Log<GameMessageSystem>("Send Game Start", colorName: ColorCodes.Server);
             var match = Container.GetMatch();
 
             foreach (var playerInfo in Game.PlayerInfos)
@@ -74,11 +66,11 @@ namespace CCGP.Server
 
         private void OnStartRound(object sender, object args)
         {
-            LogUtility.Log<GameMessageSystem>("OnRoundStart Send", colorName: ColorCodes.Server);
+            LogUtility.Log<GameMessageSystem>("Send Round Start", colorName: ColorCodes.Server);
 
             var match = Container.GetMatch();
 
-            foreach(var playerInfo in Game.PlayerInfos)
+            foreach (var playerInfo in Game.PlayerInfos)
             {
                 var sMatch = new SerializedMatch(playerInfo.ClientID, match);
                 Send((ushort)GameCommand.StartRound, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
@@ -87,7 +79,7 @@ namespace CCGP.Server
 
         private void OnDrawCards(object sender, object args)
         {
-            LogUtility.Log<GameMessageSystem>("OnCardDraw Send", colorName: ColorCodes.Server);
+            LogUtility.Log<GameMessageSystem>("Send Card Draw", colorName: ColorCodes.Server);
 
             var action = args as CardsDrawAction;
             var sAction = new SerializedCardsDrawAction(action);
@@ -96,6 +88,52 @@ namespace CCGP.Server
             {
                 Send((ushort)GameCommand.DrawCards, playerInfo.ClientID, sAction, NetworkDelivery.ReliableFragmentedSequenced);
             }
+        }
+
+        private void OnShowAvailableTiles(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Show Available Tiles", colorName: ColorCodes.Server);
+
+            var tiles = args as List<Tile>;
+            var sTiles = new SerializedTiles(tiles);
+            Container.TryGetAspect<ActionSystem>(out var actionSystem);
+            if (actionSystem == null)
+            {
+                LogUtility.Log("ActionSystem is null");
+            }
+            else if (actionSystem.CurrentAction == null)
+            {
+                LogUtility.Log("CurrentAction is null");
+            }
+            else if (actionSystem.CurrentAction.Player == null)
+            {
+                LogUtility.Log($"{actionSystem.CurrentAction.GetType().Name}");
+                LogUtility.Log("CurrentAction.Player is null");
+            }
+
+            var targetID = actionSystem.CurrentAction.Player.ID;
+
+            Send((ushort)GameCommand.ShowAvailableTiles, targetID, sTiles, NetworkDelivery.ReliableFragmentedSequenced);
+        }
+
+        private void OnPlayCard(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Play Card", colorName: ColorCodes.Server);
+
+            var action = args as CardPlayAction;
+            var sCard = new SerializedCard(action.Card);
+
+            Send((ushort)GameCommand.PlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+        }
+
+        private void OnCancelPlayCard(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Cancel Play Card", colorName: ColorCodes.Server);
+
+            var action = args as CardPlayAction;
+            var sCard = new SerializedCard(action.Card);
+
+            Send((ushort)GameCommand.CancelPlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
         #region Send Utilities

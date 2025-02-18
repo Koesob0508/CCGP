@@ -3,6 +3,9 @@ using CCGP.Shared;
 
 namespace CCGP.Server
 {
+    /// <summary>
+    ///     
+    /// </summary>
     public class GameAction
     {
         public readonly int ID;

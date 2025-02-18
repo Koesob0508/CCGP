@@ -5,7 +5,7 @@ namespace CCGP.Client
 {
     public class MatchView : BaseView
     {
-        public MatchViewModel Data { get; private set; }
+        public SerializedMatch Data { get; private set; }
 
         public override void Activate()
         {
@@ -24,8 +24,7 @@ namespace CCGP.Client
 
             if(sData != null)
             {
-                var sMatch = sData.Get<SerializedMatch>();
-                Data = new MatchViewModel(sMatch);
+                Data = sData.Get<SerializedMatch>();
             }
         }
 
@@ -35,8 +34,7 @@ namespace CCGP.Client
 
             if(sData != null)
             {
-                var sMatch = sData.Get<SerializedMatch>();
-                Data = new MatchViewModel(sMatch);
+                Data = sData.Get<SerializedMatch>();
             }
         }
     }

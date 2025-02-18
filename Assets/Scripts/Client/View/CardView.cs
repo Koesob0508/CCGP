@@ -8,18 +8,17 @@ namespace CCGP.Client
 {
     public class CardView : MonoBehaviour, IFSMHandler
     {
+        public SerializedCard Data { get; private set; }
+
         public TMP_Text Text_Name;
         public TMP_Text Text_Cost;
         public TMP_Text Text_Persuasion;
         public GameObject Root_Space;
         public GameObject Prefab_SpaceIcon;
-        public List<Sprite> Sprite_Icons;
         public GameObject HoverImage;
-
+        public List<Sprite> Sprite_Icons;
 
         public float HoverHeight = 20f;
-
-        public bool IsMyTurn;
 
         public Transform Transform { get; private set; }
         public Collider2D Collider { get; private set; }
@@ -45,55 +44,67 @@ namespace CCGP.Client
 
         #endregion
 
-        public void Enable() => FSM.PushState<CardViewIdle>();
-
-        public void Refresh(CardViewModel vm)
+        public void Enable()
         {
-            Text_Name.text = vm.Name;
-            Text_Cost.text = vm.Cost.ToString();
-            Text_Persuasion.text = vm.Persuasion.ToString();
+            FSM.PushState<CardViewIdle>();
+        }
 
-            if(vm.Space.Contains(Shared.Space.Yellow))
+        public void Refresh(SerializedCard card)
+        {
+            Data = card;
+
+            gameObject.name = $"{card.Name}-{card.GUID.Substring(0, 4)}";
+
+            Text_Name.text = card.Name;
+            Text_Cost.text = card.Cost.ToString();
+            Text_Persuasion.text = card.Persuasion.ToString();
+
+            SetSpace();
+        }
+
+        public void Draw() => FSM.PushState<CardViewDraw>();
+
+        private void SetSpace()
+        {
+            if (Data.Space.Contains(Shared.Space.Yellow))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[6];
             }
 
-            if (vm.Space.Contains(Shared.Space.Green))
+            if (Data.Space.Contains(Shared.Space.Green))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[5];
             }
 
-            if (vm.Space.Contains(Shared.Space.Blue))
+            if (Data.Space.Contains(Shared.Space.Blue))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[4];
             }
 
-            if (vm.Space.Contains(Shared.Space.Emperor))
+            if (Data.Space.Contains(Shared.Space.Emperor))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[3];
             }
 
-            if (vm.Space.Contains(Shared.Space.SpacingGuild))
+            if (Data.Space.Contains(Shared.Space.SpacingGuild))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[2];
             }
-            if (vm.Space.Contains(Shared.Space.BeneGesserit))
+            if (Data.Space.Contains(Shared.Space.BeneGesserit))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[1];
             }
-            if (vm.Space.Contains(Shared.Space.Fremen))
+            if (Data.Space.Contains(Shared.Space.Fremen))
             {
                 var icon = Instantiate(Prefab_SpaceIcon, Root_Space.transform);
                 icon.GetComponent<Image>().sprite = Sprite_Icons[0];
             }
         }
-
-        public void Draw() => FSM.PushState<CardViewDraw>();
     }
 }

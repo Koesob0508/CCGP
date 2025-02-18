@@ -13,11 +13,11 @@ namespace CCGP.Client
         #endregion
 
         #region Unity Callbacks
-        private void Awake()
-        {
-            if (Camera.main.GetComponent<Physics2DRaycaster>() == null)
-                throw new Exception(GetType() + " needs an " + typeof(Physics2DRaycaster) + " on the MainCamera");
-        }
+        //private void Awake()
+        //{
+        //    if (Camera.main.GetComponent<Physics2DRaycaster>() == null)
+        //        throw new Exception(GetType() + " needs an " + typeof(Physics2DRaycaster) + " on the MainCamera");
+        //}
         #endregion
 
         #region IMouseInput

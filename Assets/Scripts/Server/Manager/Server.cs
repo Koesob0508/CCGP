@@ -1,9 +1,9 @@
-﻿using CCGP.AspectContainer;
+﻿using ACode.UGS;
+using CCGP.AspectContainer;
 using CCGP.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 
 namespace CCGP.Server
@@ -49,41 +49,33 @@ namespace CCGP.Server
         private async void RegisterHost()
         {
             LogUtility.Log<Server>("Register this server : Host", ColorCodes.Server);
-
-            try
+            Lobby lobby = await ALobbyService.GetCurrentLobbyAsync();
+            if (lobby != null)
             {
-                Lobby lobby = await LobbyUtility.GetCurrentLobbyAsync();
-                if (lobby != null)
+                LogUtility.Log<Server>($"로비 등록 완료. 현재 속한 로비 : {lobby.Name}, 참가자 숫자 : {lobby.Players.Count}", ColorCodes.Server);
+                foreach (var player in lobby.Players)
                 {
-                    LogUtility.Log<Server>($"로비 등록 완료. 현재 속한 로비 : {lobby.Name}, 참가자 숫자 : {lobby.Players.Count}", ColorCodes.Server);
-                    foreach(var player in lobby.Players)
-                    {
-                        attendances.Add(player.Id, false);
-                    }
-
-                    // CustomMessage Awake
-                    NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToHost", OnReceivedMessage);
-
-                    // Host에게 Player 정보 보내기
-                    var lobbyID = AuthenticationService.Instance.PlayerId;
-                    var clientID = NetworkManager.Singleton.LocalClientId;
-                    var playerInfo = PlayerInfo.CreatePlayerInfo(lobbyID, clientID);
-                    var sPlayerInfo = new SerializedPlayerInfo(playerInfo);
-
-                    using (var writer = new FastBufferWriter(128, Unity.Collections.Allocator.Temp))
-                    {
-                        writer.WriteNetworkSerializable(sPlayerInfo);
-                        NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage("ToHost", NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableSequenced);
-                    }
+                    attendances.Add(player.Id, false);
                 }
-                else
+
+                // CustomMessage Awake
+                NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToHost", OnReceivedMessage);
+
+                // Host에게 Player 정보 보내기
+                var authID = AAuthenticationService.PlayerID;
+                var clientID = NetworkManager.Singleton.LocalClientId;
+                var playerInfo = PlayerInfo.CreatePlayerInfo(authID, clientID);
+                var sPlayerInfo = new SerializedPlayerInfo(playerInfo);
+
+                using (var writer = new FastBufferWriter(128, Unity.Collections.Allocator.Temp))
                 {
-                    LogUtility.Log<Server>("현재 참가한 로비가 없습니다.", ColorCodes.Server);
+                    writer.WriteNetworkSerializable(sPlayerInfo);
+                    NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage("ToHost", NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableSequenced);
                 }
             }
-            catch (System.Exception e)
+            else
             {
-                LogUtility.LogError($"현재 로비 정보를 가져오는 중 오류 발생 : {e.Message}", ColorCodes.Server);
+                LogUtility.Log<Server>("현재 참가한 로비가 없습니다.", ColorCodes.Server);
             }
         }
 
@@ -92,7 +84,7 @@ namespace CCGP.Server
             LogUtility.Log<Server>("Register this server : Client", ColorCodes.Server);
 
             // Host에게 Player 정보 보내기
-            var lobbyID = AuthenticationService.Instance.PlayerId;
+            var lobbyID = AAuthenticationService.PlayerID;
             var clientID = NetworkManager.Singleton.LocalClientId;
             var playerInfo = PlayerInfo.CreatePlayerInfo(lobbyID, clientID);
             var sPlayerInfo = new SerializedPlayerInfo(playerInfo);
@@ -109,12 +101,13 @@ namespace CCGP.Server
             var sData = new SerializedData(reader);
             var sPlayerInfo = sData.Get<SerializedPlayerInfo>();
 
+
             LogUtility.Log<Server>($"ToHost 메시지 수신\n- Lobby ID {sPlayerInfo.LobbyID}\n- Client ID {sPlayerInfo.ClientID}", ColorCodes.Server);
 
             playerInfos.Add(sPlayerInfo.LobbyID, PlayerInfo.CreatePlayerInfo(sPlayerInfo.LobbyID, sPlayerInfo.ClientID));
             attendances[sPlayerInfo.LobbyID] = true;
 
-            if(CheckAttendance())
+            if (CheckAttendance())
             {
                 LogUtility.Log<Server>("모든 참가자 접속 완료. 게임 시작", ColorCodes.Server);
                 TryGetAspect<Game>(out var game);
@@ -132,7 +125,7 @@ namespace CCGP.Server
 
         private bool CheckAttendance()
         {
-            if(attendances.Values.Contains(false))
+            if (attendances.Values.Contains(false))
             {
                 return false;
             }
