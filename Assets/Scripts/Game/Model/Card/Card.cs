@@ -49,7 +49,7 @@ namespace CCGP.Server
 
             foreach (var space in spaces)
             {
-                if(Enum.TryParse<Space>(space.ToString(), out var parsed))
+                if (Enum.TryParse<Space>(space.ToString(), out var parsed))
                 {
                     Space |= parsed;
                 }

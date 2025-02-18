@@ -14,16 +14,17 @@ namespace CCGP.Client
 
         public override void Activate()
         {
-            this.AddObserver(OnStartRound, Global.MessageNotification(GameCommand.StartRound), Container);
+            this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
             this.AddObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
         }
 
         public override void Deactivate()
         {
-            this.RemoveObserver(OnStartRound, Global.MessageNotification(GameCommand.StartRound), Container);
+            this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.RemoveObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
         }
 
-        private void OnStartRound(object sender, object args)
+        private void OnStartGame(object sender, object args)
         {
             Data = new();
 
@@ -40,7 +41,9 @@ namespace CCGP.Client
             var sData = args as SerializedData;
             var sAction = sData.Get<SerializedCardsDrawAction>();
 
-            if (sAction.Player.ID == NetworkManager.Singleton.LocalClientId)
+            LogUtility.Log<PlayerView>($"{sAction.Player.ClientID}", colorName: ColorCodes.ClientSequencer);
+
+            if (sAction.Player.ClientID == NetworkManager.Singleton.LocalClientId)
             {
                 foreach (var card in sAction.Cards)
                 {

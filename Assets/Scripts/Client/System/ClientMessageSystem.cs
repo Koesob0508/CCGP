@@ -17,12 +17,16 @@ namespace CCGP.Client
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToClientGame", OnReceivedMessage);
             this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
-            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
+            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
+            this.AddObserver(OnTryEndTurn, ClientDialect.EndTurn);
         }
 
         public void Deactivate()
         {
-
+            NetworkManager.Singleton.CustomMessagingManager.UnregisterNamedMessageHandler("ToClientGame");
+            this.RemoveObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
+            this.AddObserver(OnTryEndTurn, ClientDialect.EndTurn);
         }
 
         public void RegisterHandler(ushort type, Action<ulong, SerializedData> callback)
@@ -51,14 +55,21 @@ namespace CCGP.Client
         {
             LogUtility.Log<ClientMessageSystem>($"Send SelectTile", colorName: ColorCodes.Client);
             var data = args as SerializedTile;
-            SendToHost((ushort)GameCommand.SelectTile, data);
+            SendToHost((ushort)GameCommand.TrySelectTile, data);
+        }
+
+        private void OnTryEndTurn(object sender, object args)
+        {
+            LogUtility.Log<ClientMessageSystem>($"Send TryEndTurn", colorName: ColorCodes.Client);
+            var data = args as SerializedTurnEndAction;
+            SendToHost((ushort)GameCommand.TryEndTurn, data);
         }
 
         #endregion
 
         #region Send Utilities
 
-        private void SendToHost(ushort tag, INetworkSerializable data = null, NetworkDelivery delivery = NetworkDelivery.ReliableSequenced)
+        private void SendToHost(ushort tag, INetworkSerializable data = null, NetworkDelivery delivery = NetworkDelivery.ReliableFragmentedSequenced)
         {
             using (var writer = new FastBufferWriter(128, Allocator.Temp, 1024 * 1024))
             {

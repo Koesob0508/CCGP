@@ -8,10 +8,12 @@ namespace CCGP.Server
         public const int InitialDeck = 10;
         public const int InitialHand = 5;
         public const int InitialAgentCount = 2;
+        public const int InitialTurnActionCount = 1;
 
         public ulong ID;
         public readonly int Index;
         public uint AgentCount;
+        public uint TurnActionCount;
 
         public PlayerInfo PlayerInfo;
 
@@ -28,6 +30,7 @@ namespace CCGP.Server
             Index = index;
             PlayerInfo = playerInfo;
             AgentCount = InitialAgentCount;
+            TurnActionCount = InitialTurnActionCount;
         }
 
         public List<Card> this[Zone z]

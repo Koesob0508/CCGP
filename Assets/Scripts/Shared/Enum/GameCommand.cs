@@ -7,6 +7,10 @@
         StartGame = 1000,
         StartRound = 1100,
         StartTurn = 1200,
+        EndTurn = 1300,
+        EndRound = 1400,
+        EndGame = 1500,
+
         DrawCards = 1210,
         ShowAvailableTiles = 1220,
         PlayCard = 1231,
@@ -14,6 +18,7 @@
 
         // Client to Server
         TryPlayCard = 5000,
-        SelectTile = 5100,
+        TrySelectTile = 5100,
+        TryEndTurn = 5200,
     }
 }

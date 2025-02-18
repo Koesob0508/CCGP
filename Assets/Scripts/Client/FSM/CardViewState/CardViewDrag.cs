@@ -34,7 +34,7 @@ namespace CCGP.Client
         private void OnEndDrag(PointerEventData eventData)
         {
             // Cancel을 내야하는데
-            this.PostNotification(Global.MessageNotification(GameCommand.SelectTile), new SerializedTile() { Name = "NULL", Space = Space.None, AgentIndex = -1 });
+            this.PostNotification(Global.MessageNotification(GameCommand.TrySelectTile), new SerializedTile() { Name = "NULL", Space = Space.None, AgentIndex = -1 });
             FSM.PopState();
         }
 

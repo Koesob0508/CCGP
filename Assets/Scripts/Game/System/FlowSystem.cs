@@ -5,6 +5,30 @@ namespace CCGP.Server
 {
     public class FlowSystem : Aspect, IActivatable
     {
+        public void Activate()
+        {
+            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
+            this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+            this.AddObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
+            this.AddObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
+            this.AddObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
+
+            this.AddObserver(OnTryEndTurn, Global.MessageNotification(GameCommand.TryEndTurn), Container);
+        }
+
+        public void Deactivate()
+        {
+            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
+            this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
+            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+            this.RemoveObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
+            this.RemoveObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
+            this.RemoveObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
+
+            this.RemoveObserver(OnTryEndTurn, Global.MessageNotification(GameCommand.TryEndTurn), Container);
+        }
+
         public void StartGame()
         {
             var action = new GameStartAction();
@@ -47,26 +71,6 @@ namespace CCGP.Server
             //Entity.Perform(action);
         }
 
-        public void Activate()
-        {
-            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
-            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
-            this.AddObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
-            this.AddObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
-            this.AddObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
-        }
-
-        public void Deactivate()
-        {
-            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
-            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
-            this.RemoveObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
-            this.RemoveObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
-            this.RemoveObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
-        }
-
         public void OnPerformGameStart(object sender, object args)
         {
             LogUtility.Log<FlowSystem>("게임 시작");
@@ -99,7 +103,7 @@ namespace CCGP.Server
         public void OnPerformTurnStart(object sender, object args)
         {
             var action = args as TurnStartAction;
-            
+
             LogUtility.Log<FlowSystem>($"{action.TargetPlayerIndex}번째 플레이어 턴 시작");
 
             var match = Container.GetMatch();
@@ -113,7 +117,18 @@ namespace CCGP.Server
 
             LogUtility.Log<FlowSystem>($"{action.TargetPlayerIndex}번째 플레이어 턴 종료");
 
-            if (match.Opened.Contains(false))
+            // 임시 라운드 종료 조건
+            var roundEnd = true;
+            foreach (var player in match.Players)
+            {
+                if (player.AgentCount > 0)
+                {
+                    roundEnd = false;
+                }
+            }
+
+            // if (match.Opened.Contains(false))
+            if (!roundEnd)
             {
                 var turnStartAction = new TurnStartAction(action.NextPlayerIndex);
                 Container.AddReaction(turnStartAction);
@@ -123,6 +138,16 @@ namespace CCGP.Server
                 var roundEndAction = new RoundEndAction();
                 Container.AddReaction(roundEndAction);
             }
+        }
+
+        private void OnTryEndTurn(object sender, object args)
+        {
+            LogUtility.Log<FlowSystem>("Received OnTryEndTurn", colorName: ColorCodes.Logic);
+
+            var sData = args as SerializedData;
+            var sAction = sData.Get<SerializedTurnEndAction>();
+
+            EndTurn(sAction.Player.Index);
         }
     }
 }

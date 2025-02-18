@@ -97,10 +97,11 @@ namespace CCGP.Shared
 
     public class SerializedPlayer : INetworkSerializable
     {
-        public ulong ID;
+        public ulong ClientID;
         public int Index;
         public string LobbyID;
         public uint AgentCount;
+        public uint TurnActionCount;
         public List<SerializedCard> Leader;
         public List<SerializedCard> Deck;
         public List<SerializedCard> Hand;
@@ -112,10 +113,11 @@ namespace CCGP.Shared
 
         public SerializedPlayer(Player player)
         {
-            ID = player.ID;
+            ClientID = player.ID;
             Index = player.Index;
             LobbyID = player.PlayerInfo.LobbyID;
             AgentCount = player.AgentCount;
+            TurnActionCount = player.TurnActionCount;
 
             Leader = new();
             foreach (var card in player[Zone.Leader])
@@ -156,10 +158,11 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeValue(ref ID);
+            serializer.SerializeValue(ref ClientID);
             serializer.SerializeValue(ref Index);
             serializer.SerializeValue(ref LobbyID);
             serializer.SerializeValue(ref AgentCount);
+            serializer.SerializeValue(ref TurnActionCount);
 
             SerializeList(serializer, ref Leader);
             SerializeList(serializer, ref Deck);

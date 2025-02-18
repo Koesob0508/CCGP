@@ -10,12 +10,12 @@ namespace CCGP.Server
         public void Activate()
         {
             this.AddObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
-            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
+            this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.SelectTile));
+            this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
             this.RemoveObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
         }
 

@@ -9,15 +9,15 @@ namespace CCGP.Client
 
         public override void Activate()
         {
-            this.AddObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
         }
 
         public override void Deactivate()
         {
-            this.RemoveObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
         }
 
-        private void OnGameStart(object sender, object args)
+        private void OnStartGame(object sender, object args)
         {
             GamePanel.SetActive(true);
         }

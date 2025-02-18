@@ -86,7 +86,7 @@ namespace CCGP.Tests.Unit
                     reader.ReadNetworkSerializable(out desPlayer);
 
                     // 4. 검증
-                    Assert.AreEqual(originalPlayer.ID, desPlayer.ID);
+                    Assert.AreEqual(originalPlayer.ID, desPlayer.ClientID);
                     Assert.AreEqual(originalPlayer.Index, desPlayer.Index);
                     Assert.AreEqual(originalPlayer[Zone.Deck].Count, desPlayer.Deck.Count);
                     Assert.AreEqual(originalPlayer[Zone.Hand].Count, desPlayer.Hand.Count);
@@ -140,7 +140,7 @@ namespace CCGP.Tests.Unit
                     // 검증: Match의 기본 필드들
                     Assert.AreEqual(originalMatch.FirstPlayerIndex, desMatch.FirstPlayerIndex);
                     Assert.AreEqual(originalMatch.CurrentPlayerIndex, desMatch.CurrentPlayerIndex);
-                    Assert.AreEqual(originalMatch.Players[0].ID, desMatch.Players[0].ID);
+                    Assert.AreEqual(originalMatch.Players[0].ID, desMatch.Players[0].ClientID);
                     Assert.AreEqual(originalMatch.Players[originalMatch.Players.Count - 1][Zone.Deck].Count,
                                     desMatch.Players[desMatch.Players.Count - 1].Deck.Count);
                     Assert.AreEqual(originalMatch.Opened, desMatch.Opened);

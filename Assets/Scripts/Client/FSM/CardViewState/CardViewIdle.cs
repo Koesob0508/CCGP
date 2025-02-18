@@ -71,7 +71,7 @@ namespace CCGP.Client
             var sData = args as SerializedData;
             var sCard = sData.Get<SerializedCard>();
 
-            if (Handler.Data.ID == sCard.ID)
+            if (Handler.Data.GUID == sCard.GUID)
             {
                 Handler.gameObject.SetActive(false);
             }

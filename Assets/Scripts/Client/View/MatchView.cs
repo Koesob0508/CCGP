@@ -1,5 +1,4 @@
 ﻿using CCGP.Shared;
-using UnityEngine;
 
 namespace CCGP.Client
 {
@@ -9,30 +8,31 @@ namespace CCGP.Client
 
         public override void Activate()
         {
-            this.AddObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), Container);
-            this.AddObserver(OnRoundStart, Global.MessageNotification(GameCommand.StartRound), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartRound), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartTurn), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndTurn), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndRound), Container);
+            this.AddObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndGame), Container);
         }
 
         public override void Deactivate()
         {
-            this.RemoveObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartRound), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.StartTurn), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndTurn), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndRound), Container);
+            this.RemoveObserver(OnUpdateMatch, Global.MessageNotification(GameCommand.EndGame), Container);
         }
 
-        private void OnGameStart(object sender, object args)
+        private void OnUpdateMatch(object sender, object args)
         {
+            LogUtility.Log<MatchView>("Update Match", colorName: ColorCodes.Client);
+
             var sData = args as SerializedData;
 
-            if(sData != null)
-            {
-                Data = sData.Get<SerializedMatch>();
-            }
-        }
-
-        private void OnRoundStart(object sender, object args)
-        {
-            var sData = args as SerializedData;
-
-            if(sData != null)
+            if (sData != null)
             {
                 Data = sData.Get<SerializedMatch>();
             }

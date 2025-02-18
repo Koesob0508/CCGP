@@ -46,9 +46,15 @@ namespace CCGP.Server
         {
             this.AddObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnStartRound, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnStartTurn, Global.PerformNotification<TurnStartAction>(), Container);
+            this.AddObserver(OnEndTurn, Global.PerformNotification<TurnEndAction>(), Container);
+            this.AddObserver(OnEndRound, Global.PerformNotification<RoundEndAction>(), Container);
+            this.AddObserver(OnEndGame, Global.PerformNotification<GameEndAction>(), Container);
+
             this.AddObserver(OnDrawCards, Global.PerformNotification<CardsDrawAction>(), Container);
             this.AddObserver(OnPlayCard, Global.PerformNotification<CardPlayAction>(), Container);
             this.AddObserver(OnCancelPlayCard, Global.CancelNotification<CardPlayAction>(), Container);
+
             this.AddObserver(OnShowAvailableTiles, Global.MessageNotification(GameCommand.ShowAvailableTiles), Container);
         }
 
@@ -77,15 +83,68 @@ namespace CCGP.Server
             }
         }
 
+        private void OnStartTurn(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Turn Start", colorName: ColorCodes.Server);
+
+            var match = Container.GetMatch();
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send((ushort)GameCommand.StartTurn, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnEndTurn(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Turn End", colorName: ColorCodes.Server);
+
+            var match = Container.GetMatch();
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send((ushort)GameCommand.EndTurn, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnEndRound(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Round End", colorName: ColorCodes.Logic);
+
+            var match = Container.GetMatch();
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send((ushort)GameCommand.EndRound, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnEndGame(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Game End", colorName: ColorCodes.Logic);
+
+            var match = Container.GetMatch();
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                var sMatch = new SerializedMatch(playerInfo.ClientID, match);
+                Send((ushort)GameCommand.EndGame, playerInfo.ClientID, sMatch, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
         private void OnDrawCards(object sender, object args)
         {
-            LogUtility.Log<GameMessageSystem>("Send Card Draw", colorName: ColorCodes.Server);
+            LogUtility.Log<GameMessageSystem>("Send Card Draw", colorName: ColorCodes.Logic);
 
             var action = args as CardsDrawAction;
             var sAction = new SerializedCardsDrawAction(action);
 
             foreach (var playerInfo in Game.PlayerInfos)
             {
+                LogUtility.Log<GameMessageSystem>($"{playerInfo.ClientID}", colorName: ColorCodes.Logic);
                 Send((ushort)GameCommand.DrawCards, playerInfo.ClientID, sAction, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }

@@ -58,4 +58,27 @@ namespace CCGP.Shared
             }
         }
     }
+
+    public class SerializedTurnEndAction : INetworkSerializable
+    {
+        public SerializedPlayer Player;
+        public int TargetPlayerIndex;
+        public int NextPlayerIndex;
+
+        public SerializedTurnEndAction() { }
+
+        public SerializedTurnEndAction(TurnEndAction action)
+        {
+            Player = new SerializedPlayer(action.Player);
+            TargetPlayerIndex = action.TargetPlayerIndex;
+            NextPlayerIndex = action.NextPlayerIndex;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeNetworkSerializable(ref Player);
+            serializer.SerializeValue(ref TargetPlayerIndex);
+            serializer.SerializeValue(ref NextPlayerIndex);
+        }
+    }
 }

@@ -11,10 +11,13 @@ namespace CCGP.Server
         {
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+
             this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
-            this.AddObserver(OnTryCardPlay, Global.MessageNotification(GameCommand.TryPlayCard), Container);
             this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
+
+            this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
         }
 
         public void Deactivate()
@@ -22,7 +25,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
             this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
-            this.RemoveObserver(OnTryCardPlay, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.RemoveObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
             this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
             this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
         }
@@ -39,9 +42,16 @@ namespace CCGP.Server
         {
             foreach (var player in Container.GetMatch().Players)
             {
+                // TurnCount랑 AgentCount 회복 필요
                 var action = new CardsDrawAction(player, Player.InitialHand);
                 Container.AddReaction(action);
             }
+        }
+
+        private void OnPerformTurnStart(object sender, object args)
+        {
+            var action = args as TurnStartAction;
+            RestoreTurnActionCount(Container.GetMatch().Players[action.TargetPlayerIndex]);
         }
 
         private void OnPerformCardsDraw(object sender, object args)
@@ -51,7 +61,7 @@ namespace CCGP.Server
             action.Cards = Draw(action.Player, action.Amount);
         }
 
-        private void OnTryCardPlay(object sender, object args)
+        private void OnTryPlayCard(object sender, object args)
         {
             LogUtility.Log<PlayerSystem>("Received OnTryCardPlay", colorName: ColorCodes.Logic);
             var sData = args as SerializedData;
@@ -99,6 +109,12 @@ namespace CCGP.Server
                 validator.Invalidate();
                 LogUtility.LogWarning<PlayerSystem>("Card has no space", colorName: ColorCodes.Red);
                 return;
+            }
+
+            if (Container.GetMatch().Players[action.Card.OwnerIndex].TurnActionCount == 0)
+            {
+                validator.Invalidate();
+                LogUtility.LogWarning<PlayerSystem>("Turn action count is 0", colorName: ColorCodes.Red);
             }
 
             if (Container.GetMatch().Players[action.Card.OwnerIndex].AgentCount == 0)
@@ -170,13 +186,25 @@ namespace CCGP.Server
 
         private void PayAgentCount(Player player)
         {
+            if (player.TurnActionCount == 0)
+            {
+                LogUtility.LogWarning<PlayerSystem>("Turn action count가 0입니다.");
+                return;
+            }
+
             if (player.AgentCount == 0)
             {
                 LogUtility.LogWarning<PlayerSystem>("Agent Count가 0입니다.");
                 return;
             }
 
+            player.TurnActionCount--;
             player.AgentCount--;
+        }
+
+        private void RestoreTurnActionCount(Player player)
+        {
+            player.TurnActionCount = Player.InitialTurnActionCount;
         }
 
         private void ChangeZone(Card card, Zone zone, Player toPlayer = null)
