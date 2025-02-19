@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
@@ -14,78 +13,95 @@ namespace ACode.UGS
     {
         public static async Task<string> StartHostWithRelay(int maxConnection = 4)
         {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnection);
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            try
+            {
+                Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnection);
+                var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_WEBGL
-            transport.UseWebSockets = true;
+                transport.UseWebSockets = true;
 #endif
-            RelayServerData serverData;
+                RelayServerData serverData;
 
-            if (transport.UseWebSockets)
-            {
-                serverData = AllocationUtils.ToRelayServerData(allocation, "wss");
-            }
-            else
-            {
-                serverData = AllocationUtils.ToRelayServerData(allocation, "udp");
-            }
-
-            transport.SetRelayServerData(serverData);
-
-            Task<string> joinTask = RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-
-            var joinCode = await joinTask;
-            var success = false;
-
-            if (joinTask.IsCompletedSuccessfully)
-            {
-                success = NetworkManager.Singleton.StartHost();
-                if (success)
+                if (transport.UseWebSockets)
                 {
-                    Debug.Log("Start Host with Relay");
+                    serverData = AllocationUtils.ToRelayServerData(allocation, "wss");
                 }
                 else
                 {
-                    Debug.Log("Start Host Failed");
+                    serverData = AllocationUtils.ToRelayServerData(allocation, "udp");
+                }
+
+                transport.SetRelayServerData(serverData);
+
+                // GetJoinCodeAsync 호출
+                Task<string> joinTask = RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+                var joinCode = await joinTask;
+
+                if (joinTask.IsCompletedSuccessfully)
+                {
+                    bool success = NetworkManager.Singleton.StartHost();
+                    if (success)
+                    {
+                        Debug.Log("Start Host with Relay");
+                        return joinCode;
+                    }
+                    else
+                    {
+                        Debug.Log("Start Host Failed");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Debug.Log("Get Join Code Failed");
+                    return null;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Debug.Log("Get Join Code Failed");
+                Debug.LogError($"StartHostWithRelay encountered an exception: {ex.Message}");
+                return null;
             }
-
-            return success ? joinCode : null;
         }
 
         public static async Task<bool> StartClientWithRelay(string joinCode)
         {
-            var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            try
+            {
+                var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
+                var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
 #if UNITY_WEBGL
-            var serverData = AllocationUtils.ToRelayServerData(joinAllocation, "wss");
+                var serverData = AllocationUtils.ToRelayServerData(joinAllocation, "wss");
 #else
-            var serverData = AllocationUtils.ToRelayServerData(joinAllocation, "udp");
+                var serverData = AllocationUtils.ToRelayServerData(joinAllocation, "udp");
 #endif
 
-            transport.SetRelayServerData(serverData);
+                transport.SetRelayServerData(serverData);
 
 #if UNITY_WEBGL
-            transport.UseWebSockets = true;
+                transport.UseWebSockets = true;
 #endif
 
-            var success = NetworkManager.Singleton.StartClient();
+                bool success = NetworkManager.Singleton.StartClient();
 
-            if (success)
-            {
-                Debug.Log("Relay Start Client");
-            }
-            else
-            {
-                Debug.Log("Start Client Failed");
-            }
+                if (success)
+                {
+                    Debug.Log("Relay Start Client");
+                }
+                else
+                {
+                    Debug.Log("Start Client Failed");
+                }
 
-            return !string.IsNullOrEmpty(joinCode) && success;
+                return !string.IsNullOrEmpty(joinCode) && success;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"StartClientWithRelay encountered an exception: {ex.Message}");
+                return false;
+            }
         }
     }
 }

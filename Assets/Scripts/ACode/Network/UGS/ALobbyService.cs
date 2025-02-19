@@ -88,6 +88,7 @@ namespace ACode.UGS
                 return lobby;
             }
         }
+        
         public static async Task<QueryResponse> QueryLobbiesAsync()
         {
             QueryResponse response = null;
@@ -105,8 +106,6 @@ namespace ACode.UGS
                 return response;
             }
         }
-
-
 
         public static async Task<Lobby> CreateLobbyAsync(string lobbyName, int maxPlayers)
         {
