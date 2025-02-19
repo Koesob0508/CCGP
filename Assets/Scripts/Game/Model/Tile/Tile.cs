@@ -1,5 +1,6 @@
 ﻿using CCGP.AspectContainer;
 using CCGP.Shared;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,57 @@ namespace CCGP.Server
             var strSpace = (string)data["Space"];
             Enum.TryParse<Space>(strSpace.ToString(), out var result);
             Space = result;
+            if (data.TryGetValue("Cost", out object costObject))
+            {
+                // value를 Dictionary<string, object>로 캐스팅 시도
+                if (costObject is Dictionary<string, object> dictObj)
+                {
+                    // Dictionary<string, object>의 각 값을 문자열로 변환하여 새 Dictionary<string, string>으로 만듭니다.
+                    var dict = new Dictionary<string, string>();
+                    foreach (var kvp in dictObj)
+                    {
+                        dict[kvp.Key] = kvp.Value?.ToString();
+                    }
+
+                    // ResourceType 문자열을 enum으로 변환
+                    if (Enum.TryParse<ResourceType>(dict["ResourceType"], out var costType))
+                    {
+                        var cost = AddAspect<Cost>();
+                        cost.Type = costType;
+                        // Amount를 uint로 변환
+                        cost.Amount = uint.Parse(dict["Amount"]);
+                    }
+                    else
+                    {
+                        LogUtility.LogWarning<Tile>("Failed to parse ResourceType from Cost.");
+                    }
+                }
+            }
+
+            if (data.TryGetValue("Condition", out object conditionObject))
+            {
+                if (conditionObject is Dictionary<string, object> dictObj)
+                {
+                    var dict = new Dictionary<string, string>();
+                    foreach (var kvp in dictObj)
+                    {
+                        dict[kvp.Key] = kvp.Value?.ToString();
+                    }
+
+                    if (Enum.TryParse<FactionType>(dict["FactionType"], out var factionType))
+                    {
+                        var condition = AddAspect<Condition>();
+                        condition.Type = factionType;
+                        condition.Amount = uint.Parse(dict["Amount"]);
+
+                        LogUtility.Log<Tile>($"{condition.Type}-{condition.Amount}");
+                    }
+                    else
+                    {
+                        LogUtility.LogWarning<Tile>("Failed to parse FactionType from Condition.");
+                    }
+                }
+            }
         }
 
         public Tile() { }

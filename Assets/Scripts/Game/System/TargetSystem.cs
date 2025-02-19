@@ -55,7 +55,7 @@ namespace CCGP.Server
             }
 
             // 가능한 지역 목록 메시징
-            var targetTiles = GetTile(cardPlayAction.Card);
+            var targetTiles = GetTile(cardPlayAction.Card, action.Player);
 
             var log = "보낼 수 있는 지역 : \n";
             for (int i = 0; i < targetTiles.Count; i++)
@@ -110,7 +110,7 @@ namespace CCGP.Server
             }
         }
 
-        private List<Tile> GetTile(Card source)
+        private List<Tile> GetTile(Card source, Player player)
         {
             var result = new List<Tile>();
             // 보드에서 타일들을 뒤진다.
@@ -119,6 +119,11 @@ namespace CCGP.Server
                 // Card.Space와 같으면서 소드마스터가 없는 타일을 찾는다.
                 if (source.Space.Contains(tile.Space) && tile.AgentIndex == -1)
                 {
+                    // 조건을 확인해서 조건에 통과하는지 확인한다.
+                    if (tile.TryGetAspect<Condition>(out var condition))
+                    {
+                        // 넘어갑니다.
+                    }
                     result.Add(tile);
                 }
             }

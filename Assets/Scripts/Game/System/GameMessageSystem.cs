@@ -144,7 +144,6 @@ namespace CCGP.Server
 
             foreach (var playerInfo in Game.PlayerInfos)
             {
-                LogUtility.Log<GameMessageSystem>($"{playerInfo.ClientID}", colorName: ColorCodes.Logic);
                 Send((ushort)GameCommand.DrawCards, playerInfo.ClientID, sAction, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }

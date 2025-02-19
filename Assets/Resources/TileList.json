@@ -1,114 +1,162 @@
 {
-    "Tiles": [
-        {
-            "ID": "00-001",
-            "Name": "IMPERIAL BASIN",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-002",
-            "Name": "HAGGA BASIN",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-003",
-            "Name": "THE GREAT FLAT",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-004",
-            "Name": "ARRAKEEN",
-            "Space": "Blue"
-        },
-        {
-            "ID": "00-005",
-            "Name": "CARTHAG",
-            "Space": "Blue"
-        },
-        {
-            "ID": "00-006",
-            "Name": "RESEARCH STATION",
-            "Space": "Blue"
-        },
-        {
-            "ID": "00-007",
-            "Name": "SIETCH TABR",
-            "Space": "Blue"
-        },
-        {
-            "ID": "00-008",
-            "Name": "SELL MELANGE",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-009",
-            "Name": "SECURE CONTRACT",
-            "Space": "Yellow"
-        },
-        {
-            "ID": "00-010",
-            "Name": "HIGHT COUNCIL",
-            "Space": "Green"
-        },
-        {
-            "ID": "00-011",
-            "Name": "MENTAT",
-            "Space": "Green"
-        },
-        {
-            "ID": "00-012",
-            "Name": "RALLY TROOPS",
-            "Space": "Green"
-        },
-        {
-            "ID": "00-013",
-            "Name": "HALL OF ORATORY",
-            "Space": "Green"
-        },
-        {
-            "ID": "00-014",
-            "Name": "SWOARDMASTER",
-            "Space": "Green"
-        },
-        {
-            "ID": "00-015",
-            "Name": "CONSPIRE",
-            "Space": "Emperor"
-        },
-        {
-            "ID": "00-016",
-            "Name": "WEALTH",
-            "Space": "Emperor"
-        },
-        {
-            "ID": "00-017",
-            "Name": "HEIGHLINER",
-            "Space": "SpacingGuild"
-        },
-        {
-            "ID": "00-018",
-            "Name": "FOLDSPACE",
-            "Space": "SpacingGuild"
-        },
-        {
-            "ID": "00-019",
-            "Name": "SELECTIVE BREEDING",
-            "Space": "BeneGesserit"
-        },
-        {
-            "ID": "00-020",
-            "Name": "SECRETS",
-            "Space": "BeneGesserit"
-        },
-        {
-            "ID": "00-021",
-            "Name": "HARDY WARRIORS",
-            "Space": "Fremen"
-        },
-        {
-            "ID": "00-022",
-            "Name": "STILLSUITS",
-            "Space": "Fremen"
-        }
-    ]
+  "Tiles": [
+    {
+      "ID": "00-001",
+      "Name": "IMPERIAL BASIN",
+      "Space": "Yellow"
+    },
+    {
+      "ID": "00-002",
+      "Name": "HAGGA BASIN",
+      "Space": "Yellow",
+      "Cost": {
+        "ResourceType": "Water",
+        "Amount": "1"
+      }
+    },
+    {
+      "ID": "00-003",
+      "Name": "THE GREAT FLAT",
+      "Space": "Yellow",
+      "Cost": {
+        "ResourceType": "Water",
+        "Amount": "2"
+      }
+    },
+    {
+      "ID": "00-004",
+      "Name": "ARRAKEEN",
+      "Space": "Blue"
+    },
+    {
+      "ID": "00-005",
+      "Name": "CARTHAG",
+      "Space": "Blue"
+    },
+    {
+      "ID": "00-006",
+      "Name": "RESEARCH STATION",
+      "Space": "Blue",
+      "Cost": {
+        "ResourceType": "Water",
+        "Amount": "2"
+      }
+    },
+    {
+      "ID": "00-007",
+      "Name": "SIETCH TABR",
+      "Space": "Blue",
+      "Condition": {
+        "FactionType": "Fremen",
+        "Amount": 2
+      }
+    },
+    {
+      "ID": "00-008",
+      "Name": "SELL MELANGE",
+      "Space": "Yellow"
+    },
+    {
+      "ID": "00-009",
+      "Name": "SECURE CONTRACT",
+      "Space": "Yellow"
+    },
+    {
+      "ID": "00-010",
+      "Name": "HIGHT COUNCIL",
+      "Space": "Green",
+      "Cost": {
+        "ResourceType": "Lunar",
+        "Amount": "5"
+      }
+    },
+    {
+      "ID": "00-011",
+      "Name": "MENTAT",
+      "Space": "Green",
+      "Cost": {
+        "ResourceType": "Lunar",
+        "Amount": "2"
+      }
+    },
+    {
+      "ID": "00-012",
+      "Name": "RALLY TROOPS",
+      "Space": "Green",
+      "Cost": {
+        "ResourceType": "Lunar",
+        "Amount": "4"
+      }
+    },
+    {
+      "ID": "00-013",
+      "Name": "HALL OF ORATORY",
+      "Space": "Green"
+    },
+    {
+      "ID": "00-014",
+      "Name": "SWOARDMASTER",
+      "Space": "Green",
+      "Cost": {
+        "ResourceType": "Lunar",
+        "Amount": "8"
+      }
+    },
+    {
+      "ID": "00-015",
+      "Name": "CONSPIRE",
+      "Space": "Emperor",
+      "Cost": {
+        "ResourceType": "Marsion",
+        "Amount": "4"
+      }
+    },
+    {
+      "ID": "00-016",
+      "Name": "WEALTH",
+      "Space": "Emperor"
+    },
+    {
+      "ID": "00-017",
+      "Name": "HEIGHLINER",
+      "Space": "SpacingGuild",
+      "Cost": {
+        "ResourceType": "Marsion",
+        "Amount": "6"
+      }
+    },
+    {
+      "ID": "00-018",
+      "Name": "FOLDSPACE",
+      "Space": "SpacingGuild"
+    },
+    {
+      "ID": "00-019",
+      "Name": "SELECTIVE BREEDING",
+      "Space": "BeneGesserit",
+      "Cost": {
+        "ResourceType": "Marsion",
+        "Amount": "2"
+      }
+    },
+    {
+      "ID": "00-020",
+      "Name": "SECRETS",
+      "Space": "BeneGesserit"
+    },
+    {
+      "ID": "00-021",
+      "Name": "HARDY WARRIORS",
+      "Space": "Fremen",
+      "Cost": {
+        "ResourceType": "Water",
+        "Amount": "1"
+      }
+    },
+    {
+      "ID": "00-022",
+      "Name": "STILLSUITS",
+      "Space": "Fremen"
+    }
+  ]
 }
