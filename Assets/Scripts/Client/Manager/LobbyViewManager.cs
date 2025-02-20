@@ -8,6 +8,7 @@ using Unity.Services.Lobbies.Models;
 using TMPro;
 using CCGP.Shared;
 using ACode.UGS;
+using Unity.Netcode;
 
 namespace CCGP.Client
 {
@@ -140,13 +141,18 @@ namespace CCGP.Client
                     currentLobby = null;
                     StopLobbyPolling();
                     ShowLobbyListUI();
+
+                    if (NetworkManager.Singleton.IsConnectedClient)
+                    {
+                        NetworkManager.Singleton.Shutdown();
+                    }
+
                     await RefreshLobbyListAsync();
                 }
                 else
                 {
                     LogUtility.Log<LobbyViewManager>("로비 나가기 실패");
                 }
-
             }
         }
 
@@ -283,6 +289,8 @@ namespace CCGP.Client
                 return;
             }
 
+            StopLobbyPolling();
+
             string joinCode = await ARelayService.StartHostWithRelay(maxPlayers);
             if (joinCode != string.Empty)
             {
@@ -296,12 +304,13 @@ namespace CCGP.Client
                 };
                 var updateOptions = new UpdateLobbyOptions { Data = data };
                 currentLobby = await ALobbyService.UpdateLobbyAsync(currentLobby.Id, updateOptions);
-
-                StopLobbyPolling();
             }
             else
             {
                 LogUtility.LogError<LobbyViewManager>("게임 시작 실패");
+
+                if (lobbyPollingCoroutine == null)
+                    StartLobbyPolling();
             }
         }
         #endregion

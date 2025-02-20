@@ -31,7 +31,7 @@ namespace CCGP.Client
             for (int i = 0; i < Data.Tiles.Count; i++)
             {
                 Tiles[i].gameObject.SetActive(true);
-                Tiles[i].Refresh(Data.Tiles[i]);
+                Tiles[i].UpdateView(Data.Tiles[i]);
             }
         }
 

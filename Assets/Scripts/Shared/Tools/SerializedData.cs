@@ -102,6 +102,13 @@ namespace CCGP.Shared
         public string LobbyID;
         public uint AgentCount;
         public uint TurnActionCount;
+        public uint Lunar;
+        public uint Marsion;
+        public uint Water;
+        public uint EmperorInfluence;
+        public uint SpacingGuildInfluence;
+        public uint BeneGesseritInfluence;
+        public uint FremenInfluence;
         public List<SerializedCard> Leader;
         public List<SerializedCard> Deck;
         public List<SerializedCard> Hand;
@@ -116,8 +123,18 @@ namespace CCGP.Shared
             ClientID = player.ID;
             Index = player.Index;
             LobbyID = player.PlayerInfo.LobbyID;
+
             AgentCount = player.AgentCount;
             TurnActionCount = player.TurnActionCount;
+
+            Lunar = player.Lunar;
+            Marsion = player.Marsion;
+            Water = player.Water;
+
+            EmperorInfluence = player.EmperorInfluence;
+            SpacingGuildInfluence = player.SpacingGuildInfluence;
+            BeneGesseritInfluence = player.BeneGesseritInfluence;
+            FremenInfluence = player.FremenInfluence;
 
             Leader = new();
             foreach (var card in player[Zone.Leader])
@@ -163,6 +180,13 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref LobbyID);
             serializer.SerializeValue(ref AgentCount);
             serializer.SerializeValue(ref TurnActionCount);
+            serializer.SerializeValue(ref Lunar);
+            serializer.SerializeValue(ref Marsion);
+            serializer.SerializeValue(ref Water);
+            serializer.SerializeValue(ref EmperorInfluence);
+            serializer.SerializeValue(ref SpacingGuildInfluence);
+            serializer.SerializeValue(ref BeneGesseritInfluence);
+            serializer.SerializeValue(ref FremenInfluence);
 
             SerializeList(serializer, ref Leader);
             SerializeList(serializer, ref Deck);
@@ -206,6 +230,10 @@ namespace CCGP.Shared
         public string Name;
         public Space Space;
         public int AgentIndex;
+        public ConditionType ConditionType;
+        public uint ConditionAmount;
+        public CostType CostType;
+        public uint CostAmount;
         public SerializedTile() { }
 
         public SerializedTile(Tile tile)
@@ -213,6 +241,28 @@ namespace CCGP.Shared
             Name = tile.Name;
             Space = tile.Space;
             AgentIndex = tile.AgentIndex;
+
+            if (tile.TryGetAspect(out Condition condition))
+            {
+                ConditionType = condition.Type;
+                ConditionAmount = condition.Amount;
+            }
+            else
+            {
+                ConditionType = ConditionType.None;
+                ConditionAmount = 0;
+            }
+
+            if (tile.TryGetAspect(out Cost cost))
+            {
+                CostType = cost.Type;
+                CostAmount = cost.Amount;
+            }
+            else
+            {
+                CostType = CostType.None;
+                CostAmount = 0;
+            }
         }
 
         public override bool Equals(object obj)
@@ -231,6 +281,10 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref Name);
             serializer.SerializeValue(ref Space);
             serializer.SerializeValue(ref AgentIndex);
+            serializer.SerializeValue(ref ConditionType);
+            serializer.SerializeValue(ref ConditionAmount);
+            serializer.SerializeValue(ref CostType);
+            serializer.SerializeValue(ref CostAmount);
         }
     }
 

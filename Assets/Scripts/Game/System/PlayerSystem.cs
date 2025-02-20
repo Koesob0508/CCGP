@@ -115,6 +115,7 @@ namespace CCGP.Server
             {
                 validator.Invalidate();
                 LogUtility.LogWarning<PlayerSystem>("Turn action count is 0", colorName: ColorCodes.Red);
+                return;
             }
 
             if (Container.GetMatch().Players[action.Card.OwnerIndex].AgentCount == 0)

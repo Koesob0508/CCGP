@@ -21,7 +21,7 @@ namespace CCGP.Server
         public static bool Validate(this object target)
         {
             var validator = new Validator();
-            var notificationName = Global.ValidationNotification(target.GetType());
+            var notificationName = Global.ValidateNotification(target.GetType());
             target.PostNotification(notificationName, validator);
             return validator.IsValid;
         }

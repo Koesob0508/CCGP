@@ -1,17 +1,11 @@
 using CCGP.AspectContainer;
+using CCGP.Shared;
 
 namespace CCGP.Server
 {
-    public enum FactionType
-    {
-        Emperor,
-        SpacingGuild,
-        BeneGesserit,
-        Fremen
-    }
     public class Condition : Aspect
     {
-        public FactionType Type;
+        public ConditionType Type;
         public uint Amount;
     }
 }

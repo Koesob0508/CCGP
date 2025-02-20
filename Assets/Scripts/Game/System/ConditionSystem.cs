@@ -3,7 +3,7 @@ using CCGP.Shared;
 
 namespace CCGP.Server
 {
-    public class CostSystem : Aspect, IActivatable
+    public class ConditionSystem : Aspect, IActivatable
     {
         public void Activate()
         {
@@ -24,34 +24,40 @@ namespace CCGP.Server
             {
                 // Target 안에는 Tile이 있습니다.
                 var selectedTile = target.Selected;
-                // Tile은 Container이고, Cost를 갖고 있을 수 있습니다.
-                // 만일 Cost를 갖고 있지 않다면 return
-                if (!selectedTile.TryGetAspect(out Cost cost))
+                // Tile은 Container이고, Condition을 갖고 있을 수 있습니다.
+                // 만일 Condition을 갖고 있지 않다면 return
+                if (!selectedTile.TryGetAspect(out Condition condition))
                 {
-                    LogUtility.Log<CostSystem>("Cost 요구하지 않음");
+                    LogUtility.Log<ConditionSystem>("Condition 요구하지 않음");
                     return;
                 }
 
                 var targetPlayer = action.Player;
-                // 만일 Cost를 갖고 있다면, Cost로부터
-                // Player의 Resource을 확인합니다.
-                // 만일 Player가 Resource가 부족하다면 Invalidate
-                switch (cost.Type)
+                // 만일 Condition을 갖고 있다면, Condition으로부터
+                // Player의 조건을 확인합니다.
+                // 만일 Player가 조건을 만족하지 않았다면 Invalidate
+                switch (condition.Type)
                 {
-                    case CostType.Lunar:
-                        if (targetPlayer.Lunar < cost.Amount)
+                    case ConditionType.Emperor:
+                        if (targetPlayer.EmperorInfluence < condition.Amount)
                         {
                             validator.Invalidate();
                         }
                         break;
-                    case CostType.Marsion:
-                        if (targetPlayer.Marsion < cost.Amount)
+                    case ConditionType.SpacingGuild:
+                        if (targetPlayer.SpacingGuildInfluence < condition.Amount)
                         {
                             validator.Invalidate();
                         }
                         break;
-                    case CostType.Water:
-                        if (targetPlayer.Water < cost.Amount)
+                    case ConditionType.BeneGesserit:
+                        if (targetPlayer.BeneGesseritInfluence < condition.Amount)
+                        {
+                            validator.Invalidate();
+                        }
+                        break;
+                    case ConditionType.Fremen:
+                        if (targetPlayer.FremenInfluence < condition.Amount)
                         {
                             validator.Invalidate();
                         }

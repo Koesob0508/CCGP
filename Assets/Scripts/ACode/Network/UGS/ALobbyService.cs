@@ -88,7 +88,7 @@ namespace ACode.UGS
                 return lobby;
             }
         }
-        
+
         public static async Task<QueryResponse> QueryLobbiesAsync()
         {
             QueryResponse response = null;

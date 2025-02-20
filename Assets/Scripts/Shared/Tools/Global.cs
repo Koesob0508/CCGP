@@ -41,10 +41,10 @@ namespace CCGP.Shared
 
         public static string ValidateNotification<T>()
         {
-            return ValidationNotification(typeof(T));
+            return ValidateNotification(typeof(T));
         }
 
-        public static string ValidationNotification(System.Type type)
+        public static string ValidateNotification(System.Type type)
         {
             return $"{type.Name}.ValidationNotification";
         }

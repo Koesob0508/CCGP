@@ -37,7 +37,7 @@ namespace CCGP.Server
                     }
 
                     // ResourceType 문자열을 enum으로 변환
-                    if (Enum.TryParse<ResourceType>(dict["ResourceType"], out var costType))
+                    if (Enum.TryParse<CostType>(dict["ResourceType"], out var costType))
                     {
                         var cost = AddAspect<Cost>();
                         cost.Type = costType;
@@ -61,7 +61,7 @@ namespace CCGP.Server
                         dict[kvp.Key] = kvp.Value?.ToString();
                     }
 
-                    if (Enum.TryParse<FactionType>(dict["FactionType"], out var factionType))
+                    if (Enum.TryParse<ConditionType>(dict["FactionType"], out var factionType))
                     {
                         var condition = AddAspect<Condition>();
                         condition.Type = factionType;

@@ -53,8 +53,10 @@ namespace CCGP.Server
             if (lobby != null)
             {
                 LogUtility.Log<Server>($"로비 등록 완료. 현재 속한 로비 : {lobby.Name}, 참가자 숫자 : {lobby.Players.Count}", ColorCodes.Server);
+
                 foreach (var player in lobby.Players)
                 {
+                    LogUtility.Log<Server>($"{player.Id}");
                     attendances.Add(player.Id, false);
                 }
 

@@ -15,6 +15,8 @@
             game.AddAspect<PlayerSystem>();
             game.AddAspect<CardSystem>();
             game.AddAspect<TargetSystem>();
+            game.AddAspect<ConditionSystem>();
+            game.AddAspect<CostSystem>();
             game.AddAspect<GameMessageSystem>();
 
             return game;

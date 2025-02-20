@@ -9,11 +9,23 @@ namespace CCGP.Server
         public const int InitialHand = 5;
         public const int InitialAgentCount = 2;
         public const int InitialTurnActionCount = 1;
+        public const int InitialWater = 1;
+
+        public const int tempInitialFactionInfluence = 2;
 
         public ulong ID;
         public readonly int Index;
         public uint AgentCount;
         public uint TurnActionCount;
+
+        public uint Lunar;
+        public uint Marsion;
+        public uint Water;
+
+        public uint EmperorInfluence;
+        public uint SpacingGuildInfluence;
+        public uint BeneGesseritInfluence;
+        public uint FremenInfluence;
 
         public PlayerInfo PlayerInfo;
 
@@ -29,8 +41,16 @@ namespace CCGP.Server
             ID = playerInfo.ClientID;
             Index = index;
             PlayerInfo = playerInfo;
+
             AgentCount = InitialAgentCount;
             TurnActionCount = InitialTurnActionCount;
+
+            Water = InitialWater;
+
+            EmperorInfluence = tempInitialFactionInfluence;
+            SpacingGuildInfluence = tempInitialFactionInfluence;
+            BeneGesseritInfluence = tempInitialFactionInfluence;
+            FremenInfluence = tempInitialFactionInfluence;
         }
 
         public List<Card> this[Zone z]

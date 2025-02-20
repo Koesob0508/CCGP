@@ -9,14 +9,14 @@ namespace CCGP.Server
     {
         public void Activate()
         {
-            this.AddObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
+            this.AddObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
             this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
         }
 
         public void Deactivate()
         {
             this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
-            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidationNotification(typeof(CardPlayAction)));
+            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
         }
 
         private void OnValidateCardPlayAction(object sender, object args)
