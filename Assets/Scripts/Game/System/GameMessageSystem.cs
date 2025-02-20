@@ -53,6 +53,8 @@ namespace CCGP.Server
 
             this.AddObserver(OnDrawCards, Global.PerformNotification<CardsDrawAction>(), Container);
             this.AddObserver(OnPlayCard, Global.PerformNotification<CardPlayAction>(), Container);
+
+            this.AddObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
             this.AddObserver(OnCancelPlayCard, Global.CancelNotification<CardPlayAction>(), Container);
 
             this.AddObserver(OnShowAvailableTiles, Global.MessageNotification(GameCommand.ShowAvailableTiles), Container);
@@ -182,6 +184,16 @@ namespace CCGP.Server
             var sCard = new SerializedCard(action.Card);
 
             Send((ushort)GameCommand.PlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+        }
+
+        private void OnCancelTryPlayCard(object sender, object args)
+        {
+            LogUtility.Log<GameMessageSystem>("Send Cancel Try Play Card", colorName: ColorCodes.Server);
+
+            var action = args as TryPlayCardAction;
+            var sCard = new SerializedCard(action.Card);
+
+            Send((ushort)GameCommand.CancelTryPlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
         private void OnCancelPlayCard(object sender, object args)

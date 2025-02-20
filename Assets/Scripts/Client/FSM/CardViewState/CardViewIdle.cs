@@ -20,8 +20,9 @@ namespace CCGP.Client
         public override void OnEnter()
         {
             this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard));
             this.AddObserver(OnPlayCard, Global.MessageNotification(GameCommand.PlayCard));
-            this.AddObserver(OnCancelPlayCard, Global.MessageNotification(GameCommand.CancelPlayCard));
+            this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard));
 
             Handler.Input.OnPointerEnter -= OnPointerEnter;
             Handler.Input.OnPointerEnter += OnPointerEnter;
@@ -35,8 +36,9 @@ namespace CCGP.Client
             Handler.Input.OnPointerEnter -= OnPointerEnter;
 
             this.RemoveObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard));
             this.RemoveObserver(OnPlayCard, Global.MessageNotification(GameCommand.PlayCard));
-            this.RemoveObserver(OnCancelPlayCard, Global.MessageNotification(GameCommand.CancelPlayCard));
+            this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard));
         }
 
         #endregion
@@ -58,7 +60,7 @@ namespace CCGP.Client
             Freeze();
         }
 
-        private void OnCancelPlayCard(object sender, object args)
+        private void OnCancel(object sender, object args)
         {
             Unfreeze();
         }

@@ -20,6 +20,9 @@ namespace CCGP.Server
             var action = sender as CardPlayAction;
             var validator = args as Validator;
 
+            // 앞선 시스템(== Target System)에서 이미 불합격이라면 검증 안해도 됨
+            if (!validator.IsValid) return;
+
             if (action.Card.TryGetAspect(out Target target))
             {
                 // Target 안에는 Tile이 있습니다.
@@ -41,18 +44,21 @@ namespace CCGP.Server
                     case CostType.Lunar:
                         if (targetPlayer.Lunar < cost.Amount)
                         {
+                            LogUtility.LogWarning<CostSystem>("Lunar Cost 만족하지 않음", colorName: ColorCodes.Logic);
                             validator.Invalidate();
                         }
                         break;
                     case CostType.Marsion:
                         if (targetPlayer.Marsion < cost.Amount)
                         {
+                            LogUtility.LogWarning<CostSystem>("Marsion Cost 만족하지 않음", colorName: ColorCodes.Logic);
                             validator.Invalidate();
                         }
                         break;
                     case CostType.Water:
                         if (targetPlayer.Water < cost.Amount)
                         {
+                            LogUtility.LogWarning<CostSystem>("Water Cost 만족하지 않음", colorName: ColorCodes.Logic);
                             validator.Invalidate();
                         }
                         break;

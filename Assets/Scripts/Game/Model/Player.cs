@@ -11,7 +11,7 @@ namespace CCGP.Server
         public const int InitialTurnActionCount = 1;
         public const int InitialWater = 1;
 
-        public const int tempInitialFactionInfluence = 2;
+        public const int tempInitialFactionInfluence = 0;
 
         public ulong ID;
         public readonly int Index;

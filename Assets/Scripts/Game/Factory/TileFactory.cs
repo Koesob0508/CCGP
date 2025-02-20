@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CCGP.Shared;
 using UnityEngine;
 
 namespace CCGP.Server
@@ -10,7 +11,7 @@ namespace CCGP.Server
         {
             get
             {
-                if(_tiles == null)
+                if (_tiles == null)
                 {
                     _tiles = LoadInitialTiles();
                 }
@@ -22,9 +23,9 @@ namespace CCGP.Server
         {
             var file = Resources.Load<TextAsset>("TileList");
 
-            if(file == null)
+            if (file == null)
             {
-                Shared.LogUtility.LogError<Tile>("TileList.json을 찾을 수 없습니다!");
+                LogUtility.LogError<Tile>("TileList.json을 찾을 수 없습니다!");
                 return null;
             }
 
@@ -34,7 +35,7 @@ namespace CCGP.Server
 
             var tileList = (List<object>)dict["Tiles"];
             var result = new Dictionary<string, Dictionary<string, object>>();
-            foreach(object entry in tileList)
+            foreach (object entry in tileList)
             {
                 var tileData = (Dictionary<string, object>)entry;
                 var id = (string)tileData["ID"];
@@ -57,6 +58,17 @@ namespace CCGP.Server
             var tile = new Tile();
 
             tile.Load(data);
+
+            LogUtility.Log($"[TileFactory] {tile.Name} loaded", colorName: ColorCodes.Logic);
+            if (tile.TryGetAspect<Cost>(out var cost))
+            {
+                LogUtility.Log($"[TileFactory] {tile.Name} has cost", colorName: ColorCodes.Logic);
+            }
+
+            if (tile.TryGetAspect<Condition>(out var condition))
+            {
+                LogUtility.Log($"[TileFactory] {tile.Name} has condition", colorName: ColorCodes.Logic);
+            }
 
             return tile;
         }

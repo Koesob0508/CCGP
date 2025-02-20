@@ -29,12 +29,14 @@ namespace CCGP.Client
 
             Handler.Input.OnBeginDrag += OnBeginDrag;
 
+            this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard));
             this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard));
             this.PostNotification(Global.MessageNotification(GameCommand.TryPlayCard), Handler.Data);
         }
 
         public override void OnExit()
         {
+            this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard));
             this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard));
 
             Handler.Input.OnBeginDrag -= OnBeginDrag;

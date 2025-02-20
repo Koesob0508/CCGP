@@ -1,8 +1,8 @@
-﻿using CCGP.Server;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CCGP.Shared;
 using UnityEngine;
 
-namespace CCGP.Shared
+namespace CCGP.Server
 {
     public static class CardFactory
     {
@@ -23,7 +23,7 @@ namespace CCGP.Shared
         {
             var file = Resources.Load<TextAsset>("CardList");
 
-            if(file == null)
+            if (file == null)
             {
                 LogUtility.LogError<Card>("CardList.json을 찾을 수 없습니다!");
                 return null;
@@ -35,7 +35,7 @@ namespace CCGP.Shared
 
             var cardList = (List<object>)dict["Cards"];
             var result = new Dictionary<string, Dictionary<string, object>>();
-            foreach(object entry in cardList)
+            foreach (object entry in cardList)
             {
                 var cardData = (Dictionary<string, object>)entry;
                 var id = (string)cardData["ID"];
@@ -53,7 +53,7 @@ namespace CCGP.Shared
 
             var array = (List<object>)contents["Deck"];
             var result = new List<Card>();
-            foreach(object item in array)
+            foreach (object item in array)
             {
                 var id = (string)item;
                 var card = CreateCard(id, ownerIndex);

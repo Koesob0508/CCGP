@@ -40,6 +40,7 @@ namespace CCGP.Server
                     if (Enum.TryParse<CostType>(dict["ResourceType"], out var costType))
                     {
                         var cost = AddAspect<Cost>();
+                        LogUtility.Log<Tile>($"Add cost to {Name}");
                         cost.Type = costType;
                         // Amount를 uint로 변환
                         cost.Amount = uint.Parse(dict["Amount"]);
@@ -64,10 +65,9 @@ namespace CCGP.Server
                     if (Enum.TryParse<ConditionType>(dict["FactionType"], out var factionType))
                     {
                         var condition = AddAspect<Condition>();
+                        LogUtility.Log<Tile>($"Add condition to {Name}");
                         condition.Type = factionType;
                         condition.Amount = uint.Parse(dict["Amount"]);
-
-                        LogUtility.Log<Tile>($"{condition.Type}-{condition.Amount}");
                     }
                     else
                     {

@@ -9,24 +9,37 @@ namespace CCGP.Server
     {
         public void Activate()
         {
+            // Phase notify
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
             this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
 
-            this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
+            // Client message notify
+            this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+
+            // Validate notify
+            this.AddObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
             this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+
+            this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
+            this.AddObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
 
-            this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
         }
 
         public void Deactivate()
         {
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
-            this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
-            this.RemoveObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+
+            this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+
+            this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
             this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+
+            this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
+            this.RemoveObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
         }
 
@@ -61,7 +74,9 @@ namespace CCGP.Server
             action.Cards = Draw(action.Player, action.Amount);
         }
 
-        private void OnTryPlayCard(object sender, object args)
+        #region Try Play Card Action
+
+        private void OnReceivedTryPlayCard(object sender, object args)
         {
             LogUtility.Log<PlayerSystem>("Received OnTryCardPlay", colorName: ColorCodes.Logic);
             var sData = args as SerializedData;
@@ -73,69 +88,93 @@ namespace CCGP.Server
 
             player[sCard.Zone].TryGetCard(sCard.GUID, out var card);
 
-            var action = new CardPlayAction(player, card);
+            // CardPlayTry로 대체
+            // var action = new CardPlayAction(player, card);
+            var action = new TryPlayCardAction(player, card);
 
             Container.Perform(action);
         }
 
-        private void OnValidateCardPlay(object sender, object args)
+        private void OnValidateTryCardPlay(object sender, object args)
         {
-            var action = sender as CardPlayAction;
+            var action = sender as TryPlayCardAction;
             var validator = args as Validator;
+
+            // 앞선 시스템에서 이미 불합격이라면 검증 안해도 됨
+            if (!validator.IsValid) return;
 
             if (action.Card == null)
             {
+                LogUtility.LogWarning<PlayerSystem>("Card is null", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Card is null", colorName: ColorCodes.Red);
                 return;
             }
 
             if (action.Card.OwnerIndex != Container.GetMatch().CurrentPlayerIndex)
             {
+                LogUtility.LogWarning<PlayerSystem>("Not your turn", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Not your turn", colorName: ColorCodes.Red);
                 return;
             }
 
             if (action.Card.Zone != Zone.Hand)
             {
+                LogUtility.LogWarning<PlayerSystem>("Card is not in Hand", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Card is not in Hand", colorName: ColorCodes.Red);
                 return;
             }
 
             if (action.Card.Space == Shared.Space.None)
             {
+                LogUtility.LogWarning<PlayerSystem>("Card has no space", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Card has no space", colorName: ColorCodes.Red);
                 return;
             }
 
             if (Container.GetMatch().Players[action.Card.OwnerIndex].TurnActionCount == 0)
             {
+                LogUtility.LogWarning<PlayerSystem>("Turn action count is 0", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Turn action count is 0", colorName: ColorCodes.Red);
                 return;
             }
 
             if (Container.GetMatch().Players[action.Card.OwnerIndex].AgentCount == 0)
             {
+                LogUtility.LogWarning<PlayerSystem>("Agent action count is 0", colorName: ColorCodes.Logic);
                 validator.Invalidate();
-                LogUtility.LogWarning<PlayerSystem>("Agent action count is 0", colorName: ColorCodes.Red);
                 return;
             }
+        }
+
+        private void OnPerformTryCardPlay(object sender, object args)
+        {
+            var tryAction = args as TryPlayCardAction;
+
+            var playAction = new CardPlayAction(tryAction.Player, tryAction.Card);
+            Container.Perform(playAction);
+        }
+        #endregion
+
+        #region Card Play Action
+        private void OnValidateCardPlay(object sender, object args)
+        {
+            // var action = sender as CardPlayAction;
+            // var validator = args as Validator;
         }
 
         private void OnPerformCardPlay(object sender, object args)
         {
             var action = args as CardPlayAction;
 
-            PayAgentCount(Container.GetMatch().Players[action.Card.OwnerIndex]);
             ChangeZone(action.Card, Zone.Agent);
+            // Resource 지불
+            PayAgentCount(Container.GetMatch().Players[action.Card.OwnerIndex]);
+            // Tile로부터 Reward 받기
 
             action.Card.TryGetAspect(out Target target);
             LogUtility.Log<PlayerSystem>($"Player {action.Card.OwnerIndex} played {action.Card.Name} to {target.Selected.Name}", colorName: ColorCodes.Logic);
         }
+        #endregion
 
         private void ShuffleDeck(Player player)
         {

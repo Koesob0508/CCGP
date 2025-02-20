@@ -14,7 +14,8 @@
         DrawCards = 1210,
         ShowAvailableTiles = 1220,
         PlayCard = 1231,
-        CancelPlayCard = 1232,
+        CancelTryPlayCard = 1232,
+        CancelPlayCard = 1233,
 
         // Client to Server
         TryPlayCard = 5000,

@@ -52,7 +52,7 @@ namespace CCGP.Client
         private void OnStartTurn(object sender, object args)
         {
             Match = GetComponent<MatchView>().Data;
-            LogUtility.Log<TurnView>($"End Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
+            LogUtility.Log<TurnView>($"Start Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
             RefreshButton();
         }
 
