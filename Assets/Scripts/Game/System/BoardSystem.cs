@@ -11,18 +11,18 @@ namespace CCGP.Server
         {
             Data = Container.GetMatch().Board;
 
-            this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
+            this.AddObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
+            this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
             Data = null;
         }
 
         private void OnPerformCardPlay(object sender, object args)
         {
-            var action = args as CardPlayAction;
+            var action = args as PlayCardAction;
             if (action == null) return;
 
             var card = action.Card;

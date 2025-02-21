@@ -7,15 +7,20 @@ namespace CCGP.Server
     {
         public const int InitialDeck = 10;
         public const int InitialHand = 5;
-        public const int InitialAgentCount = 2;
-        public const int InitialTurnActionCount = 1;
-        public const int InitialWater = 1;
+        public const uint InitialMentatCount = 0;
+        public const uint InitialBaseAgentCount = 2;
+        public const uint InitialTurnActionCount = 1;
+        public const uint InitialWater = 2;
 
-        public const int tempInitialFactionInfluence = 0;
+        public const uint InitialTroopCount = 3;
+        public const uint InitialVictoryPoint = 0;
 
         public ulong ID;
         public readonly int Index;
-        public uint AgentCount;
+        public uint BaseAgentCount;
+        public uint MentatCount;
+        public uint TotalAgentCount => BaseAgentCount + MentatCount;
+        public uint UsedAgentCount;
         public uint TurnActionCount;
 
         public uint Lunar;
@@ -26,6 +31,11 @@ namespace CCGP.Server
         public uint SpacingGuildInfluence;
         public uint BeneGesseritInfluence;
         public uint FremenInfluence;
+
+        public uint Troop;
+        public uint Persuasion;
+        public uint BasePersuasion;
+        public uint VictoryPoint;
 
         public PlayerInfo PlayerInfo;
 
@@ -42,15 +52,16 @@ namespace CCGP.Server
             Index = index;
             PlayerInfo = playerInfo;
 
-            AgentCount = InitialAgentCount;
+            BaseAgentCount = InitialBaseAgentCount;
+            MentatCount = InitialMentatCount;
+
             TurnActionCount = InitialTurnActionCount;
 
             Water = InitialWater;
 
-            EmperorInfluence = tempInitialFactionInfluence;
-            SpacingGuildInfluence = tempInitialFactionInfluence;
-            BeneGesseritInfluence = tempInitialFactionInfluence;
-            FremenInfluence = tempInitialFactionInfluence;
+            Troop = InitialTroopCount;
+
+            VictoryPoint = InitialVictoryPoint;
         }
 
         public List<Card> this[Zone z]

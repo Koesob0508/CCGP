@@ -18,7 +18,7 @@
             "Persuasion": 1,
             "Space": [
                 "Emperor",
-                "Guild",
+                "SpacingGuild",
                 "BeneGesserit",
                 "Fremen"
             ]
@@ -64,7 +64,22 @@
             "Persuasion": 0,
             "Space": [
                 "Emperor",
-                "Guild",
+                "SpacingGuild",
+                "BeneGesserit",
+                "Fremen"
+            ]
+        },
+        {
+            "ID": "00-008",
+            "Name": "Folding Space",
+            "Cost": 0,
+            "Persuasion": 0,
+            "Space": [
+                "Yellow",
+                "Blue",
+                "Green",
+                "Emperor",
+                "SpacingGuild",
                 "BeneGesserit",
                 "Fremen"
             ]

@@ -7,53 +7,46 @@ namespace CCGP.Server
 {
     public class TargetSystem : Aspect, IActivatable
     {
+        private GameAction Action;
+
         public void Activate()
         {
-            this.AddObserver(OnPrepareTryCardPlay, Global.PrepareNotification<TryPlayCardAction>());
+            this.AddObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
 
-            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
+
+            this.AddObserver(OnCancelTryPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
+            this.AddObserver(OnCancelPlayCard, Global.CancelNotification<PlayCardAction>());
 
             this.AddObserver(OnReceivedSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPrepareTryCardPlay, Global.PrepareNotification<TryPlayCardAction>());
+            this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
 
-            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
+
+            this.RemoveObserver(OnCancelTryPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
+            this.RemoveObserver(OnCancelPlayCard, Global.CancelNotification<PlayCardAction>());
 
             this.RemoveObserver(OnReceivedSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
         }
 
-        private void OnPrepareTryCardPlay(object sender, object args)
+        private void OnValidateTryCardPlay(object sender, object args)
         {
-            var action = args as TryPlayCardAction;
+            var action = sender as TryPlayCardAction;
 
             var card = action.Card;
 
             if (card.TryGetAspect<Target>(out var target))
             {
-                action.PerformPhase.Awaiter = WaitTargetSelect;
+                action.PreparePhase.Awaiter = WaitTargetSelect;
             }
         }
-
-        private void OnReceivedSelectTile(object sender, object args)
-        {
-            var sData = args as SerializedData;
-            var sTile = sData.Get<SerializedTile>();
-
-            Container.TryGetAspect<ActionSystem>(out var actionSystem);
-            var action = actionSystem.CurrentAction as TryPlayCardAction;
-
-            if (action != null)
-            {
-                SetTarget(action, GetTile(sTile));
-            }
-        }
-
         private void OnValidateCardPlay(object sender, object args)
         {
-            var action = sender as CardPlayAction;
+            var action = sender as PlayCardAction;
             var validator = args as Validator;
 
             // 앞선 시스템(== Target System)에서 이미 불합격이라면 검증 안해도 됨
@@ -88,6 +81,36 @@ namespace CCGP.Server
             }
         }
 
+        private void OnCancelPlayCard(object sender, object args)
+        {
+            var action = args as PlayCardAction;
+            if (action.Card.TryGetAspect<Target>(out var target))
+            {
+                target.Selected = null;
+            }
+        }
+
+        private void OnReceivedSelectTile(object sender, object args)
+        {
+            var sData = args as SerializedData;
+            var sTile = sData.Get<SerializedTile>();
+
+            var tryPlayAction = Action as TryPlayCardAction;
+
+            if (tryPlayAction != null)
+            {
+                SetTarget(tryPlayAction, GetTile(sTile));
+            }
+        }
+
+        private void OnCancelTryPlayCard(object sender, object args)
+        {
+            if (Action != null)
+            {
+                Action.Cancel();
+            }
+        }
+
         private IEnumerator WaitTargetSelect(IContainer game, GameAction action)
         {
             var tryPlayCardAction = action as TryPlayCardAction;
@@ -100,6 +123,7 @@ namespace CCGP.Server
                 yield break;
             }
 
+            Action = action;
             // 가능한 지역 목록 메시징
             var targetTiles = GetAvailableTile(tryPlayCardAction.Card, action.Player);
 
@@ -111,13 +135,22 @@ namespace CCGP.Server
             LogUtility.Log<TargetSystem>(log, colorName: ColorCodes.Logic);
             Container.PostNotification(Global.MessageNotification(GameCommand.ShowAvailableTiles), targetTiles);
 
-            while (target.Selected == null)
+            while (target.Selected == null && !action.IsCanceled)
             {
                 yield return false;
             }
 
-            // target.Selected 됨 
-            LogUtility.Log<TargetSystem>($"Wait Target Select 끝. 선택된 타겟: {target.Selected.Name}");
+            if (action.IsCanceled)
+            {
+                LogUtility.LogWarning<TargetSystem>("TryPlayCardAction이 취소되었습니다.", colorName: ColorCodes.Logic);
+            }
+            else
+            {
+                // target.Selected 됨 
+                LogUtility.Log<TargetSystem>($"Wait Target Select 끝. 선택된 타겟: {target.Selected.Name}");
+            }
+
+            Action = null;
             yield return true;
         }
 

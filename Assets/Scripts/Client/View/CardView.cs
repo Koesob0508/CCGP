@@ -49,7 +49,7 @@ namespace CCGP.Client
             FSM.PushState<CardViewIdle>();
         }
 
-        public void Refresh(SerializedCard card)
+        public void UpdateData(SerializedCard card)
         {
             Data = card;
 

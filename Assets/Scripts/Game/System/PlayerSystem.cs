@@ -19,11 +19,14 @@ namespace CCGP.Server
 
             // Validate notify
             this.AddObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
-            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
-            this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
+            // Player Game Action
+            this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.AddObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
-            this.AddObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
+            this.AddObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
+            this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
+            this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
 
         }
 
@@ -36,11 +39,13 @@ namespace CCGP.Server
             this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
 
             this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
-            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<CardPlayAction>());
+            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
-            this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<CardsDrawAction>(), Container);
+            this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.RemoveObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
-            this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<CardPlayAction>(), Container);
+            this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
+            this.RemoveObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
+            this.RemoveObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
         }
 
         private void OnPerformGameStart(object sender, object args)
@@ -56,7 +61,7 @@ namespace CCGP.Server
             foreach (var player in Container.GetMatch().Players)
             {
                 // TurnCount랑 AgentCount 회복 필요
-                var action = new CardsDrawAction(player, Player.InitialHand);
+                var action = new DrawCardsAction(player, Player.InitialHand);
                 Container.AddReaction(action);
             }
         }
@@ -69,7 +74,7 @@ namespace CCGP.Server
 
         private void OnPerformCardsDraw(object sender, object args)
         {
-            var action = args as CardsDrawAction;
+            var action = args as DrawCardsAction;
 
             action.Cards = Draw(action.Player, action.Amount);
         }
@@ -138,7 +143,7 @@ namespace CCGP.Server
                 return;
             }
 
-            if (Container.GetMatch().Players[action.Card.OwnerIndex].AgentCount == 0)
+            if (Container.GetMatch().Players[action.Card.OwnerIndex].UsedAgentCount == Container.GetMatch().Players[action.Card.OwnerIndex].TotalAgentCount)
             {
                 LogUtility.LogWarning<PlayerSystem>("Agent action count is 0", colorName: ColorCodes.Logic);
                 validator.Invalidate();
@@ -150,7 +155,7 @@ namespace CCGP.Server
         {
             var tryAction = args as TryPlayCardAction;
 
-            var playAction = new CardPlayAction(tryAction.Player, tryAction.Card);
+            var playAction = new PlayCardAction(tryAction.Player, tryAction.Card);
             Container.Perform(playAction);
         }
         #endregion
@@ -164,17 +169,74 @@ namespace CCGP.Server
 
         private void OnPerformCardPlay(object sender, object args)
         {
-            var action = args as CardPlayAction;
+            var action = args as PlayCardAction;
+            action.Card.TryGetAspect(out Target target);
 
             ChangeZone(action.Card, Zone.Agent);
             // Resource 지불
-            PayAgentCount(Container.GetMatch().Players[action.Card.OwnerIndex]);
-            // Tile로부터 Reward 받기
+            if (target.Selected.TryGetAspect(out Cost cost))
+            {
+                PayCost(action.Player, cost);
+            }
+            PayAgentCount(action.Player);
+            // Tile로부터 Reward 받기 -> AbilitySystem에 의해서 알아서 처리
 
-            action.Card.TryGetAspect(out Target target);
             LogUtility.Log<PlayerSystem>($"Player {action.Card.OwnerIndex} played {action.Card.Name} to {target.Selected.Name}", colorName: ColorCodes.Logic);
         }
         #endregion
+
+        private void OnPerformGainResources(object sender, object args)
+        {
+            var action = args as GainResourcesAction;
+
+            var player = action.Player;
+            var type = action.Type;
+            var amount = action.Amount;
+
+            switch (type)
+            {
+                case ResourceType.Water:
+                    player.Water += amount;
+                    break;
+                case ResourceType.Lunar:
+                    player.Lunar += amount;
+                    break;
+                case ResourceType.Marsion:
+                    player.Marsion += amount;
+                    break;
+                case ResourceType.Troop:
+                    player.Troop += amount;
+                    break;
+                case ResourceType.Persuasion:
+                    player.Persuasion += amount;
+                    break;
+                case ResourceType.BasePersuasion:
+                    player.BasePersuasion += amount;
+                    break;
+                case ResourceType.Mentat:
+                    player.MentatCount += amount;
+                    break;
+                case ResourceType.BaseAgent:
+                    player.BaseAgentCount += amount;
+                    break;
+                case ResourceType.VictoryPoint:
+                    player.VictoryPoint += amount;
+                    break;
+                default:
+                    LogUtility.LogWarning<PlayerSystem>($"Unknown resource type: {type}");
+                    break;
+            }
+        }
+
+        private void OnPerformGenerateCard(object sender, object args)
+        {
+            var action = args as GenerateCardAction;
+
+            var player = action.Player;
+            var card = action.Card;
+
+            ChangeZone(card, Zone.Hand, player);
+        }
 
         private void ShuffleDeck(Player player)
         {
@@ -210,9 +272,9 @@ namespace CCGP.Server
             return result;
         }
 
-        private List<Card> Draw(Player player, int amount)
+        private List<Card> Draw(Player player, uint amount)
         {
-            int resultAmount = Mathf.Min(amount, player[Zone.Deck].Count + player[Zone.Graveyard].Count);
+            int resultAmount = (int)Mathf.Min(amount, player[Zone.Deck].Count + player[Zone.Graveyard].Count);
             List<Card> result = new(resultAmount);
 
             for (int i = 0; i < resultAmount; i++)
@@ -224,6 +286,29 @@ namespace CCGP.Server
             return result;
         }
 
+        private void PayCost(Player player, Cost cost)
+        {
+            LogUtility.Log<PlayerSystem>($"Pay Cost");
+            switch (cost.Type)
+            {
+                case ResourceType.Water:
+                    player.Water -= cost.Amount;
+                    LogUtility.Log<PlayerSystem>($"Water:{player.Water}");
+                    break;
+                case ResourceType.Lunar:
+                    player.Lunar -= cost.Amount;
+                    LogUtility.Log<PlayerSystem>($"Water:{player.Lunar}");
+                    break;
+                case ResourceType.Marsion:
+                    player.Marsion -= cost.Amount;
+                    LogUtility.Log<PlayerSystem>($"Water:{player.Marsion}");
+                    break;
+                default:
+                    LogUtility.LogWarning<PlayerSystem>($"Unknown resource type: {cost.Type}");
+                    break;
+            }
+        }
+
         private void PayAgentCount(Player player)
         {
             if (player.TurnActionCount == 0)
@@ -232,14 +317,14 @@ namespace CCGP.Server
                 return;
             }
 
-            if (player.AgentCount == 0)
+            if (player.UsedAgentCount == player.TotalAgentCount)
             {
                 LogUtility.LogWarning<PlayerSystem>("Agent Count가 0입니다.");
                 return;
             }
 
             player.TurnActionCount--;
-            player.AgentCount--;
+            player.UsedAgentCount++;
         }
 
         private void RestoreTurnActionCount(Player player)

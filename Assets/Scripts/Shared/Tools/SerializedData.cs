@@ -100,7 +100,10 @@ namespace CCGP.Shared
         public ulong ClientID;
         public int Index;
         public string LobbyID;
-        public uint AgentCount;
+        public uint BaseAgentCount;
+        public uint MentatCount;
+        public uint TotalAgentCount;
+        public uint UsedAgentCount;
         public uint TurnActionCount;
         public uint Lunar;
         public uint Marsion;
@@ -109,6 +112,12 @@ namespace CCGP.Shared
         public uint SpacingGuildInfluence;
         public uint BeneGesseritInfluence;
         public uint FremenInfluence;
+
+        public uint Troop;
+        public uint Persuasion;
+        public uint BasePersuasion;
+        public uint VictoryPoint;
+
         public List<SerializedCard> Leader;
         public List<SerializedCard> Deck;
         public List<SerializedCard> Hand;
@@ -124,7 +133,10 @@ namespace CCGP.Shared
             Index = player.Index;
             LobbyID = player.PlayerInfo.LobbyID;
 
-            AgentCount = player.AgentCount;
+            BaseAgentCount = player.BaseAgentCount;
+            MentatCount = player.MentatCount;
+            TotalAgentCount = player.TotalAgentCount;
+            UsedAgentCount = player.UsedAgentCount;
             TurnActionCount = player.TurnActionCount;
 
             Lunar = player.Lunar;
@@ -135,6 +147,11 @@ namespace CCGP.Shared
             SpacingGuildInfluence = player.SpacingGuildInfluence;
             BeneGesseritInfluence = player.BeneGesseritInfluence;
             FremenInfluence = player.FremenInfluence;
+
+            Troop = player.Troop;
+            Persuasion = player.Persuasion;
+            BasePersuasion = player.BasePersuasion;
+            VictoryPoint = player.VictoryPoint;
 
             Leader = new();
             foreach (var card in player[Zone.Leader])
@@ -178,7 +195,10 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref ClientID);
             serializer.SerializeValue(ref Index);
             serializer.SerializeValue(ref LobbyID);
-            serializer.SerializeValue(ref AgentCount);
+            serializer.SerializeValue(ref BaseAgentCount);
+            serializer.SerializeValue(ref MentatCount);
+            serializer.SerializeValue(ref TotalAgentCount);
+            serializer.SerializeValue(ref UsedAgentCount);
             serializer.SerializeValue(ref TurnActionCount);
             serializer.SerializeValue(ref Lunar);
             serializer.SerializeValue(ref Marsion);
@@ -187,6 +207,10 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref SpacingGuildInfluence);
             serializer.SerializeValue(ref BeneGesseritInfluence);
             serializer.SerializeValue(ref FremenInfluence);
+            serializer.SerializeValue(ref Troop);
+            serializer.SerializeValue(ref Persuasion);
+            serializer.SerializeValue(ref BasePersuasion);
+            serializer.SerializeValue(ref VictoryPoint);
 
             SerializeList(serializer, ref Leader);
             SerializeList(serializer, ref Deck);
@@ -232,7 +256,7 @@ namespace CCGP.Shared
         public int AgentIndex;
         public ConditionType ConditionType;
         public uint ConditionAmount;
-        public CostType CostType;
+        public ResourceType CostType;
         public uint CostAmount;
         public SerializedTile() { }
 
@@ -260,7 +284,7 @@ namespace CCGP.Shared
             }
             else
             {
-                CostType = CostType.None;
+                CostType = ResourceType.None;
                 CostAmount = 0;
             }
         }

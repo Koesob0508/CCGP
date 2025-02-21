@@ -121,7 +121,7 @@ namespace CCGP.Server
             var roundEnd = true;
             foreach (var player in match.Players)
             {
-                if (player.AgentCount > 0)
+                if (player.TotalAgentCount - player.UsedAgentCount > 0)
                 {
                     roundEnd = false;
                 }

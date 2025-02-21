@@ -1,10 +1,16 @@
 namespace CCGP.Shared
 {
-    public enum CostType
+    public enum ResourceType
     {
         None,
         Marsion,
         Lunar,
-        Water
+        Water,
+        Troop,
+        Persuasion,
+        BasePersuasion,
+        Mentat,
+        BaseAgent,
+        VictoryPoint
     }
 }

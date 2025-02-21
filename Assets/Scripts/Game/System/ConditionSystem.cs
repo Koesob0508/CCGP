@@ -7,17 +7,17 @@ namespace CCGP.Server
     {
         public void Activate()
         {
-            this.AddObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
+            this.AddObserver(OnValidateCardPlayAction, Global.ValidateNotification<PlayCardAction>());
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
+            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidateNotification<PlayCardAction>());
         }
 
         private void OnValidateCardPlayAction(object sender, object args)
         {
-            var action = sender as CardPlayAction;
+            var action = sender as PlayCardAction;
             var validator = args as Validator;
 
             // 앞선 시스템(== Target System)에서 이미 불합격이라면 검증 안해도 됨

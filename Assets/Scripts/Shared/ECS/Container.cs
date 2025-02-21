@@ -35,14 +35,13 @@ namespace CCGP.AspectContainer
         public bool TryGetAspect<T>(string key, out T aspect) where T : IAspect
         {
             key = string.IsNullOrEmpty(key) ? typeof(T).Name : key;
-            if(aspects.ContainsKey(key))
+            if (aspects.ContainsKey(key))
             {
                 aspect = (T)aspects[key];
                 return true;
             }
             else
             {
-                LogUtility.Log<Container>($"Container didn't has aspect {key}");
                 aspect = default;
                 return false;
             }

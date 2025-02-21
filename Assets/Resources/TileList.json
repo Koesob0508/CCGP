@@ -3,7 +3,16 @@
     {
       "ID": "00-001",
       "Name": "IMPERIAL BASIN",
-      "Space": "Yellow"
+      "Space": "Yellow",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Marsion",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-002",
@@ -12,7 +21,16 @@
       "Cost": {
         "ResourceType": "Water",
         "Amount": "1"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Marsion",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-003",
@@ -21,17 +39,55 @@
       "Cost": {
         "ResourceType": "Water",
         "Amount": "2"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Marsion",
+            "Amount": "3"
+          }
+        }
+      ]
     },
     {
       "ID": "00-004",
       "Name": "ARRAKEEN",
-      "Space": "Blue"
+      "Space": "Blue",
+      "Abilities": [
+        {
+          "Action": "DrawCardsAction",
+          "Info": "1"
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-005",
       "Name": "CARTHAG",
-      "Space": "Blue"
+      "Space": "Blue",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "1"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Persuasion",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-006",
@@ -40,7 +96,13 @@
       "Cost": {
         "ResourceType": "Water",
         "Amount": "2"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "DrawCardsAction",
+          "Info": "3"
+        }
+      ]
     },
     {
       "ID": "00-007",
@@ -49,7 +111,23 @@
       "Condition": {
         "FactionType": "Fremen",
         "Amount": 2
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Water",
+            "Amount": "1"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-008",
@@ -59,7 +137,16 @@
     {
       "ID": "00-009",
       "Name": "SECURE CONTRACT",
-      "Space": "Yellow"
+      "Space": "Yellow",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Lunar",
+            "Amount": "3"
+          }
+        }
+      ]
     },
     {
       "ID": "00-010",
@@ -68,7 +155,16 @@
       "Cost": {
         "ResourceType": "Lunar",
         "Amount": "5"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "BasePersuasion",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-011",
@@ -77,7 +173,20 @@
       "Cost": {
         "ResourceType": "Lunar",
         "Amount": "2"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Mentat",
+            "Amount": "1"
+          }
+        },
+        {
+          "Action": "DrawCardsAction",
+          "Info": "1"
+        }
+      ]
     },
     {
       "ID": "00-012",
@@ -86,12 +195,37 @@
       "Cost": {
         "ResourceType": "Lunar",
         "Amount": "4"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "4"
+          }
+        }
+      ]
     },
     {
       "ID": "00-013",
       "Name": "HALL OF ORATORY",
-      "Space": "Green"
+      "Space": "Green",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Persuasion",
+            "Amount": "1"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-014",
@@ -100,7 +234,16 @@
       "Cost": {
         "ResourceType": "Lunar",
         "Amount": "8"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "BaseAgent",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-015",
@@ -109,12 +252,44 @@
       "Cost": {
         "ResourceType": "Marsion",
         "Amount": "4"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Lunar",
+            "Amount": "5"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "2"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Persuasion",
+            "Amount": "1"
+          }
+        }
+      ]
     },
     {
       "ID": "00-016",
       "Name": "WEALTH",
-      "Space": "Emperor"
+      "Space": "Emperor",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Lunar",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-017",
@@ -123,12 +298,34 @@
       "Cost": {
         "ResourceType": "Marsion",
         "Amount": "6"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "5"
+          }
+        },
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Water",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-018",
       "Name": "FOLDSPACE",
-      "Space": "SpacingGuild"
+      "Space": "SpacingGuild",
+      "Abilities": [
+        {
+          "Action": "GenerateCardAction",
+          "Info": "00-008"
+        }
+      ]
     },
     {
       "ID": "00-019",
@@ -137,12 +334,27 @@
       "Cost": {
         "ResourceType": "Marsion",
         "Amount": "2"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "DrawCardsAction",
+          "Info": "2"
+        }
+      ]
     },
     {
       "ID": "00-020",
       "Name": "SECRETS",
-      "Space": "BeneGesserit"
+      "Space": "BeneGesserit",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Persuasion",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-021",
@@ -151,12 +363,30 @@
       "Cost": {
         "ResourceType": "Water",
         "Amount": "1"
-      }
+      },
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Troop",
+            "Amount": "2"
+          }
+        }
+      ]
     },
     {
       "ID": "00-022",
       "Name": "STILLSUITS",
-      "Space": "Fremen"
+      "Space": "Fremen",
+      "Abilities": [
+        {
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Water",
+            "Amount": "1"
+          }
+        }
+      ]
     }
   ]
 }

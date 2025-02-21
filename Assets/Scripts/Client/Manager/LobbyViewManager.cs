@@ -97,6 +97,9 @@ namespace CCGP.Client
         // 로비 생성 (호스트가 됨)
         public async Task CreateLobbyAsync(string lobbyName)
         {
+            // 내가 접속해 있는 로비들이 있는지 검증부터 해야함.
+            await ALobbyService.LeaveAllLobbiesAsync(AAuthenticationService.PlayerID);
+
             currentLobby = await ALobbyService.CreateLobbyAsync(lobbyName, maxPlayers);
 
             if (currentLobby != null)
@@ -115,6 +118,8 @@ namespace CCGP.Client
         // 기존 로비에 참가
         public async Task JoinLobbyAsync(string lobbyId)
         {
+            await ALobbyService.LeaveAllLobbiesAsync(AAuthenticationService.PlayerID);
+
             currentLobby = await ALobbyService.JoinLobbyByIDAsync(lobbyId);
 
             if (currentLobby != null)
@@ -335,5 +340,11 @@ namespace CCGP.Client
         }
         #endregion
 
+
+        async void OnDestroy()
+        {
+            Debug.Log("OnDisable: Play Mode 종료 또는 오브젝트 비활성화됨. 로비에서 나갑니다.");
+            await ALobbyService.LeaveAllLobbiesAsync(AAuthenticationService.PlayerID);
+        }
     }
 }

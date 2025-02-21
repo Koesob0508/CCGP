@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CCGP.Shared;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 namespace CCGP.Server
 {
@@ -49,7 +50,7 @@ namespace CCGP.Server
         {
             var tileData = Tiles[id];
             Tile tile = CreateTile(tileData);
-
+            AddAbilities(tile, tileData);
             return tile;
         }
 
@@ -59,18 +60,30 @@ namespace CCGP.Server
 
             tile.Load(data);
 
-            LogUtility.Log($"[TileFactory] {tile.Name} loaded", colorName: ColorCodes.Logic);
-            if (tile.TryGetAspect<Cost>(out var cost))
-            {
-                LogUtility.Log($"[TileFactory] {tile.Name} has cost", colorName: ColorCodes.Logic);
-            }
-
-            if (tile.TryGetAspect<Condition>(out var condition))
-            {
-                LogUtility.Log($"[TileFactory] {tile.Name} has condition", colorName: ColorCodes.Logic);
-            }
-
             return tile;
+        }
+
+        public static void AddAbilities(Tile tile, Dictionary<string, object> data)
+        {
+            if (data.ContainsKey("Abilities") == false) return;
+
+            var AbilityDatas = (List<object>)data["Abilities"];
+            var abilities = tile.AddAspect<Abilities>();
+
+            foreach (object entry in AbilityDatas)
+            {
+                var abilityData = (Dictionary<string, object>)entry;
+                abilities.AddAbility(LoadAbility(tile, abilityData));
+            }
+        }
+
+        public static Ability LoadAbility(Tile tile, Dictionary<string, object> data)
+        {
+            // var ability = tile.AddAspect<Ability>();
+            var ability = new Ability();
+            ability.ActionName = (string)data["Action"];
+            ability.UserInfo = data["Info"];
+            return ability;
         }
     }
 }

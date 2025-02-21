@@ -5,7 +5,7 @@ namespace CCGP.Server
 {
     public class Cost : Aspect
     {
-        public CostType Type;
+        public ResourceType Type;
         public uint Amount;
     }
 }

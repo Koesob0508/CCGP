@@ -69,7 +69,7 @@ namespace CCGP.Tests.Unit
             }
 
             // Act
-            var action = new CardsDrawAction(game.GetMatch().Players[currentIndex], 10);
+            var action = new DrawCardsAction(game.GetMatch().Players[currentIndex], 10);
             game.Perform(action);
 
             // Assert
@@ -82,7 +82,7 @@ namespace CCGP.Tests.Unit
             // 셔플되면서 Graveyard에 카드가 없어야한다.
             Assert.AreEqual(0, game.GetMatch().Players[currentIndex][Zone.Graveyard].Count);
 
-            var overAction = new CardsDrawAction(game.GetMatch().Players[currentIndex], 5);
+            var overAction = new DrawCardsAction(game.GetMatch().Players[currentIndex], 5);
             game.Perform(overAction);
 
             Assert.AreEqual(0, game.GetMatch().Players[currentIndex][Zone.Deck].Count);
@@ -103,7 +103,7 @@ namespace CCGP.Tests.Unit
 
             // 다시 기존 currentPlayerIndex로 CardPlay
             var targetCard = match.Players[currentPlayerIndex][Zone.Hand][0];
-            var action = new CardPlayAction(match.Players[currentPlayerIndex], targetCard);
+            var action = new PlayCardAction(match.Players[currentPlayerIndex], targetCard);
             game.Perform(action);
 
             // Zone이 바뀌어선 안된다.
@@ -121,7 +121,7 @@ namespace CCGP.Tests.Unit
             var targetCard = match.Players[currentPlayerIndex][Zone.Deck][0];
 
             // 그리고 currentPlayerIndex로 CardPlay
-            var action = new CardPlayAction(match.Players[currentPlayerIndex], targetCard);
+            var action = new PlayCardAction(match.Players[currentPlayerIndex], targetCard);
             game.Perform(action);
 
             // Zone 안바뀌면 됨

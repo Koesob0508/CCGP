@@ -1,10 +1,10 @@
 ﻿namespace CCGP.Server
 {
-    public class CardPlayAction : GameAction
+    public class PlayCardAction : GameAction
     {
         public Card Card;
 
-        public CardPlayAction(Player player, Card card)
+        public PlayCardAction(Player player, Card card)
         {
             Player = player;
             Card = card;

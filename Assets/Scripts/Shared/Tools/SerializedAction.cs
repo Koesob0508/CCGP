@@ -7,12 +7,12 @@ namespace CCGP.Shared
     public class SerializedCardsDrawAction : INetworkSerializable
     {
         public SerializedPlayer Player;
-        public int Amount;
+        public uint Amount;
         public List<SerializedCard> Cards;
 
         public SerializedCardsDrawAction() { }
 
-        public SerializedCardsDrawAction(CardsDrawAction action)
+        public SerializedCardsDrawAction(DrawCardsAction action)
         {
             Player = new SerializedPlayer(action.Player);
             Amount = action.Amount;

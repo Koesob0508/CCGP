@@ -43,11 +43,23 @@ namespace CCGP.Client
         [Header("Battle")]
         public GameObject Panel_Battle;
 
-        public void UpdateView(SerializedTile tile)
+        [Header("Agent")]
+        public GameObject Object_Agent;
+
+        public void UpdateData(SerializedTile tile)
         {
             Data = tile;
 
             Name.text = tile.Name;
+
+            if (tile.AgentIndex != -1)
+            {
+                Object_Agent.SetActive(true);
+            }
+            else
+            {
+                Object_Agent.SetActive(false);
+            }
 
             switch (tile.Space)
             {
@@ -76,28 +88,25 @@ namespace CCGP.Client
 
             switch (tile.CostType)
             {
-                case CostType.None:
+                case ResourceType.None:
                     Panel_Cost.SetActive(false);
                     break;
-                case CostType.Lunar:
+                case ResourceType.Lunar:
                     Panel_Cost.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_Lunar, out var color);
                     Image_Cost.color = color;
-                    LogUtility.LogWarning<TileView>($"Cost : {color}");
                     Text_Cost.text = tile.CostAmount.ToString();
                     break;
-                case CostType.Marsion:
+                case ResourceType.Marsion:
                     Panel_Cost.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_Marsion, out color);
                     Image_Cost.color = color;
-                    LogUtility.LogWarning<TileView>($"Cost : {color}");
                     Text_Cost.text = tile.CostAmount.ToString();
                     break;
-                case CostType.Water:
+                case ResourceType.Water:
                     Panel_Cost.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_Water, out color);
                     Image_Cost.color = color;
-                    LogUtility.LogWarning<TileView>($"Cost : {color}");
                     Text_Cost.text = tile.CostAmount.ToString();
                     break;
             }
@@ -111,28 +120,24 @@ namespace CCGP.Client
                     Panel_Condition.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_Emperor, out var color);
                     Image_Condition.color = color;
-                    LogUtility.LogWarning<TileView>($"Condition : {color}");
                     Text_Condition.text = tile.ConditionAmount.ToString();
                     break;
                 case ConditionType.SpacingGuild:
                     Panel_Condition.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_SpacingGuild, out color);
                     Image_Condition.color = color;
-                    LogUtility.LogWarning<TileView>($"Condition : {color}");
                     Text_Condition.text = tile.ConditionAmount.ToString();
                     break;
                 case ConditionType.BeneGesserit:
                     Panel_Condition.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_BeneGesserit, out color);
                     Image_Condition.color = color;
-                    LogUtility.LogWarning<TileView>($"Condition : {color}");
                     Text_Condition.text = tile.ConditionAmount.ToString();
                     break;
                 case ConditionType.Fremen:
                     Panel_Condition.SetActive(true);
                     ColorUtility.TryParseHtmlString(Color_Fremen, out color);
                     Image_Condition.color = color;
-                    LogUtility.LogWarning<TileView>($"Condition : {color}");
                     Text_Condition.text = tile.ConditionAmount.ToString();
                     break;
             }

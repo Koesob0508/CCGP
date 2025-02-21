@@ -57,6 +57,7 @@ namespace CCGP.Server
             {
                 var id = (string)item;
                 var card = CreateCard(id, ownerIndex);
+                card.SetZone(Zone.Deck);
                 result.Add(card);
             }
 

@@ -37,7 +37,7 @@ namespace CCGP.Server
                     }
 
                     // ResourceType 문자열을 enum으로 변환
-                    if (Enum.TryParse<CostType>(dict["ResourceType"], out var costType))
+                    if (Enum.TryParse<ResourceType>(dict["ResourceType"], out var costType))
                     {
                         var cost = AddAspect<Cost>();
                         LogUtility.Log<Tile>($"Add cost to {Name}");

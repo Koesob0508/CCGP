@@ -7,17 +7,17 @@ namespace CCGP.Server
     {
         public void Activate()
         {
-            this.AddObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
+            this.AddObserver(OnValidateCardPlayAction, Global.ValidateNotification<PlayCardAction>());
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidateNotification<CardPlayAction>());
+            this.RemoveObserver(OnValidateCardPlayAction, Global.ValidateNotification<PlayCardAction>());
         }
 
         private void OnValidateCardPlayAction(object sender, object args)
         {
-            var action = sender as CardPlayAction;
+            var action = sender as PlayCardAction;
             var validator = args as Validator;
 
             // 앞선 시스템(== Target System)에서 이미 불합격이라면 검증 안해도 됨
@@ -41,21 +41,21 @@ namespace CCGP.Server
                 // 만일 Player가 Resource가 부족하다면 Invalidate
                 switch (cost.Type)
                 {
-                    case CostType.Lunar:
+                    case ResourceType.Lunar:
                         if (targetPlayer.Lunar < cost.Amount)
                         {
                             LogUtility.LogWarning<CostSystem>("Lunar Cost 만족하지 않음", colorName: ColorCodes.Logic);
                             validator.Invalidate();
                         }
                         break;
-                    case CostType.Marsion:
+                    case ResourceType.Marsion:
                         if (targetPlayer.Marsion < cost.Amount)
                         {
                             LogUtility.LogWarning<CostSystem>("Marsion Cost 만족하지 않음", colorName: ColorCodes.Logic);
                             validator.Invalidate();
                         }
                         break;
-                    case CostType.Water:
+                    case ResourceType.Water:
                         if (targetPlayer.Water < cost.Amount)
                         {
                             LogUtility.LogWarning<CostSystem>("Water Cost 만족하지 않음", colorName: ColorCodes.Logic);

@@ -17,6 +17,7 @@ namespace CCGP.Client
 
             NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("ToClientGame", OnReceivedMessage);
             this.AddObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.AddObserver(OnTryCancelPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
             this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
             this.AddObserver(OnTryEndTurn, ClientDialect.EndTurn);
         }
@@ -25,8 +26,9 @@ namespace CCGP.Client
         {
             NetworkManager.Singleton.CustomMessagingManager.UnregisterNamedMessageHandler("ToClientGame");
             this.RemoveObserver(OnTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard));
+            this.RemoveObserver(OnTryCancelPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
             this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
-            this.AddObserver(OnTryEndTurn, ClientDialect.EndTurn);
+            this.RemoveObserver(OnTryEndTurn, ClientDialect.EndTurn);
         }
 
         public void RegisterHandler(ushort type, Action<ulong, SerializedData> callback)
@@ -49,6 +51,12 @@ namespace CCGP.Client
             LogUtility.Log<ClientMessageSystem>($"Send TryPlayCard", colorName: ColorCodes.Client);
             var data = args as SerializedCard;
             SendToHost((ushort)GameCommand.TryPlayCard, data);
+        }
+
+        private void OnTryCancelPlayCard(object sender, object args)
+        {
+            LogUtility.Log<ClientMessageSystem>($"Send TryCancelPlayCard", colorName: ColorCodes.Client);
+            SendToHost((ushort)GameCommand.TryCancelPlayCard);
         }
 
         private void OnSelectTile(object sender, object args)

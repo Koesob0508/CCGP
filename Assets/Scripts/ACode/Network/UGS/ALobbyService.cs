@@ -52,7 +52,11 @@ namespace ACode.UGS
             {
                 Debug.Log("[ALobbyService] Get Current Lobby Started...");
                 List<string> lobbyIDs = await LobbyService.Instance.GetJoinedLobbiesAsync();
-                if (lobbyIDs.Count > 0)
+                if (lobbyIDs.Count > 1)
+                {
+                    Debug.LogWarning("[ALobbyService] Get Current Lobby Failed : More than 1 Lobby Joined.");
+                }
+                else if (lobbyIDs.Count == 1)
                 {
                     string lobbyID = lobbyIDs[0];
                     lobby = await LobbyService.Instance.GetLobbyAsync(lobbyID);
@@ -62,6 +66,7 @@ namespace ACode.UGS
                 {
                     Debug.Log("[ALobbyService] Get Current Lobby Failed : No Lobby Joined.");
                 }
+
                 return lobby;
             }
             catch (System.Exception e)
@@ -156,6 +161,30 @@ namespace ACode.UGS
             {
                 Debug.LogWarning("[ALobbyService] Leave Lobby Failed : " + e.Message);
                 return false;
+            }
+        }
+
+        public static async Task LeaveAllLobbiesAsync(string playerID)
+        {
+            try
+            {
+                Debug.Log("[ALobbyService] Query all joined lobbies started...");
+                List<string> lobbyIDs = await LobbyService.Instance.GetJoinedLobbiesAsync();
+
+                if (lobbyIDs.Count > 0)
+                {
+                    Debug.Log("[ALobbyService] Found lobby. Leave All Lobbies Started...");
+                    foreach (var lobbyID in lobbyIDs)
+                    {
+                        await LobbyService.Instance.RemovePlayerAsync(lobbyID, playerID);
+                    }
+                }
+
+                Debug.Log("[ALobbyService] Leave All Lobbies Success.");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("[ALobbyService] Leave All Lobbies Failed : " + e.Message);
             }
         }
     }

@@ -2,6 +2,7 @@
 using CCGP.Shared;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace CCGP.Client
 {
@@ -13,26 +14,48 @@ namespace CCGP.Client
 
         public override void Activate()
         {
-            this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.AddObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
+
+            // Not Phase, But Change
+            this.AddObserver(OnPlayCard, Global.MessageNotification(GameCommand.PlayCard), Container);
+
+            // Not Phase, Not Change, Just Notify
             this.AddObserver(OnShowAvailableTiles, Global.MessageNotification(GameCommand.ShowAvailableTiles), Container);
-            this.AddObserver(OnHideAvailableTiles, Global.MessageNotification(GameCommand.PlayCard), Container);
-            this.AddObserver(OnHideAvailableTiles, Global.MessageNotification(GameCommand.CancelPlayCard), Container);
+            this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard), Container);
+            this.AddObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard), Container);
         }
 
         public override void Deactivate()
         {
-            this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            this.RemoveObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
+
+            this.RemoveObserver(OnPlayCard, Global.MessageNotification(GameCommand.PlayCard), Container);
+
+            // Not Phase, Not Change, Just Notify
+            this.RemoveObserver(OnShowAvailableTiles, Global.MessageNotification(GameCommand.ShowAvailableTiles), Container);
+            this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelTryPlayCard), Container);
+            this.RemoveObserver(OnCancel, Global.MessageNotification(GameCommand.CancelPlayCard), Container);
         }
 
-        private void OnStartGame(object sender, object args)
+        private void OnUpdateData(object sender, object args)
         {
             Data = GetComponent<MatchView>().Data.Board;
 
             for (int i = 0; i < Data.Tiles.Count; i++)
             {
                 Tiles[i].gameObject.SetActive(true);
-                Tiles[i].UpdateView(Data.Tiles[i]);
+                Tiles[i].UpdateData(Data.Tiles[i]);
             }
+        }
+
+        private void OnPlayCard(object sender, object args)
+        {
+            HideAvailableTiles();
+        }
+
+        private void OnCancel(object sender, object args)
+        {
+            HideAvailableTiles();
         }
 
         private void OnShowAvailableTiles(object sender, object args)
@@ -55,7 +78,7 @@ namespace CCGP.Client
             }
         }
 
-        private void OnHideAvailableTiles(object sender, object args)
+        private void HideAvailableTiles()
         {
             LogUtility.Log<BoardView>("Hide available tiles", colorName: ColorCodes.Client);
 

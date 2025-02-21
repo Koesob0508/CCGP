@@ -18,20 +18,9 @@ namespace CCGP.Server
         public Space Space = Space.None;
         #endregion
 
-        public Zone Zone = Zone.Deck;
+        public Zone Zone = Zone.None;
 
         public Card() { }
-        public Card(SerializedCard sCard)
-        {
-            GUID = sCard.GUID;
-            OwnerIndex = sCard.OwnerIndex;
-            ID = sCard.ID;
-            Name = sCard.Name;
-            Cost = sCard.Cost;
-            Persuasion = sCard.Persuasion;
-            Space = sCard.Space;
-            Zone = sCard.Zone;
-        }
 
         public virtual void Load(Dictionary<string, object> data)
         {
@@ -52,6 +41,10 @@ namespace CCGP.Server
                 if (Enum.TryParse<Space>(space.ToString(), out var parsed))
                 {
                     Space |= parsed;
+                }
+                else
+                {
+                    LogUtility.LogError<Card>($"Failed to parse {space}");
                 }
             }
         }

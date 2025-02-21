@@ -17,6 +17,7 @@
             game.AddAspect<TargetSystem>();
             game.AddAspect<ConditionSystem>();
             game.AddAspect<CostSystem>();
+            game.AddAspect<AbilitySystem>();
             game.AddAspect<GameMessageSystem>();
 
             return game;
