@@ -24,7 +24,7 @@ namespace CCGP.Server
             this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
             // Player Game Action
-            this.AddObserver(OnPerformBatchDrawCards, Global.PerformNotification<BatchDrawCardsAction>(), Container);
+            this.AddObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.AddObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
@@ -45,7 +45,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
             this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
-            this.RemoveObserver(OnPerformBatchDrawCards, Global.PerformNotification<BatchDrawCardsAction>(), Container);
+            this.RemoveObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.RemoveObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
@@ -63,25 +63,25 @@ namespace CCGP.Server
 
         private void OnPerformRoundStart(object sender, object args)
         {
-            // var batchAction = new BatchDrawCardsAction(Player.InitialHand);
+            var batchAction = new RoundStartDrawAction();
 
-            // Container.AddReaction(batchAction);
+            Container.AddReaction(batchAction);
 
-            foreach (var player in Container.GetMatch().Players)
-            {
-                // TurnCount랑 AgentCount 회복 필요
-                var action = new DrawCardsAction(player, Player.InitialHand);
-                Container.AddReaction(action);
-            }
+            // foreach (var player in Container.GetMatch().Players)
+            // {
+            //     // TurnCount랑 AgentCount 회복 필요
+            //     var action = new DrawCardsAction(player, Player.InitialHand);
+            //     Container.AddReaction(action);
+            // }
         }
 
-        private void OnPerformBatchDrawCards(object sender, object args)
+        private void OnPerformRoundStartDraw(object sender, object args)
         {
-            var action = args as BatchDrawCardsAction;
+            var action = args as RoundStartDrawAction;
 
             foreach (var player in Container.GetMatch().Players)
             {
-                action.Cards[player.Index] = Draw(player, Player.InitialHand);
+                action[player.Index] = Draw(player, Player.InitialHand);
             }
         }
 

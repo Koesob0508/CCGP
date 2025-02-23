@@ -1,4 +1,5 @@
-﻿using CCGP.Shared;
+﻿using CCGP.Server;
+using CCGP.Shared;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
@@ -79,6 +80,7 @@ namespace CCGP.Client
             this.AddObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
 
             // Not Phase, But Change
+            this.AddObserver(OnRoundStartDraw, Global.MessageNotification(GameCommand.RoundStartDraw), Container);
             this.AddObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
             this.AddObserver(OnGenerateCard, Global.MessageNotification(GameCommand.GenerateCard), Container);
             this.AddObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
@@ -90,15 +92,29 @@ namespace CCGP.Client
         {
             this.RemoveObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
 
+            this.RemoveObserver(OnRoundStartDraw, Global.MessageNotification(GameCommand.RoundStartDraw), Container);
             this.RemoveObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
             this.RemoveObserver(OnGenerateCard, Global.MessageNotification(GameCommand.GenerateCard), Container);
             this.RemoveObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
         }
 
+        private void OnRoundStartDraw(object sender, object args)
+        {
+            var sData = args as SerializedData;
+            var sAction = sData.Get<SerializedRoundStartDrawAction>();
+
+            foreach (var card in sAction[ClientPlayer.Index])
+            {
+                var cardView = Instantiate(Prefab_CardView, Hand.transform);
+                cardView.UpdateData(card);
+                cardView.Enable();
+            }
+        }
+
         private void OnDrawCards(object sender, object args)
         {
             var sData = args as SerializedData;
-            var sAction = sData.Get<SerializedCardsDrawAction>();
+            var sAction = sData.Get<SerializedDrawCardsAction>();
 
             LogUtility.Log<PlayerView>($"{sAction.Player.ClientID}", colorName: ColorCodes.ClientSequencer);
 

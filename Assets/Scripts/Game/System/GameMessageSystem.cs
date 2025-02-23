@@ -1,5 +1,6 @@
 ﻿using CCGP.AspectContainer;
 using CCGP.Shared;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -54,6 +55,7 @@ namespace CCGP.Server
             this.AddObserver(OnEndGame, Global.PerformNotification<GameEndAction>(), Container);
 
             // Not Phase, But Change
+            this.AddObserver(OnRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.AddObserver(OnDrawCards, Global.PerformNotification<DrawCardsAction>(), Container);
             this.AddObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
@@ -77,6 +79,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnEndGame, Global.PerformNotification<GameEndAction>(), Container);
 
             // Not Phase, But Change
+            this.RemoveObserver(OnRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.RemoveObserver(OnDrawCards, Global.PerformNotification<DrawCardsAction>(), Container);
             this.RemoveObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.RemoveObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
@@ -107,9 +110,11 @@ namespace CCGP.Server
 
         #region Phase Message
 
-        private void OnStartGame(object sender, object args)
+        private async void OnStartGame(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Game Start", colorName: ColorCodes.Server);
 
@@ -119,9 +124,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnStartRound(object sender, object args)
+        private async void OnStartRound(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Round Start", colorName: ColorCodes.Server);
 
@@ -131,9 +138,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnStartTurn(object sender, object args)
+        private async void OnStartTurn(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Turn Start", colorName: ColorCodes.Server);
 
@@ -143,9 +152,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnEndTurn(object sender, object args)
+        private async void OnEndTurn(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Turn End", colorName: ColorCodes.Server);
 
@@ -155,9 +166,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnEndRound(object sender, object args)
+        private async void OnEndRound(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Round End", colorName: ColorCodes.Logic);
 
@@ -167,9 +180,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnEndGame(object sender, object args)
+        private async void OnEndGame(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Game End", colorName: ColorCodes.Logic);
 
@@ -182,14 +197,34 @@ namespace CCGP.Server
         #endregion
 
         #region Not Phase, But Change : Need Update Data
-        private void OnDrawCards(object sender, object args)
+        private async void OnRoundStartDraw(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
+
+            LogUtility.Log<GameMessageSystem>("Send Round Start Card Draw", colorName: ColorCodes.Logic);
+
+            var action = args as RoundStartDrawAction;
+            var sAction = new SerializedRoundStartDrawAction(action);
+
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                Send((ushort)GameCommand.RoundStartDraw, playerInfo.ClientID, sAction, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private async void OnDrawCards(object sender, object args)
+        {
+            UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Card Draw", colorName: ColorCodes.Logic);
 
             var action = args as DrawCardsAction;
-            var sAction = new SerializedCardsDrawAction(action);
+            var sAction = new SerializedDrawCardsAction(action);
 
             foreach (var playerInfo in Game.PlayerInfos)
             {
@@ -197,9 +232,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnPlayCard(object sender, object args)
+        private async void OnPlayCard(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Play Card", colorName: ColorCodes.Server);
 
@@ -209,9 +246,11 @@ namespace CCGP.Server
             Send((ushort)GameCommand.PlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
-        private void OnGainResources(object sender, object args)
+        private async void OnGainResources(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Gain Resource", colorName: ColorCodes.Server);
 
@@ -221,9 +260,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnGenerateCard(object sender, object args)
+        private async void OnGenerateCard(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Generate Card", colorName: ColorCodes.Server);
 
@@ -236,9 +277,11 @@ namespace CCGP.Server
             }
         }
 
-        private void OnOpenCards(object sender, object args)
+        private async void OnOpenCards(object sender, object args)
         {
             UpdateData();
+
+            await UniTask.Yield();
 
             LogUtility.Log<GameMessageSystem>("Send Open Cards", colorName: ColorCodes.Server);
 

@@ -1,18 +1,19 @@
 ﻿using CCGP.Server;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 
 namespace CCGP.Shared
 {
-    public class SerializedCardsDrawAction : INetworkSerializable
+    public class SerializedDrawCardsAction : INetworkSerializable
     {
         public SerializedPlayer Player;
         public uint Amount;
         public List<SerializedCard> Cards;
 
-        public SerializedCardsDrawAction() { }
+        public SerializedDrawCardsAction() { }
 
-        public SerializedCardsDrawAction(DrawCardsAction action)
+        public SerializedDrawCardsAction(DrawCardsAction action)
         {
             Player = new SerializedPlayer(action.Player);
             Amount = action.Amount;
@@ -27,58 +28,53 @@ namespace CCGP.Shared
         {
             serializer.SerializeNetworkSerializable(ref Player);
             serializer.SerializeValue(ref Amount);
-            SerializeList(serializer, ref Cards);
-        }
-
-        private void SerializeList<T>(BufferSerializer<T> serializer, ref List<SerializedCard> list) where T : IReaderWriter
-        {
-            if (serializer.IsWriter)
-            {
-                int count = list.Count;
-                serializer.SerializeValue(ref count);
-
-                foreach (var card in list)
-                {
-                    SerializedCard sCard = card; // 로그 확인해보면, sCard는 null 아님!
-                    serializer.SerializeNetworkSerializable(ref sCard); // sCard null 오류 발생!
-                }
-            }
-            else
-            {
-                int count = 0;
-                serializer.SerializeValue(ref count);
-
-                list = new List<SerializedCard>(count); // 크기에 맞게 새 리스트 생성
-                for (int i = 0; i < count; i++)
-                {
-                    SerializedCard sCard = new SerializedCard();
-                    serializer.SerializeNetworkSerializable(ref sCard);
-                    list.Add(sCard);
-                }
-            }
+            SerializedData.SerializeList(serializer, ref Cards);
         }
     }
 
-    public class SerializedTurnEndAction : INetworkSerializable
+    public class SerializedRoundStartDrawAction : INetworkSerializable
     {
-        public SerializedPlayer Player;
-        public int TargetPlayerIndex;
-        public int NextPlayerIndex;
+        public List<SerializedCard> Cards1;
+        public List<SerializedCard> Cards2;
+        public List<SerializedCard> Cards3;
+        public List<SerializedCard> Cards4;
 
-        public SerializedTurnEndAction() { }
-
-        public SerializedTurnEndAction(TurnEndAction action)
+        public SerializedRoundStartDrawAction() { }
+        public SerializedRoundStartDrawAction(RoundStartDrawAction action)
         {
-            Player = new SerializedPlayer(action.Player);
-            TargetPlayerIndex = action.TargetPlayerIndex;
-            NextPlayerIndex = action.NextPlayerIndex;
+            Cards1 = action[0].Select(card => new SerializedCard(card)).ToList();
+            Cards2 = action[1].Select(card => new SerializedCard(card)).ToList();
+            Cards3 = action[2].Select(card => new SerializedCard(card)).ToList();
+            Cards4 = action[3].Select(card => new SerializedCard(card)).ToList();
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeNetworkSerializable(ref Player);
-            serializer.SerializeValue(ref TargetPlayerIndex);
-            serializer.SerializeValue(ref NextPlayerIndex);
+            SerializedData.SerializeList(serializer, ref Cards1);
+            SerializedData.SerializeList(serializer, ref Cards2);
+            SerializedData.SerializeList(serializer, ref Cards3);
+            SerializedData.SerializeList(serializer, ref Cards4);
+        }
+
+        public List<SerializedCard> this[int i]
+        {
+            get
+            {
+                switch (i)
+                {
+                    case 0:
+                        return Cards1;
+                    case 1:
+                        return Cards2;
+                    case 2:
+                        return Cards3;
+                    case 3:
+                        return Cards4;
+                    default:
+                        LogUtility.LogError<SerializedRoundStartDrawAction>($"잘못된 값입니다. : {i}");
+                        return null;
+                }
+            }
         }
     }
 }

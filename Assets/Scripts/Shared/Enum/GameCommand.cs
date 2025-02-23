@@ -27,6 +27,7 @@
         GainResources = 3320,
         GenerateCard = 3330,
         ShowAvailableTiles = 3340,
+        RoundStartDraw = 3350,
 
 
         // Client to Server
