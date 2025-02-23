@@ -22,6 +22,7 @@ namespace CCGP.Server
         public uint TotalAgentCount => BaseAgentCount + MentatCount;
         public uint UsedAgentCount;
         public uint TurnActionCount;
+        public bool IsOpened;
 
         public uint Lunar;
         public uint Marsion;
@@ -56,6 +57,7 @@ namespace CCGP.Server
             MentatCount = InitialMentatCount;
 
             TurnActionCount = InitialTurnActionCount;
+            IsOpened = false;
 
             Water = InitialWater;
 
@@ -83,6 +85,7 @@ namespace CCGP.Server
                     case Zone.Open:
                         return open;
                     default:
+                        LogUtility.LogError<Player>($"잘못된 Zone입니다: {z}");
                         return null;
                 }
             }

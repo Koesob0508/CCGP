@@ -45,7 +45,7 @@ namespace CCGP.Tests.Unit
         [Test]
         public void CreateDeckTest()
         {
-            var deck = CardFactory.CreateDeck("InitialDeck", 1);
+            var deck = CardFactory.CreateBaseDeck("InitialDeck", 1);
 
             Assert.AreEqual(Player.InitialDeck, deck.Count);
         }

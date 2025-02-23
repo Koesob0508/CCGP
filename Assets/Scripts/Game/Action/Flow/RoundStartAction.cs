@@ -1,6 +1,6 @@
 ﻿namespace CCGP.Server
 {
-    public class RoundStartAction : GameAction
+    public class StartRoundAction : GameAction
     {
 
     }

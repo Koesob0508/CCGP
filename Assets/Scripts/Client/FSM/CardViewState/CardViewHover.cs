@@ -61,6 +61,8 @@ namespace CCGP.Client
 
         private void OnPointerClick(PointerEventData eventData)
         {
+            if (Handler.Data.Zone == Zone.ImperiumRow) return;
+
             if (FSM.IsCurrent(this) && eventData.button == PointerEventData.InputButton.Left)
             {
                 var match = Handler.GetComponentInParent<MatchView>();

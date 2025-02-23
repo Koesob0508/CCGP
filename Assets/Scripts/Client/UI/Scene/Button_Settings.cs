@@ -1,5 +1,9 @@
 using CCGP.Shared;
 using UnityEngine;
+using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace CCGP.Client
 {
@@ -8,12 +12,51 @@ namespace CCGP.Client
         private GameView View;
         private bool IsLobby = true;
 
+        public GameObject Panel_Lobby;
+        public Button Button_LobbyReturn;
+        public Button Button_LobbyQuit;
+
+        public GameObject Panel_GameMenu;
+        public Button Button_GameReturn;
+        public Button Button_GameQuit;
+
 
         public void Start()
         {
             View = GetComponentInParent<GameView>();
 
             this.AddObserver(OnGameStart, Global.MessageNotification(GameCommand.StartGame), View.Container);
+
+            Button_LobbyReturn.onClick.AddListener(() =>
+            {
+                Panel_GameMenu.SetActive(false);
+            });
+
+            Button_LobbyQuit.onClick.AddListener(() =>
+            {
+                LogUtility.Log("ê²Œì„ ì¢…ë£Œ");
+#if UNITY_EDITOR
+                EditorApplication.isPlaying = false;  // ì—ë””í„°ì—ì„œëŠ” Play ëª¨ë“œ ì¢…ë£Œ
+#else
+                Application.Quit();  // ë¹Œë“œëœ ê²Œì„ì—ì„œëŠ” ì •ìƒ ì¢…ë£Œ
+#endif
+            });
+
+
+            Button_GameReturn.onClick.AddListener(() =>
+            {
+                Panel_GameMenu.SetActive(false);
+            });
+
+            Button_GameQuit.onClick.AddListener(() =>
+            {
+                LogUtility.Log("ê²Œì„ ì¢…ë£Œ");
+#if UNITY_EDITOR
+                EditorApplication.isPlaying = false;  // ì—ë””í„°ì—ì„œëŠ” Play ëª¨ë“œ ì¢…ë£Œ
+#else
+                Application.Quit();  // ë¹Œë“œëœ ê²Œì„ì—ì„œëŠ” ì •ìƒ ì¢…ë£Œ
+#endif
+            });
         }
 
         private void OnGameStart(object sender, object args)
@@ -23,30 +66,30 @@ namespace CCGP.Client
 
         public void OnPointerEnter()
         {
-            if(IsLobby)
+            if (IsLobby)
             {
-                LogUtility.Log("·ÎºñÀÔ´Ï´Ù. ÇöÀç ¹öÀü¿¡¼­´Â ¼³Á¤ÀÌ ±¸ÇöµÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.");
+                gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
             }
             else
             {
-                LogUtility.Log("ÀÎ°ÔÀÓÀÔ´Ï´Ù. ÇöÀç ¹öÀü¿¡¼­´Â ¼³Á¤ÀÌ ±¸ÇöµÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.");
+                gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
             }
         }
 
         public void OnPointerExit()
         {
-            LogUtility.Log("¸»Ç³¼± ´İ±â");
+            gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
         }
 
         public void OnPointerClick()
         {
-            if(IsLobby)
+            if (IsLobby)
             {
-                LogUtility.Log("Ç×º¹ ±â´ÉÀÌ ¾ø´Â ¸Ş´º ¿ÀÇÂ");
+                Panel_Lobby.SetActive(true);
             }
             else
             {
-                LogUtility.Log("Ç×º¹ ±â´ÉÀÌ ÀÖ´Â ¸Ş´º ¿ÀÇÂ");
+                Panel_GameMenu.SetActive(true);
             }
         }
     }

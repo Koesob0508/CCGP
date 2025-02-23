@@ -2,10 +2,8 @@
 using CCGP.Shared;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEngine.PlayerLoop;
 
 namespace CCGP.Server
 {
@@ -49,7 +47,7 @@ namespace CCGP.Server
         {
             // Phase
             this.AddObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
-            this.AddObserver(OnStartRound, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
             this.AddObserver(OnStartTurn, Global.PerformNotification<TurnStartAction>(), Container);
             this.AddObserver(OnEndTurn, Global.PerformNotification<TurnEndAction>(), Container);
             this.AddObserver(OnEndRound, Global.PerformNotification<RoundEndAction>(), Container);
@@ -60,6 +58,7 @@ namespace CCGP.Server
             this.AddObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
+            this.AddObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.AddObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -71,7 +70,7 @@ namespace CCGP.Server
         {
             // Phase
             this.RemoveObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
-            this.RemoveObserver(OnStartRound, Global.PerformNotification<RoundStartAction>(), Container);
+            this.RemoveObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
             this.RemoveObserver(OnStartTurn, Global.PerformNotification<TurnStartAction>(), Container);
             this.RemoveObserver(OnEndTurn, Global.PerformNotification<TurnEndAction>(), Container);
             this.RemoveObserver(OnEndRound, Global.PerformNotification<RoundEndAction>(), Container);
@@ -82,6 +81,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.RemoveObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.RemoveObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
+            this.RemoveObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.RemoveObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -233,6 +233,21 @@ namespace CCGP.Server
             foreach (var playerInfo in Game.PlayerInfos)
             {
                 Send((ushort)GameCommand.GenerateCard, playerInfo.ClientID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+            }
+        }
+
+        private void OnOpenCards(object sender, object args)
+        {
+            UpdateData();
+
+            LogUtility.Log<GameMessageSystem>("Send Open Cards", colorName: ColorCodes.Server);
+
+            var action = args as OpenCardsAction;
+            var sPlayer = new SerializedPlayer(action.Player);
+
+            foreach (var playerInfo in Game.PlayerInfos)
+            {
+                Send((ushort)GameCommand.GenerateCard, playerInfo.ClientID, sPlayer, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }
         #endregion

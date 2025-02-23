@@ -60,7 +60,7 @@ namespace CCGP.Tests.Unit
             // ActionSystem과 연결됐는지 테스트
             Assert.IsTrue(isPerform, "GameStartAction이 ActionSystem에 의해 Perform 돼야함");
 
-            foreach(var player in match.Players)
+            foreach (var player in match.Players)
             {
                 Assert.AreEqual(Player.InitialDeck - Player.InitialHand, player[Zone.Deck].Count);
             }
@@ -82,7 +82,7 @@ namespace CCGP.Tests.Unit
             {
                 if (isGameStartTriggered)
                     isRoundStartTriggered = true;
-            }, Global.PerformNotification<RoundStartAction>());
+            }, Global.PerformNotification<StartRoundAction>());
 
             // Act
             flowSystem.StartGame();

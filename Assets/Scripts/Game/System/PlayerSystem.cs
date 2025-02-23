@@ -1,5 +1,6 @@
 ﻿using CCGP.AspectContainer;
 using CCGP.Shared;
+using PlasticPipe.PlasticProtocol.Messages;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,29 +12,32 @@ namespace CCGP.Server
         {
             // Phase notify
             this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.AddObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
+            this.AddObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
             this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
 
             // Client message notify
             this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.AddObserver(OnReceivedTryOpenCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
 
             // Validate notify
             this.AddObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
             this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
             // Player Game Action
+            this.AddObserver(OnPerformBatchDrawCards, Global.PerformNotification<BatchDrawCardsAction>(), Container);
             this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.AddObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.AddObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
+            this.AddObserver(OnPerformOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
 
         }
 
         public void Deactivate()
         {
             this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<RoundStartAction>(), Container);
+            this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
             this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
 
             this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
@@ -41,6 +45,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
             this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
+            this.RemoveObserver(OnPerformBatchDrawCards, Global.PerformNotification<BatchDrawCardsAction>(), Container);
             this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
             this.RemoveObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
             this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
@@ -58,6 +63,10 @@ namespace CCGP.Server
 
         private void OnPerformRoundStart(object sender, object args)
         {
+            // var batchAction = new BatchDrawCardsAction(Player.InitialHand);
+
+            // Container.AddReaction(batchAction);
+
             foreach (var player in Container.GetMatch().Players)
             {
                 // TurnCount랑 AgentCount 회복 필요
@@ -66,10 +75,24 @@ namespace CCGP.Server
             }
         }
 
+        private void OnPerformBatchDrawCards(object sender, object args)
+        {
+            var action = args as BatchDrawCardsAction;
+
+            foreach (var player in Container.GetMatch().Players)
+            {
+                action.Cards[player.Index] = Draw(player, Player.InitialHand);
+            }
+        }
+
         private void OnPerformTurnStart(object sender, object args)
         {
             var action = args as TurnStartAction;
-            RestoreTurnActionCount(Container.GetMatch().Players[action.TargetPlayerIndex]);
+
+            var player = Container.GetMatch().Players[action.TargetPlayerIndex];
+
+            RestoreTurnActionCount(player);
+            player.IsOpened = false;
         }
 
         private void OnPerformCardsDraw(object sender, object args)
@@ -97,6 +120,25 @@ namespace CCGP.Server
             // var action = new CardPlayAction(player, card);
             var action = new TryPlayCardAction(player, card);
 
+            Container.Perform(action);
+        }
+
+        private void OnReceivedTryOpenCards(object sender, object args)
+        {
+            LogUtility.Log<PlayerSystem>("Received OnTryOpenCard", colorName: ColorCodes.Logic);
+            var sData = args as SerializedData;
+            var sPlayer = sData.Get<SerializedPlayer>();
+
+            // 검증은 해야지. 얘가 턴인지
+            var match = Container.GetMatch();
+            if (match.CurrentPlayerIndex != sPlayer.Index)
+            {
+                LogUtility.LogWarning<PlayerSystem>("턴이 아닌데 카드 오픈 시도");
+                return;
+            }
+
+            var player = match.Players[sPlayer.Index];
+            var action = new OpenCardsAction(player);
             Container.Perform(action);
         }
 
@@ -236,6 +278,28 @@ namespace CCGP.Server
             var card = action.Card;
 
             ChangeZone(card, Zone.Hand, player);
+        }
+        private void OnPerformOpenCards(object sender, object args)
+        {
+            var action = args as OpenCardsAction;
+
+            var player = action.Player;
+
+            var handCopy = new List<Card>();
+            foreach (var handCard in player[Zone.Hand])
+            {
+
+                handCopy.Add(handCard);
+            }
+
+            foreach (var handCard in handCopy)
+            {
+                ChangeZone(handCard, Zone.Open);
+            }
+
+            action.Cards = handCopy;
+
+            player.IsOpened = true;
         }
 
         private void ShuffleDeck(Player player)

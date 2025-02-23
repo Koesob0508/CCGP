@@ -4,5 +4,6 @@ namespace CCGP.Client
     {
         public const string SignInAnonymouslyAsync = "SignInAnonymouslyAsync";
         public const string EndTurn = "EndTurn";
+        public const string OpenCard = "OpenCard";
     }
 }

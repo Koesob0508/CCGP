@@ -6,7 +6,10 @@ namespace CCGP.Shared
     public abstract class BaseStateMachine
     {
         public IFSMHandler Handler { get; set; }
-        protected BaseStateMachine(IFSMHandler handler = null) => Handler = handler;
+        protected BaseStateMachine(IFSMHandler handler = null)
+        {
+            Handler = handler;
+        }
 
         readonly Stack<IState> stack = new Stack<IState>();
 

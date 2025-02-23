@@ -14,12 +14,14 @@ namespace CCGP.Client
             var matchView = Object.FindFirstObjectByType<MatchView>();
             var boardView = Object.FindFirstObjectByType<BoardView>();
             var playerView = Object.FindFirstObjectByType<PlayerView>();
+            var imperiumView = Object.FindFirstObjectByType<ImperiumView>();
             var turnView = Object.FindFirstObjectByType<TurnView>();
 
             client.AddAspect(gameView);
             client.AddAspect(matchView);
             client.AddAspect(boardView);
             client.AddAspect(playerView);
+            client.AddAspect(imperiumView);
             client.AddAspect(turnView);
             client.AddAspect<ClientMessageSystem>();
 

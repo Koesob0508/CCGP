@@ -112,6 +112,8 @@ namespace CCGP.Server
             var flow = phase.Flow(Container);
             while (flow.MoveNext()) { yield return null; }
 
+            yield return null;
+
             // Reaction 처리
             var react = ReactPhase(openReactions);
             while (react.MoveNext()) { yield return null; }

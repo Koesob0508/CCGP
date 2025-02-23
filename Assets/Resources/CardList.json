@@ -83,6 +83,13 @@
                 "BeneGesserit",
                 "Fremen"
             ]
+        },
+        {
+            "ID": "00-009",
+            "Name": "Spice Must Flow",
+            "Cost": 9,
+            "Persuasion": 0,
+            "Space": []
         }
     ]
 }

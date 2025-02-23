@@ -61,7 +61,7 @@ namespace CCGP.Client
                     var tileView = result.gameObject.GetComponent<TileView>();
                     if (tileView != null)
                     {
-                        this.PostNotification(Global.MessageNotification(GameCommand.TrySelectTile), new SerializedTile() { Name = tileView.Data.Name, Space = tileView.Data.Space, AgentIndex = tileView.Data.AgentIndex });
+                        this.PostNotification(Global.MessageNotification(GameCommand.TrySelectTile), tileView.Data);
                         FSM.PopState();
                         return;
                     }

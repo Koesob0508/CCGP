@@ -9,7 +9,8 @@ namespace CCGP.Client
     {
         private SerializedMatch Match;
         private SerializedPlayer Player;
-        public Button Button_TurnEnd;
+        public Button Button_EndTurn;
+        public Button Button_OpenCard;
 
         public override void Activate()
         {
@@ -17,28 +18,35 @@ namespace CCGP.Client
             // GameStart : 내 턴인지 확인해야한다.
             // TurnEnd : 이제 누구의 턴인지 확인해서 활성화 결정해야함
             // 내 턴을 확인해야하므로, Player를 갖고 있어야한다.
-            Button_TurnEnd.onClick.AddListener(OnClick);
+            Button_EndTurn.onClick.AddListener(OnClickEndTurn);
+            Button_OpenCard.onClick.AddListener(OnClickOpenCard);
 
             this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
             this.AddObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
             this.AddObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
+            this.AddObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
         }
 
         public override void Deactivate()
         {
-            Button_TurnEnd.onClick = null;
+            Button_EndTurn.onClick = null;
 
             this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
             this.RemoveObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
             this.RemoveObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
+            this.RemoveObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
         }
 
-        private void OnClick()
+        private void OnClickEndTurn()
         {
             // 버튼에 등록할 이벤트
             // 턴 종료 메시지를 보낼 것
-            var action = new SerializedTurnEndAction() { Player = Player };
-            this.PostNotification(ClientDialect.EndTurn, action);
+            this.PostNotification(ClientDialect.EndTurn, Player);
+        }
+
+        private void OnClickOpenCard()
+        {
+            this.PostNotification(ClientDialect.OpenCard, Player);
         }
 
         private void OnStartGame(object sender, object args)
@@ -56,6 +64,12 @@ namespace CCGP.Client
             RefreshButton();
         }
 
+        private void OnOpenCards(object sender, object args)
+        {
+            // Match값 보고 Open을 인지할 것
+            RefreshButton();
+        }
+
         private void OnEndGame(object sender, object args)
         {
             LogUtility.Log<TurnView>($"End Game", colorName: ColorCodes.ClientSequencer);
@@ -67,17 +81,27 @@ namespace CCGP.Client
             // 버튼 활성화 여부 결정
             if (Match.CurrentPlayerIndex == Player.Index)
             {
-                Button_TurnEnd.interactable = true;
+                Button_EndTurn.interactable = true;
             }
             else
             {
-                Button_TurnEnd.interactable = false;
+                Button_EndTurn.interactable = false;
+            }
+
+            if (Match.CurrentPlayerIndex == Player.Index && !Player.IsOpened)
+            {
+                Button_OpenCard.interactable = true;
+            }
+            else
+            {
+                Button_OpenCard.interactable = false;
             }
         }
 
         private void CloseButton()
         {
-            Button_TurnEnd.interactable = false;
+            Button_OpenCard.interactable = false;
+            Button_EndTurn.interactable = false;
         }
     }
 }

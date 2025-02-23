@@ -20,10 +20,10 @@ namespace CCGP.Client
 
         public float HoverHeight = 20f;
 
-        public Transform Transform { get; private set; }
-        public Collider2D Collider { get; private set; }
-        public IMouseInput Input { get; private set; }
-        public CardViewFSM FSM { get; private set; }
+        public Transform Transform { get; protected set; }
+        public Collider2D Collider { get; protected set; }
+        public IMouseInput Input { get; protected set; }
+        public CardViewFSM FSM { get; protected set; }
 
         public string Name => Text_Name.text;
 

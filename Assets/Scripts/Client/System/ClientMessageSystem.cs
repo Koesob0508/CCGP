@@ -20,6 +20,7 @@ namespace CCGP.Client
             this.AddObserver(OnTryCancelPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
             this.AddObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
             this.AddObserver(OnTryEndTurn, ClientDialect.EndTurn);
+            this.AddObserver(OnTryOpenCard, ClientDialect.OpenCard);
         }
 
         public void Deactivate()
@@ -29,6 +30,7 @@ namespace CCGP.Client
             this.RemoveObserver(OnTryCancelPlayCard, Global.MessageNotification(GameCommand.TryCancelPlayCard));
             this.RemoveObserver(OnSelectTile, Global.MessageNotification(GameCommand.TrySelectTile));
             this.RemoveObserver(OnTryEndTurn, ClientDialect.EndTurn);
+            this.RemoveObserver(OnTryOpenCard, ClientDialect.OpenCard);
         }
 
         public void RegisterHandler(ushort type, Action<ulong, SerializedData> callback)
@@ -69,8 +71,15 @@ namespace CCGP.Client
         private void OnTryEndTurn(object sender, object args)
         {
             LogUtility.Log<ClientMessageSystem>($"Send TryEndTurn", colorName: ColorCodes.Client);
-            var data = args as SerializedTurnEndAction;
+            var data = args as SerializedPlayer;
             SendToHost((ushort)GameCommand.TryEndTurn, data);
+        }
+
+        private void OnTryOpenCard(object sender, object args)
+        {
+            LogUtility.Log<ClientMessageSystem>($"Send TryOpenCard", colorName: ColorCodes.Client);
+            var data = args as SerializedPlayer;
+            SendToHost((ushort)GameCommand.TryOpenCards, data);
         }
 
         #endregion

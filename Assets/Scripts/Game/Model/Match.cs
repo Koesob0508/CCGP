@@ -4,16 +4,18 @@ namespace CCGP.Server
 {
     public class Match
     {
-        public Board Board;
         public List<Player> Players;
+        public Board Board;
+        public Imperium Imperium;
         public int FirstPlayerIndex;
         public int CurrentPlayerIndex;
         public List<bool> Opened;
 
-        public Match(Board board, List<Player> players)
+        public Match(List<Player> players, Board board, Imperium imperium)
         {
-            Board = board;
             Players = players;
+            Board = board;
+            Imperium = imperium;
             Opened = new(players.Count);
             Opened.AddRange(new bool[players.Count]);
         }

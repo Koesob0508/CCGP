@@ -1,8 +1,5 @@
-﻿using CCGP.AspectContainer;
-using CCGP.Shared;
+﻿using CCGP.Shared;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace CCGP.Client
 {

@@ -17,7 +17,7 @@ namespace CCGP.Server
 
             for (int i = 0; i < Game.PlayerInfos.Count; i++)
             {
-                List<Card> initialDeck = CardFactory.CreateDeck("InitialDeck", i);
+                List<Card> initialDeck = CardFactory.CreateBaseDeck("InitialDeck", i);
 
                 var player = new Player(i, Game.PlayerInfos[i]);
                 player[Zone.Deck].AddRange(initialDeck);
@@ -25,7 +25,9 @@ namespace CCGP.Server
                 players.Add(player);
             }
 
-            match = new Match(board, players);
+            var imperium = ImperiumFactory.Create();
+
+            match = new Match(players, board, imperium);
         }
 
         public void Deactivate()
@@ -38,7 +40,7 @@ namespace CCGP.Server
     {
         public static Match GetMatch(this IContainer game)
         {
-            if(game.TryGetAspect<DataSystem>(out var dataSystem))
+            if (game.TryGetAspect<DataSystem>(out var dataSystem))
             {
                 return dataSystem.match;
             }

@@ -12,6 +12,8 @@ namespace CCGP.Shared
         Graveyard = 1 << 3,
         Agent = 1 << 4,
         Open = 1 << 5,
+        ImperiumDeck = 1 << 6,
+        ImperiumRow = 1 << 7,
         Play = Agent | Open
     }
 

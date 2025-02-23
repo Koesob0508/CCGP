@@ -20,12 +20,13 @@
         CancelTryPlayCard = 3231,
         PlayCard = 3232,
         CancelPlayCard = 3233,
-        ShowAvailableTiles = 3220,
+        OpenCards = 3234,
 
         // Not Phase, But Change, It's Game Action
         DrawCards = 3310,
         GainResources = 3320,
         GenerateCard = 3330,
+        ShowAvailableTiles = 3340,
 
 
         // Client to Server
@@ -33,5 +34,6 @@
         TryCancelPlayCard = 7010,
         TrySelectTile = 7100,
         TryEndTurn = 7200,
+        TryOpenCards = 7300,
     }
 }

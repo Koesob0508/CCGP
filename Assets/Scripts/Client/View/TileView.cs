@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CCGP.Client
 {
-    public class TileView : MonoBehaviour
+    public class TileView : MonoBehaviour, IFSMHandler
     {
         #region Color value
         public string Color_Lunar = "#B9B9B9";
@@ -20,7 +20,12 @@ namespace CCGP.Client
         #endregion
 
         public SerializedTile Data { get; private set; }
-        public TMP_Text Name;
+
+        public IMouseInput Input { get; private set; }
+        public string Name => Text_Name.text;
+
+        [Header("Basic")]
+        public TMP_Text Text_Name;
         public Image Icon;
         public GameObject BlockImage;
         public List<Sprite> IconSprites;
@@ -46,11 +51,16 @@ namespace CCGP.Client
         [Header("Agent")]
         public GameObject Object_Agent;
 
+        [Header("Info")]
+        public GameObject Object_Info;
+        public TMP_Text Text_Info;
+
         public void UpdateData(SerializedTile tile)
         {
             Data = tile;
 
-            Name.text = tile.Name;
+            Text_Name.text = tile.Name;
+            Text_Info.text = $"{tile.Description}";
 
             if (tile.AgentIndex != -1)
             {
@@ -140,6 +150,40 @@ namespace CCGP.Client
                     Image_Condition.color = color;
                     Text_Condition.text = tile.ConditionAmount.ToString();
                     break;
+            }
+        }
+
+        public void OnPointerEnter()
+        {
+            Object_Info.SetActive(true);
+
+            var canvas = Object_Info.AddComponent<Canvas>();
+            var scaler = Object_Info.AddComponent<CanvasScaler>();
+
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 100;
+
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0f;
+
+        }
+
+        public void OnPointerExit()
+        {
+            Object_Info.SetActive(false);
+
+            var scaler = Object_Info.GetComponent<CanvasScaler>();
+            if (scaler != null)
+            {
+                DestroyImmediate(scaler);
+            }
+
+            var canvas = Object_Info.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                DestroyImmediate(canvas);
             }
         }
     }

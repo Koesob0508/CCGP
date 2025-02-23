@@ -34,6 +34,36 @@ namespace CCGP.Shared
                 return val;
             }
         }
+
+        public static void SerializeList<TSerializer, TItem>(BufferSerializer<TSerializer> serializer, ref List<TItem> list)
+            where TSerializer : IReaderWriter
+            where TItem : INetworkSerializable, new()
+        {
+            if (serializer.IsWriter)
+            {
+                int count = list.Count;
+                serializer.SerializeValue(ref count);
+
+                foreach (var item in list)
+                {
+                    TItem serializedItem = item;
+                    serializer.SerializeNetworkSerializable(ref serializedItem);
+                }
+            }
+            else
+            {
+                int count = 0;
+                serializer.SerializeValue(ref count);
+
+                list = new List<TItem>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    TItem serializedItem = new TItem();
+                    serializer.SerializeNetworkSerializable(ref serializedItem);
+                    list.Add(serializedItem);
+                }
+            }
+        }
     }
     public class SerializedPlayerInfo : INetworkSerializable
     {
@@ -105,6 +135,7 @@ namespace CCGP.Shared
         public uint TotalAgentCount;
         public uint UsedAgentCount;
         public uint TurnActionCount;
+        public bool IsOpened;
         public uint Lunar;
         public uint Marsion;
         public uint Water;
@@ -138,6 +169,7 @@ namespace CCGP.Shared
             TotalAgentCount = player.TotalAgentCount;
             UsedAgentCount = player.UsedAgentCount;
             TurnActionCount = player.TurnActionCount;
+            IsOpened = player.IsOpened;
 
             Lunar = player.Lunar;
             Marsion = player.Marsion;
@@ -200,6 +232,7 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref TotalAgentCount);
             serializer.SerializeValue(ref UsedAgentCount);
             serializer.SerializeValue(ref TurnActionCount);
+            serializer.SerializeValue(ref IsOpened);
             serializer.SerializeValue(ref Lunar);
             serializer.SerializeValue(ref Marsion);
             serializer.SerializeValue(ref Water);
@@ -212,40 +245,12 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref BasePersuasion);
             serializer.SerializeValue(ref VictoryPoint);
 
-            SerializeList(serializer, ref Leader);
-            SerializeList(serializer, ref Deck);
-            SerializeList(serializer, ref Hand);
-            SerializeList(serializer, ref Graveyard);
-            SerializeList(serializer, ref Agent);
-            SerializeList(serializer, ref Open);
-        }
-
-        private void SerializeList<T>(BufferSerializer<T> serializer, ref List<SerializedCard> list) where T : IReaderWriter
-        {
-            if (serializer.IsWriter)
-            {
-                int count = list.Count;
-                serializer.SerializeValue(ref count);
-
-                foreach (var card in list)
-                {
-                    SerializedCard sCard = card; // 로그 확인해보면, sCard는 null 아님!
-                    serializer.SerializeNetworkSerializable(ref sCard); // sCard null 오류 발생!
-                }
-            }
-            else
-            {
-                int count = 0;
-                serializer.SerializeValue(ref count);
-
-                list = new List<SerializedCard>(count); // 크기에 맞게 새 리스트 생성
-                for (int i = 0; i < count; i++)
-                {
-                    SerializedCard sCard = new SerializedCard();
-                    serializer.SerializeNetworkSerializable(ref sCard);
-                    list.Add(sCard);
-                }
-            }
+            SerializedData.SerializeList(serializer, ref Leader);
+            SerializedData.SerializeList(serializer, ref Deck);
+            SerializedData.SerializeList(serializer, ref Hand);
+            SerializedData.SerializeList(serializer, ref Graveyard);
+            SerializedData.SerializeList(serializer, ref Agent);
+            SerializedData.SerializeList(serializer, ref Open);
         }
     }
 
@@ -254,6 +259,7 @@ namespace CCGP.Shared
         public string Name;
         public Space Space;
         public int AgentIndex;
+        public string Description;
         public ConditionType ConditionType;
         public uint ConditionAmount;
         public ResourceType CostType;
@@ -265,6 +271,7 @@ namespace CCGP.Shared
             Name = tile.Name;
             Space = tile.Space;
             AgentIndex = tile.AgentIndex;
+            Description = tile.Description;
 
             if (tile.TryGetAspect(out Condition condition))
             {
@@ -305,6 +312,7 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref Name);
             serializer.SerializeValue(ref Space);
             serializer.SerializeValue(ref AgentIndex);
+            serializer.SerializeValue(ref Description);
             serializer.SerializeValue(ref ConditionType);
             serializer.SerializeValue(ref ConditionAmount);
             serializer.SerializeValue(ref CostType);
@@ -328,35 +336,7 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            SerializeList(serializer, ref Tiles);
-        }
-
-        private void SerializeList<T>(BufferSerializer<T> serializer, ref List<SerializedTile> list) where T : IReaderWriter
-        {
-            if (serializer.IsWriter)
-            {
-                int count = list.Count;
-                serializer.SerializeValue(ref count);
-
-                foreach (var tile in list)
-                {
-                    SerializedTile sTile = tile;
-                    serializer.SerializeNetworkSerializable(ref sTile);
-                }
-            }
-            else
-            {
-                int count = 0;
-                serializer.SerializeValue(ref count);
-
-                list = new List<SerializedTile>(count); // 크기에 맞게 새 리스트 생성
-                for (int i = 0; i < count; i++)
-                {
-                    SerializedTile sTile = new SerializedTile();
-                    serializer.SerializeNetworkSerializable(ref sTile);
-                    list.Add(sTile);
-                }
-            }
+            SerializedData.SerializeList(serializer, ref Tiles);
         }
     }
 
@@ -371,29 +351,26 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            if (serializer.IsWriter)
-            {
-                int count = (Tiles != null) ? Tiles.Count : 0;
-                serializer.SerializeValue(ref count);
-                for (int i = 0; i < count; i++)
-                {
-                    SerializedTile tile = Tiles[i];
-                    serializer.SerializeNetworkSerializable(ref tile);
-                    Tiles[i] = tile;
-                }
-            }
-            else
-            {
-                int count = 0;
-                serializer.SerializeValue(ref count);
-                Tiles = new List<SerializedTile>(count);
-                for (int i = 0; i < count; i++)
-                {
-                    SerializedTile tile = new();
-                    serializer.SerializeNetworkSerializable(ref tile);
-                    Tiles.Add(tile);
-                }
-            }
+            SerializedData.SerializeList(serializer, ref Tiles);
+        }
+    }
+
+    public class SerializedImperium : INetworkSerializable
+    {
+        public List<SerializedCard> Deck;
+        public List<SerializedCard> Row;
+
+        public SerializedImperium() { }
+
+        public SerializedImperium(Imperium imperium)
+        {
+            Deck = imperium.Deck?.Select(card => new SerializedCard(card)).ToList();
+            Row = imperium.Row?.Select(card => new SerializedCard(card)).ToList();
+        }
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            SerializedData.SerializeList(serializer, ref Deck);
+            SerializedData.SerializeList(serializer, ref Row);
         }
     }
 
@@ -401,8 +378,9 @@ namespace CCGP.Shared
     {
         private ulong targetClientID;
         public int YourIndex;
-        public SerializedBoard Board;
         public List<SerializedPlayer> Players;
+        public SerializedBoard Board;
+        public SerializedImperium Imperium;
         public int FirstPlayerIndex;
         public int CurrentPlayerIndex;
         public List<bool> Opened;
@@ -413,8 +391,9 @@ namespace CCGP.Shared
         {
             this.targetClientID = targetClientID;
 
-            Board = new SerializedBoard(match.Board);
             Players = new();
+            Board = new SerializedBoard(match.Board);
+            Imperium = new SerializedImperium(match.Imperium);
             foreach (var player in match.Players)
             {
                 Players.Add(new SerializedPlayer(player));
@@ -427,6 +406,7 @@ namespace CCGP.Shared
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeNetworkSerializable(ref Board);
+            serializer.SerializeNetworkSerializable(ref Imperium);
             serializer.SerializeValue(ref FirstPlayerIndex);
             serializer.SerializeValue(ref CurrentPlayerIndex);
 
