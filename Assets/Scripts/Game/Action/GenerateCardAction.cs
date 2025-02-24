@@ -5,6 +5,7 @@ namespace CCGP.Server
 {
     public class GenerateCardAction : GameAction, IAbilityLoader
     {
+        public Player Player;
         public string CardID;
         public Card Card;
         public GenerateCardAction() { }

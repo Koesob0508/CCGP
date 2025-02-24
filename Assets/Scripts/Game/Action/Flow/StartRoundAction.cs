@@ -2,6 +2,6 @@
 {
     public class StartRoundAction : GameAction
     {
-
+        public Match Match;
     }
 }

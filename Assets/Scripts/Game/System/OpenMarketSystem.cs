@@ -7,18 +7,18 @@ namespace CCGP.Server
     {
         public void Activate()
         {
-            this.AddObserver(OnPrepareTurnEnd, Global.PrepareNotification<TurnEndAction>(), Container);
+            this.AddObserver(OnPrepareTurnEnd, Global.PrepareNotification<EndTurnAction>(), Container);
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPrepareTurnEnd, Global.PrepareNotification<TurnEndAction>(), Container);
+            this.RemoveObserver(OnPrepareTurnEnd, Global.PrepareNotification<EndTurnAction>(), Container);
         }
 
         private void OnPrepareTurnEnd(object sender, object args)
         {
             var match = Container.GetMatch();
-            var action = args as TurnEndAction;
+            var action = args as EndTurnAction;
 
             match.Opened[action.TargetPlayerIndex] = true;
         }

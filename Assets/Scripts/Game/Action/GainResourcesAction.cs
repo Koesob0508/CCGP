@@ -7,6 +7,7 @@ namespace CCGP.Server
 {
     public class GainResourcesAction : GameAction, IAbilityLoader
     {
+        public Player Player;
         public ResourceType Type;
         public uint Amount;
 

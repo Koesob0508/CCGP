@@ -42,7 +42,7 @@ namespace CCGP.Tests.Unit
             this.AddObserver((sender, obj) =>
             {
                 isPerform = true;
-            }, Global.PerformNotification<GameStartAction>(), game);
+            }, Global.PerformNotification<StartGameAction>(), game);
 
             // Act
             flowSystem.StartGame();
@@ -76,7 +76,7 @@ namespace CCGP.Tests.Unit
             this.AddObserver((sender, obj) =>
             {
                 isGameStartTriggered = true;
-            }, Global.PerformNotification<GameStartAction>());
+            }, Global.PerformNotification<StartGameAction>());
 
             this.AddObserver((sender, obj) =>
             {
@@ -115,7 +115,7 @@ namespace CCGP.Tests.Unit
             this.AddObserver((sender, obj) =>
             {
                 turnEndCount++;
-            }, Global.PerformNotification<TurnEndAction>());
+            }, Global.PerformNotification<EndTurnAction>());
 
             flowSystem.StartGame();
 
@@ -142,7 +142,7 @@ namespace CCGP.Tests.Unit
             this.AddObserver((sender, args) =>
             {
                 isTriggered = true;
-            }, Global.PerformNotification<RoundEndAction>(), game);
+            }, Global.PerformNotification<EndRoundAction>(), game);
 
             // Act
             var match = game.GetMatch();

@@ -10,9 +10,9 @@ namespace CCGP.Server
         public void Activate()
         {
             // Phase notify
-            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.AddObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
-            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+            this.AddObserver(OnPerformStartGame, Global.PerformNotification<StartGameAction>(), Container);
+            this.AddObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
+            this.AddObserver(OnPerformStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
 
             // Client message notify
             this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
@@ -20,9 +20,9 @@ namespace CCGP.Server
 
             // Player Game Action
             this.AddObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
-            this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
-            this.AddObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
-            this.AddObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
+            this.AddObserver(OnPerformDrawCards, Global.PerformNotification<DrawCardsAction>(), Container);
+            this.AddObserver(OnPerformTryPlayCard, Global.PerformNotification<TryPlayCardAction>(), Container);
+            this.AddObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
             this.AddObserver(OnPerformOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
@@ -30,29 +30,30 @@ namespace CCGP.Server
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
-            this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
-            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
+            this.RemoveObserver(OnPerformStartGame, Global.PerformNotification<StartGameAction>(), Container);
+            this.RemoveObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
+            this.RemoveObserver(OnPerformStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
 
             this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
 
             this.RemoveObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
-            this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
-            this.RemoveObserver(OnPerformTryCardPlay, Global.PerformNotification<TryPlayCardAction>(), Container);
-            this.RemoveObserver(OnPerformCardPlay, Global.PerformNotification<PlayCardAction>(), Container);
+            this.RemoveObserver(OnPerformDrawCards, Global.PerformNotification<DrawCardsAction>(), Container);
+            this.RemoveObserver(OnPerformTryPlayCard, Global.PerformNotification<TryPlayCardAction>(), Container);
+            this.RemoveObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.RemoveObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.RemoveObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
         }
 
-        private void OnPerformGameStart(object sender, object args)
+        private void OnPerformStartGame(object sender, object args)
         {
-            foreach (var player in Container.GetMatch().Players)
+            var action = args as StartGameAction;
+            foreach (var player in action.Match.Players)
             {
                 ShuffleDeck(player);
             }
         }
 
-        private void OnPerformRoundStart(object sender, object args)
+        private void OnPerformStartRound(object sender, object args)
         {
             var batchAction = new RoundStartDrawAction();
 
@@ -76,17 +77,17 @@ namespace CCGP.Server
             }
         }
 
-        private void OnPerformTurnStart(object sender, object args)
+        private void OnPerformStartTurn(object sender, object args)
         {
-            var action = args as TurnStartAction;
+            var action = args as StartTurnAction;
 
-            var player = Container.GetMatch().Players[action.TargetPlayerIndex];
+            var player = action.Match.Players[action.TargetPlayerIndex];
 
             RestoreTurnActionCount(player);
             player.IsOpened = false;
         }
 
-        private void OnPerformCardsDraw(object sender, object args)
+        private void OnPerformDrawCards(object sender, object args)
         {
             var action = args as DrawCardsAction;
 
@@ -133,7 +134,7 @@ namespace CCGP.Server
             Container.Perform(action);
         }
 
-        private void OnPerformTryCardPlay(object sender, object args)
+        private void OnPerformTryPlayCard(object sender, object args)
         {
             var tryAction = args as TryPlayCardAction;
 
@@ -144,7 +145,7 @@ namespace CCGP.Server
 
         #region Card Play Action
 
-        private void OnPerformCardPlay(object sender, object args)
+        private void OnPerformPlayCard(object sender, object args)
         {
             var action = args as PlayCardAction;
             action.Card.TryGetAspect(out Target target);
@@ -214,6 +215,7 @@ namespace CCGP.Server
 
             ChangeZone(card, Zone.Hand, player);
         }
+
         private void OnPerformOpenCards(object sender, object args)
         {
             var action = args as OpenCardsAction;
@@ -236,6 +238,8 @@ namespace CCGP.Server
 
             player.IsOpened = true;
         }
+
+        #region Utility
 
         private void ShuffleDeck(Player player)
         {
@@ -336,5 +340,7 @@ namespace CCGP.Server
             if (!Container.TryGetAspect<CardSystem>(out var cardSystem)) return;
             cardSystem.ChangeZone(card, zone, toPlayer);
         }
+
+        #endregion
     }
 }

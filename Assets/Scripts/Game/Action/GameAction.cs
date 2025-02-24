@@ -9,7 +9,6 @@ namespace CCGP.Server
     public class GameAction
     {
         public readonly int ID;
-        public Player Player { get; set; }
         public int Priority { get; set; }
         public int OrderOfPlay { get; set; }
         public bool IsCanceled { get; protected set; }

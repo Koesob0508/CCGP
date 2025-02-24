@@ -6,6 +6,7 @@ namespace CCGP.Server
 {
     public class DrawCardsAction : GameAction, IAbilityLoader
     {
+        public Player Player;
         public uint Amount;
         public List<Card> Cards;
 

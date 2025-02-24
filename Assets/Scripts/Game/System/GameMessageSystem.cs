@@ -47,12 +47,12 @@ namespace CCGP.Server
         private void RegisterObserver()
         {
             // Phase
-            this.AddObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
+            this.AddObserver(OnStartGame, Global.PerformNotification<StartGameAction>(), Container);
             this.AddObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
-            this.AddObserver(OnStartTurn, Global.PerformNotification<TurnStartAction>(), Container);
-            this.AddObserver(OnEndTurn, Global.PerformNotification<TurnEndAction>(), Container);
-            this.AddObserver(OnEndRound, Global.PerformNotification<RoundEndAction>(), Container);
-            this.AddObserver(OnEndGame, Global.PerformNotification<GameEndAction>(), Container);
+            this.AddObserver(OnStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
+            this.AddObserver(OnEndTurn, Global.PerformNotification<EndTurnAction>(), Container);
+            this.AddObserver(OnEndRound, Global.PerformNotification<EndRoundAction>(), Container);
+            this.AddObserver(OnEndGame, Global.PerformNotification<EndGameAction>(), Container);
 
             // Not Phase, But Change
             this.AddObserver(OnRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
@@ -71,12 +71,12 @@ namespace CCGP.Server
         private void UnregisterObserver()
         {
             // Phase
-            this.RemoveObserver(OnStartGame, Global.PerformNotification<GameStartAction>(), Container);
+            this.RemoveObserver(OnStartGame, Global.PerformNotification<StartGameAction>(), Container);
             this.RemoveObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
-            this.RemoveObserver(OnStartTurn, Global.PerformNotification<TurnStartAction>(), Container);
-            this.RemoveObserver(OnEndTurn, Global.PerformNotification<TurnEndAction>(), Container);
-            this.RemoveObserver(OnEndRound, Global.PerformNotification<RoundEndAction>(), Container);
-            this.RemoveObserver(OnEndGame, Global.PerformNotification<GameEndAction>(), Container);
+            this.RemoveObserver(OnStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
+            this.RemoveObserver(OnEndTurn, Global.PerformNotification<EndTurnAction>(), Container);
+            this.RemoveObserver(OnEndRound, Global.PerformNotification<EndRoundAction>(), Container);
+            this.RemoveObserver(OnEndGame, Global.PerformNotification<EndGameAction>(), Container);
 
             // Not Phase, But Change
             this.RemoveObserver(OnRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
@@ -301,9 +301,12 @@ namespace CCGP.Server
         {
             LogUtility.Log<GameMessageSystem>("Send Show Available Tiles", colorName: ColorCodes.Server);
 
-            var tiles = args as List<Tile>;
+            var pairArgs = args as Tuple<Player, List<Tile>>;
+            var player = pairArgs.Item1;
+            var tiles = pairArgs.Item2;
             var sTiles = new SerializedTiles(tiles);
             Container.TryGetAspect<ActionSystem>(out var actionSystem);
+
             if (actionSystem == null)
             {
                 LogUtility.Log("ActionSystem is null");
@@ -312,13 +315,13 @@ namespace CCGP.Server
             {
                 LogUtility.Log("CurrentAction is null");
             }
-            else if (actionSystem.CurrentAction.Player == null)
+            else if (player == null)
             {
                 LogUtility.Log($"{actionSystem.CurrentAction.GetType().Name}");
                 LogUtility.Log("CurrentAction.Player is null");
             }
 
-            var targetID = actionSystem.CurrentAction.Player.ID;
+            var targetID = player.ID;
 
             Send((ushort)GameCommand.ShowAvailableTiles, targetID, sTiles, NetworkDelivery.ReliableFragmentedSequenced);
         }

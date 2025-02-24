@@ -1,5 +1,6 @@
 ﻿using CCGP.AspectContainer;
 using CCGP.Shared;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -123,9 +124,9 @@ namespace CCGP.Server
                 yield break;
             }
 
-            Action = action;
+            Action = tryPlayCardAction;
             // 가능한 지역 목록 메시징
-            var targetTiles = GetAvailableTile(tryPlayCardAction.Card, action.Player);
+            var targetTiles = GetAvailableTile(tryPlayCardAction.Card, tryPlayCardAction.Player);
 
             var log = "보낼 수 있는 지역 : \n";
             for (int i = 0; i < targetTiles.Count; i++)
@@ -133,7 +134,7 @@ namespace CCGP.Server
                 log += $"{i + 1}. {targetTiles[i].Name} ";
             }
             LogUtility.Log<TargetSystem>(log, colorName: ColorCodes.Logic);
-            Container.PostNotification(Global.MessageNotification(GameCommand.ShowAvailableTiles), targetTiles);
+            Container.PostNotification(Global.MessageNotification(GameCommand.ShowAvailableTiles), new Tuple<Player, List<Tile>>(tryPlayCardAction.Player, targetTiles));
 
             while (target.Selected == null && !action.IsCanceled)
             {

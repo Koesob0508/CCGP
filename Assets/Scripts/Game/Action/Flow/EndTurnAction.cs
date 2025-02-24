@@ -1,11 +1,12 @@
 ﻿namespace CCGP.Server
 {
-    public class TurnEndAction : GameAction
+    public class EndTurnAction : GameAction
     {
+        public Match Match;
         public int TargetPlayerIndex;
         public int NextPlayerIndex;
 
-        public TurnEndAction(int targetPlayerIndex, int nextPlayerIndex)
+        public EndTurnAction(int targetPlayerIndex, int nextPlayerIndex)
         {
             TargetPlayerIndex = targetPlayerIndex;
             NextPlayerIndex = nextPlayerIndex;

@@ -7,32 +7,42 @@ namespace CCGP.Server
     {
         public void Activate()
         {
-            this.AddObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
+            this.AddObserver(OnPerformGameStart, Global.PerformNotification<StartGameAction>(), Container);
             this.AddObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
-            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
-            this.AddObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
-            this.AddObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
-            this.AddObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
+            this.AddObserver(OnPerformTurnStart, Global.PerformNotification<StartTurnAction>(), Container);
+            this.AddObserver(OnPerformTurnEnd, Global.PerformNotification<EndTurnAction>(), Container);
+            this.AddObserver(OnPerformRoundEnd, Global.PerformNotification<EndRoundAction>(), Container);
+            this.AddObserver(OnPerformGameEnd, Global.PerformNotification<EndGameAction>(), Container);
 
             this.AddObserver(OnReceivedTryEndTurn, Global.MessageNotification(GameCommand.TryEndTurn), Container);
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<GameStartAction>(), Container);
+            this.RemoveObserver(OnPerformGameStart, Global.PerformNotification<StartGameAction>(), Container);
             this.RemoveObserver(OnPerformRoundStart, Global.PerformNotification<StartRoundAction>(), Container);
-            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
-            this.RemoveObserver(OnPerformTurnEnd, Global.PerformNotification<TurnEndAction>(), Container);
-            this.RemoveObserver(OnPerformRoundEnd, Global.PerformNotification<RoundEndAction>(), Container);
-            this.RemoveObserver(OnPerformGameEnd, Global.PerformNotification<GameEndAction>(), Container);
+            this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<StartTurnAction>(), Container);
+            this.RemoveObserver(OnPerformTurnEnd, Global.PerformNotification<EndTurnAction>(), Container);
+            this.RemoveObserver(OnPerformRoundEnd, Global.PerformNotification<EndRoundAction>(), Container);
+            this.RemoveObserver(OnPerformGameEnd, Global.PerformNotification<EndGameAction>(), Container);
 
             this.RemoveObserver(OnReceivedTryEndTurn, Global.MessageNotification(GameCommand.TryEndTurn), Container);
         }
 
         public void StartGame()
         {
-            var action = new GameStartAction();
+            var action = new StartGameAction();
             Container.Perform(action);
+        }
+
+        private void OnReceivedTryEndTurn(object sender, object args)
+        {
+            LogUtility.Log<FlowSystem>("Received OnTryEndTurn", colorName: ColorCodes.Logic);
+
+            var sData = args as SerializedData;
+            var sPlayer = sData.Get<SerializedPlayer>();
+
+            EndTurn(sPlayer.Index);
         }
 
         public void EndTurn(int targetPlayerIndex)
@@ -49,19 +59,19 @@ namespace CCGP.Server
             // 현재 턴이 아닌 사람이 EndTurn을 호출했을 경우 return
             if (targetPlayerIndex != match.CurrentPlayerIndex) return;
 
-            var action = new TurnEndAction(targetPlayerIndex, nextPlayerIndex);
+            var action = new EndTurnAction(targetPlayerIndex, nextPlayerIndex);
             Container.Perform(action);
         }
 
         private void EndGame()
         {
-            var action = new GameEndAction();
+            var action = new EndGameAction();
             Container.Perform(action);
         }
 
         private void EndRound()
         {
-            var action = new RoundEndAction();
+            var action = new EndRoundAction();
             Container.Perform(action);
         }
 
@@ -88,7 +98,7 @@ namespace CCGP.Server
             LogUtility.Log<FlowSystem>("라운드 시작");
 
             var match = Container.GetMatch();
-            var action = new TurnStartAction(match.FirstPlayerIndex);
+            var action = new StartTurnAction(match.FirstPlayerIndex);
             Container.AddReaction(action);
         }
 
@@ -96,13 +106,13 @@ namespace CCGP.Server
         {
             LogUtility.Log<FlowSystem>("라운드 종료");
 
-            var gameEndAction = new GameEndAction();
+            var gameEndAction = new EndGameAction();
             Container.AddReaction(gameEndAction);
         }
 
         public void OnPerformTurnStart(object sender, object args)
         {
-            var action = args as TurnStartAction;
+            var action = args as StartTurnAction;
 
             LogUtility.Log<FlowSystem>($"{action.TargetPlayerIndex}번째 플레이어 턴 시작");
 
@@ -113,7 +123,7 @@ namespace CCGP.Server
         public void OnPerformTurnEnd(object sender, object args)
         {
             var match = Container.GetMatch();
-            var action = args as TurnEndAction;
+            var action = args as EndTurnAction;
 
             LogUtility.Log<FlowSystem>($"{action.TargetPlayerIndex}번째 플레이어 턴 종료");
 
@@ -130,24 +140,16 @@ namespace CCGP.Server
             // if (match.Opened.Contains(false))
             if (roundEnd)
             {
-                var roundEndAction = new RoundEndAction();
+                var roundEndAction = new EndRoundAction();
                 Container.AddReaction(roundEndAction);
             }
             else
             {
-                var turnStartAction = new TurnStartAction(action.NextPlayerIndex);
+                var turnStartAction = new StartTurnAction(action.NextPlayerIndex);
                 Container.AddReaction(turnStartAction);
             }
         }
 
-        private void OnReceivedTryEndTurn(object sender, object args)
-        {
-            LogUtility.Log<FlowSystem>("Received OnTryEndTurn", colorName: ColorCodes.Logic);
 
-            var sData = args as SerializedData;
-            var sPlayer = sData.Get<SerializedPlayer>();
-
-            EndTurn(sPlayer.Index);
-        }
     }
 }
