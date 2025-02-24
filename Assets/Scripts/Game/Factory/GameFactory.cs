@@ -13,6 +13,7 @@
             game.AddAspect<ActionSystem>();
             game.AddAspect<FlowSystem>();
             game.AddAspect<OpenMarketSystem>();
+            game.AddAspect<PlayerValidationSystem>();
             game.AddAspect<PlayerSystem>();
             game.AddAspect<CardSystem>();
             game.AddAspect<TargetSystem>();

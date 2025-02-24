@@ -1,6 +1,5 @@
 ﻿using CCGP.AspectContainer;
 using CCGP.Shared;
-using PlasticPipe.PlasticProtocol.Messages;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,10 +18,6 @@ namespace CCGP.Server
             this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
             this.AddObserver(OnReceivedTryOpenCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
 
-            // Validate notify
-            this.AddObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
-            this.AddObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
-
             // Player Game Action
             this.AddObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.AddObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
@@ -31,7 +26,6 @@ namespace CCGP.Server
             this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
             this.AddObserver(OnPerformOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
-
         }
 
         public void Deactivate()
@@ -41,9 +35,6 @@ namespace CCGP.Server
             this.RemoveObserver(OnPerformTurnStart, Global.PerformNotification<TurnStartAction>(), Container);
 
             this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
-
-            this.RemoveObserver(OnValidateTryCardPlay, Global.ValidateNotification<TryPlayCardAction>());
-            this.RemoveObserver(OnValidateCardPlay, Global.ValidateNotification<PlayCardAction>());
 
             this.RemoveObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.RemoveObserver(OnPerformCardsDraw, Global.PerformNotification<DrawCardsAction>(), Container);
@@ -142,57 +133,6 @@ namespace CCGP.Server
             Container.Perform(action);
         }
 
-        private void OnValidateTryCardPlay(object sender, object args)
-        {
-            var action = sender as TryPlayCardAction;
-            var validator = args as Validator;
-
-            // 앞선 시스템에서 이미 불합격이라면 검증 안해도 됨
-            if (!validator.IsValid) return;
-
-            if (action.Card == null)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Card is null", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-
-            if (action.Card.OwnerIndex != Container.GetMatch().CurrentPlayerIndex)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Not your turn", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-
-            if (action.Card.Zone != Zone.Hand)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Card is not in Hand", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-
-            if (action.Card.Space == Shared.Space.None)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Card has no space", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-
-            if (Container.GetMatch().Players[action.Card.OwnerIndex].TurnActionCount == 0)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Turn action count is 0", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-
-            if (Container.GetMatch().Players[action.Card.OwnerIndex].UsedAgentCount == Container.GetMatch().Players[action.Card.OwnerIndex].TotalAgentCount)
-            {
-                LogUtility.LogWarning<PlayerSystem>("Agent action count is 0", colorName: ColorCodes.Logic);
-                validator.Invalidate();
-                return;
-            }
-        }
-
         private void OnPerformTryCardPlay(object sender, object args)
         {
             var tryAction = args as TryPlayCardAction;
@@ -203,11 +143,6 @@ namespace CCGP.Server
         #endregion
 
         #region Card Play Action
-        private void OnValidateCardPlay(object sender, object args)
-        {
-            // var action = sender as CardPlayAction;
-            // var validator = args as Validator;
-        }
 
         private void OnPerformCardPlay(object sender, object args)
         {
@@ -336,7 +271,7 @@ namespace CCGP.Server
             return result;
         }
 
-        private List<Card> Draw(Player player, uint amount)
+        public List<Card> Draw(Player player, uint amount)
         {
             int resultAmount = (int)Mathf.Min(amount, player[Zone.Deck].Count + player[Zone.Graveyard].Count);
             List<Card> result = new(resultAmount);
