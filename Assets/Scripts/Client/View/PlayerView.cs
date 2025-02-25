@@ -9,13 +9,11 @@ namespace CCGP.Client
 {
     public class PlayerView : BaseView
     {
-        private SerializedPlayer ClientPlayer;
+        public SerializedPlayer ClientPlayer;
 
         public List<SerializedPlayer> Data { get; private set; }
-        public GameObject Hand;
-        public GameObject SelectedCard;
+
         [Header("Prefab")]
-        public CardView Prefab_CardView;
         public GameObject Prefab_AgentView;
 
         [Header("Client Player")]
@@ -79,92 +77,12 @@ namespace CCGP.Client
         {
             this.AddObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
 
-            // Not Phase, But Change
-            this.AddObserver(OnRoundStartDraw, Global.MessageNotification(GameCommand.RoundStartDraw), Container);
-            this.AddObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
-            this.AddObserver(OnGenerateCard, Global.MessageNotification(GameCommand.GenerateCard), Container);
-            this.AddObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
-
             Object_Agents = new();
         }
 
         public override void Deactivate()
         {
             this.RemoveObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
-
-            this.RemoveObserver(OnRoundStartDraw, Global.MessageNotification(GameCommand.RoundStartDraw), Container);
-            this.RemoveObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
-            this.RemoveObserver(OnGenerateCard, Global.MessageNotification(GameCommand.GenerateCard), Container);
-            this.RemoveObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
-        }
-
-        private void OnRoundStartDraw(object sender, object args)
-        {
-            var sData = args as SerializedData;
-            var sAction = sData.Get<SerializedRoundStartDrawAction>();
-
-            foreach (var card in sAction[ClientPlayer.Index])
-            {
-                var cardView = Instantiate(Prefab_CardView, Hand.transform);
-                cardView.UpdateData(card);
-                cardView.Enable();
-            }
-        }
-
-        private void OnDrawCards(object sender, object args)
-        {
-            var sData = args as SerializedData;
-            var sAction = sData.Get<SerializedDrawCardsAction>();
-
-            LogUtility.Log<PlayerView>($"{sAction.Player.ClientID}", colorName: ColorCodes.ClientSequencer);
-
-            if (sAction.Player.ClientID == NetworkManager.Singleton.LocalClientId)
-            {
-                foreach (var card in sAction.Cards)
-                {
-                    var cardView = Instantiate(Prefab_CardView, Hand.transform);
-                    cardView.UpdateData(card);
-                    cardView.Enable();
-                }
-            }
-        }
-
-        private void OnGenerateCard(object sender, object args)
-        {
-            var sData = args as SerializedData;
-            var sCard = sData.Get<SerializedCard>();
-
-            LogUtility.Log<PlayerView>($"{sCard.OwnerIndex}", colorName: ColorCodes.ClientSequencer);
-
-            foreach (var player in Data)
-            {
-                // 생성된 카드의 소유자이면서, 이 클라이언트의 Player일 경우, 손에 카드 추가
-                if (player.Index == sCard.OwnerIndex && player.ClientID == NetworkManager.Singleton.LocalClientId)
-                {
-                    var cardView = Instantiate(Prefab_CardView, Hand.transform);
-                    cardView.UpdateData(sCard);
-                    cardView.Enable();
-                }
-            }
-        }
-
-        private void OnOpenCards(object sender, object args)
-        {
-            var sData = args as SerializedData;
-            var sPlayer = sData.Get<SerializedPlayer>();
-
-            LogUtility.Log<PlayerView>($"{sPlayer.Index}", colorName: ColorCodes.ClientSequencer);
-
-            foreach (var player in Data)
-            {
-                // 생성된 카드의 소유자이면서, 이 클라이언트의 Player일 경우, 손패 공개
-                if (player.Index == sPlayer.Index && player.ClientID == NetworkManager.Singleton.LocalClientId)
-                {
-                    // var cardView = Instantiate(Prefab_CardView, Hand.transform);
-                    // cardView.UpdateData(sCard);
-                    // cardView.Enable();
-                }
-            }
         }
 
         private void OnUpdateData(object sender, object args)

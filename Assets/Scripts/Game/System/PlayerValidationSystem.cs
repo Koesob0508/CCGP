@@ -8,13 +8,13 @@ namespace CCGP.Server
         public void Activate()
         {
             this.AddObserver(OnValidateTryPlayCard, Global.ValidateNotification<TryPlayCardAction>());
-            this.AddObserver(OnValidateTryOpenCards, Global.ValidateNotification<TryOpenCardsAction>());
+            this.AddObserver(OnValidateRevealCards, Global.ValidateNotification<RevealCardsAction>());
         }
 
         public void Deactivate()
         {
             this.RemoveObserver(OnValidateTryPlayCard, Global.ValidateNotification<TryPlayCardAction>());
-            this.RemoveObserver(OnValidateTryOpenCards, Global.ValidateNotification<TryOpenCardsAction>());
+            this.RemoveObserver(OnValidateRevealCards, Global.ValidateNotification<RevealCardsAction>());
         }
 
         private void OnValidateTryPlayCard(object sender, object args)
@@ -69,9 +69,21 @@ namespace CCGP.Server
             }
         }
 
-        private void OnValidateTryOpenCards(object sender, object args)
+        private void OnValidateRevealCards(object sender, object args)
         {
+            LogUtility.Log<PlayerValidationSystem>("On Validate RevealCard", colorName: ColorCodes.Logic);
+            var action = sender as RevealCardsAction;
+            var validator = args as Validator;
 
+            if (!validator.IsValid) return;
+
+            var match = Container.GetMatch();
+
+            if (match.CurrentPlayerIndex != action.Player.Index)
+            {
+                LogUtility.LogWarning<PlayerSystem>("당신의 턴이 아닙니다. 카드 공개는 당신의 턴에만 가능합니다.");
+                validator.Invalidate();
+            }
         }
     }
 }

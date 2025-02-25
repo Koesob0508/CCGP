@@ -60,7 +60,7 @@ namespace CCGP.Server
             this.AddObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.AddObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.AddObserver(OnRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.AddObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -84,7 +84,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.RemoveObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.RemoveObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.RemoveObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.RemoveObserver(OnRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.RemoveObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -277,7 +277,7 @@ namespace CCGP.Server
             }
         }
 
-        private async void OnOpenCards(object sender, object args)
+        private async void OnRevealCards(object sender, object args)
         {
             UpdateData();
 
@@ -285,12 +285,12 @@ namespace CCGP.Server
 
             LogUtility.Log<GameMessageSystem>("Send Open Cards", colorName: ColorCodes.Server);
 
-            var action = args as OpenCardsAction;
+            var action = args as RevealCardsAction;
             var sPlayer = new SerializedPlayer(action.Player);
 
             foreach (var playerInfo in Game.PlayerInfos)
             {
-                Send((ushort)GameCommand.GenerateCard, playerInfo.ClientID, sPlayer, NetworkDelivery.ReliableFragmentedSequenced);
+                Send((ushort)GameCommand.RevealCards, playerInfo.ClientID, sPlayer, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }
         #endregion

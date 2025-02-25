@@ -24817,6 +24817,7 @@ GameObject:
   - component: {fileID: 1306012802}
   - component: {fileID: 1306012806}
   - component: {fileID: 1306012805}
+  - component: {fileID: 1306012807}
   m_Layer: 0
   m_Name: '@ViewSystem'
   m_TagString: Untagged
@@ -24868,9 +24869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4ccec0a0df6484cbdb46d67cc8317f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hand: {fileID: 1404861317}
   SelectedCard: {fileID: 1934185401}
-  Prefab_CardView: {fileID: -524056421115020649, guid: 1adabef4febfcc048a1db815e600c0ef, type: 3}
   Prefab_AgentView: {fileID: 1646799344541442176, guid: f7755acf543d3384996b712b43f61590, type: 3}
   Text_VictoryPoint: {fileID: 627547730}
   Text_Lunar: {fileID: 1389079241}
@@ -25000,6 +24999,21 @@ MonoBehaviour:
   ImperiumCard_3: {fileID: 485430561}
   ImperiumCard_4: {fileID: 1221556255}
   ImperiumCard_5: {fileID: 1690714630}
+--- !u!114 &1306012807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306012798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b61fd043d9514a469eacfa129faad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Root_Hand: {fileID: 1404861317}
+  Root_SelectedCard: {fileID: 1934185401}
+  Prefab_CardView: {fileID: -524056421115020649, guid: 1adabef4febfcc048a1db815e600c0ef, type: 3}
 --- !u!1 &1308129552
 GameObject:
   m_ObjectHideFlags: 0

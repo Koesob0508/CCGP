@@ -24,7 +24,7 @@ namespace CCGP.Client
             this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
             this.AddObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
             this.AddObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
-            this.AddObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
+            this.AddObserver(OnOpenCards, Global.MessageNotification(GameCommand.RevealCards), Container);
         }
 
         public override void Deactivate()
@@ -34,7 +34,7 @@ namespace CCGP.Client
             this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
             this.RemoveObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
             this.RemoveObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
-            this.RemoveObserver(OnOpenCards, Global.MessageNotification(GameCommand.OpenCards), Container);
+            this.RemoveObserver(OnOpenCards, Global.MessageNotification(GameCommand.RevealCards), Container);
         }
 
         private void OnClickEndTurn()

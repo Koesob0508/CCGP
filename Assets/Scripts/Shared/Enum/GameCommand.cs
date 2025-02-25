@@ -20,7 +20,7 @@
         CancelTryPlayCard = 3231,
         PlayCard = 3232,
         CancelPlayCard = 3233,
-        OpenCards = 3234,
+        RevealCards = 3234,
 
         // Not Phase, But Change, It's Game Action
         DrawCards = 3310,

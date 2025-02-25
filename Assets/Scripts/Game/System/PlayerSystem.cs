@@ -16,7 +16,7 @@ namespace CCGP.Server
 
             // Client message notify
             this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
-            this.AddObserver(OnReceivedTryOpenCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
+            this.AddObserver(OnReceivedTryRevealCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
 
             // Player Game Action
             this.AddObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
@@ -25,7 +25,7 @@ namespace CCGP.Server
             this.AddObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.AddObserver(OnPerformOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.AddObserver(OnPerformOpenCards, Global.PerformNotification<RevealCardsAction>(), Container);
         }
 
         public void Deactivate()
@@ -115,22 +115,16 @@ namespace CCGP.Server
             Container.Perform(action);
         }
 
-        private void OnReceivedTryOpenCards(object sender, object args)
+        private void OnReceivedTryRevealCards(object sender, object args)
         {
-            LogUtility.Log<PlayerSystem>("Received OnTryOpenCard", colorName: ColorCodes.Logic);
+            LogUtility.Log<PlayerSystem>("Received OnTryRevealCard", colorName: ColorCodes.Logic);
             var sData = args as SerializedData;
             var sPlayer = sData.Get<SerializedPlayer>();
 
-            // 검증은 해야지. 얘가 턴인지
             var match = Container.GetMatch();
-            if (match.CurrentPlayerIndex != sPlayer.Index)
-            {
-                LogUtility.LogWarning<PlayerSystem>("턴이 아닌데 카드 오픈 시도");
-                return;
-            }
-
             var player = match.Players[sPlayer.Index];
-            var action = new OpenCardsAction(player);
+
+            var action = new RevealCardsAction(player);
             Container.Perform(action);
         }
 
@@ -218,7 +212,7 @@ namespace CCGP.Server
 
         private void OnPerformOpenCards(object sender, object args)
         {
-            var action = args as OpenCardsAction;
+            var action = args as RevealCardsAction;
 
             var player = action.Player;
 
