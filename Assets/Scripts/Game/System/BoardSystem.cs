@@ -11,16 +11,19 @@ namespace CCGP.Server
         {
             Data = Container.GetMatch().Board;
 
-            this.AddObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.AddObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.AddObserver(OnEndRound, Global.PerformNotification<EndRoundAction>(), Container);
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.RemoveObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.RemoveObserver(OnEndRound, Global.PerformNotification<EndRoundAction>(), Container);
+
             Data = null;
         }
 
-        private void OnPerformPlayCard(object sender, object args)
+        private void OnPlayCard(object sender, object args)
         {
             var action = args as PlayCardAction;
             if (action == null) return;
@@ -45,6 +48,17 @@ namespace CCGP.Server
             }
 
             rTile.AgentIndex = card.OwnerIndex;
+        }
+
+        private void OnEndRound(object sender, object args)
+        {
+            var action = args as EndRoundAction;
+            var match = action.Match;
+
+            foreach (var tile in Data.Tiles)
+            {
+                tile.AgentIndex = -1;
+            }
         }
     }
 }

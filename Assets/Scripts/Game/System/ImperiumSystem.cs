@@ -11,15 +11,17 @@ namespace CCGP.Server
         {
             Data = Container.GetMatch().Imperium;
 
-            this.AddObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
+            this.AddObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
         }
 
         public void Deactivate()
         {
-            this.RemoveObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
+            this.RemoveObserver(OnStartRound, Global.PerformNotification<StartRoundAction>(), Container);
+
+            Data = null;
         }
 
-        private void OnPerformStartRound(object sender, object args)
+        private void OnStartRound(object sender, object args)
         {
             var action = args as StartRoundAction;
             if (action == null) return;
@@ -28,11 +30,26 @@ namespace CCGP.Server
 
             for (int i = 0; i < 5; i++)
             {
-                var card = Data.Deck[0];
-                Data.Row.Add(card);
-                Data.Deck.RemoveAt(0);
-                card.SetZone(Zone.ImperiumRow);
+                if (TryDrawImperium(out var card))
+                {
+                    Data.Row.Add(card);
+                    card.SetZone(Zone.ImperiumRow);
+                }
             }
+        }
+
+        private bool TryDrawImperium(out Card card)
+        {
+            if (Data.Deck.Count == 0)
+            {
+                card = null;
+                return false;
+            }
+
+            card = Data.Deck[0];
+            Data.Deck.RemoveAt(0);
+
+            return true;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace CCGP.Tests.Unit
                     reader.ReadNetworkSerializable(out desPlayer);
 
                     // 4. 검증
-                    Assert.AreEqual(originalPlayer.ID, desPlayer.ClientID);
+                    Assert.AreEqual(originalPlayer.ClientID, desPlayer.ClientID);
                     Assert.AreEqual(originalPlayer.Index, desPlayer.Index);
                     Assert.AreEqual(originalPlayer[Zone.Deck].Count, desPlayer.Deck.Count);
                     Assert.AreEqual(originalPlayer[Zone.Hand].Count, desPlayer.Hand.Count);

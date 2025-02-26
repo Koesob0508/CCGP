@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CCGP.Shared;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace CCGP.Client
 
         public GameObject Root_Hand;
         public GameObject Root_SelectedCard;
+        public List<CardView> HandCards;
 
         [Header("Prefab")]
         public CardView Prefab_CardView;
@@ -22,6 +24,7 @@ namespace CCGP.Client
             this.AddObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
             this.AddObserver(OnGenerateCards, Global.MessageNotification(GameCommand.GenerateCard), Container);
             this.AddObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            this.AddObserver(OnEndTurn, Global.MessageNotification(GameCommand.EndTurn), Container);
         }
 
         public override void Deactivate()
@@ -32,10 +35,12 @@ namespace CCGP.Client
             this.RemoveObserver(OnDrawCards, Global.MessageNotification(GameCommand.DrawCards), Container);
             this.RemoveObserver(OnGenerateCards, Global.MessageNotification(GameCommand.GenerateCard), Container);
             this.RemoveObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            this.RemoveObserver(OnEndTurn, Global.MessageNotification(GameCommand.EndTurn), Container);
         }
 
         private void OnStartGame(object sender, object args)
         {
+            HandCards = new();
             PlayerIndex = GetComponent<PlayerView>().ClientPlayer.Index;
         }
 
@@ -49,6 +54,8 @@ namespace CCGP.Client
                 var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
                 cardView.UpdateData(card);
                 cardView.Enable();
+
+                HandCards.Add(cardView);
             }
         }
 
@@ -57,7 +64,7 @@ namespace CCGP.Client
             var sData = args as SerializedData;
             var sAction = sData.Get<SerializedDrawCardsAction>();
 
-            LogUtility.Log<HandView>($"{sAction.Player.ClientID}", colorName: ColorCodes.ClientSequencer);
+            LogUtility.Log<HandView>($"{sAction.Player.ClientID} Player draw cards", colorName: ColorCodes.ClientSequencer);
 
             if (sAction.Player.ClientID == NetworkManager.Singleton.LocalClientId)
             {
@@ -66,6 +73,8 @@ namespace CCGP.Client
                     var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
                     cardView.UpdateData(card);
                     cardView.Enable();
+
+                    HandCards.Add(cardView);
                 }
             }
         }
@@ -82,6 +91,8 @@ namespace CCGP.Client
                 var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
                 cardView.UpdateData(sCard);
                 cardView.Enable();
+
+                HandCards.Add(cardView);
             }
         }
 
@@ -92,14 +103,35 @@ namespace CCGP.Client
 
             LogUtility.Log<HandView>($"Player {sPlayer.Index} reveals Card.", colorName: ColorCodes.ClientSequencer);
 
-            foreach (var card in sPlayer.Hand)
+            if (PlayerIndex != sPlayer.Index) return;
+
+            foreach (var cardView in HandCards)
             {
-                LogUtility.Log<HandView>($"{card.Name}", ColorCodes.ClientSequencer);
+                LogUtility.Log<HandView>($"Card {cardView.Name} set active false", colorName: ColorCodes.ClientSequencer);
+                cardView.gameObject.SetActive(false);
+            }
+        }
+
+        private void OnEndTurn(object sender, object args)
+        {
+            var targetCards = new List<CardView>();
+
+            foreach (var cardView in HandCards)
+            {
+                if (cardView.gameObject.activeSelf == false)
+                {
+                    targetCards.Add(cardView);
+                }
             }
 
-            foreach (var card in sPlayer.Open)
+            for (int i = targetCards.Count - 1; i >= 0; i--)
             {
-                LogUtility.Log<HandView>($"{card.Name}", ColorCodes.ClientSequencer);
+                var cardView = targetCards[i];
+
+                HandCards.Remove(cardView);
+                targetCards.Remove(cardView);
+
+                Destroy(cardView.gameObject);
             }
         }
     }

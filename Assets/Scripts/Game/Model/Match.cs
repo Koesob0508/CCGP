@@ -4,6 +4,8 @@ namespace CCGP.Server
 {
     public class Match
     {
+        public int Round;
+        public const int MaxRound = 10;
         public List<Player> Players;
         public Board Board;
         public Imperium Imperium;
@@ -13,6 +15,7 @@ namespace CCGP.Server
 
         public Match(List<Player> players, Board board, Imperium imperium)
         {
+            Round = 0;
             Players = players;
             Board = board;
             Imperium = imperium;

@@ -135,7 +135,8 @@ namespace CCGP.Shared
         public uint TotalAgentCount;
         public uint UsedAgentCount;
         public uint TurnActionCount;
-        public bool IsOpened;
+        public bool IsRevealPhase;
+        public bool IsRevealed;
         public uint Lunar;
         public uint Marsion;
         public uint Water;
@@ -154,13 +155,13 @@ namespace CCGP.Shared
         public List<SerializedCard> Hand;
         public List<SerializedCard> Graveyard;
         public List<SerializedCard> Agent;
-        public List<SerializedCard> Open;
+        public List<SerializedCard> Reveal;
 
         public SerializedPlayer() { }
 
         public SerializedPlayer(Player player)
         {
-            ClientID = player.ID;
+            ClientID = player.ClientID;
             Index = player.Index;
             LobbyID = player.PlayerInfo.LobbyID;
 
@@ -169,7 +170,8 @@ namespace CCGP.Shared
             TotalAgentCount = player.TotalAgentCount;
             UsedAgentCount = player.UsedAgentCount;
             TurnActionCount = player.TurnActionCount;
-            IsOpened = player.IsOpened;
+            IsRevealPhase = player.IsRevealPhase;
+            IsRevealed = player.IsRevealed;
 
             Lunar = player.Lunar;
             Marsion = player.Marsion;
@@ -215,10 +217,10 @@ namespace CCGP.Shared
                 Agent.Add(new SerializedCard(card));
             }
 
-            Open = new();
-            foreach (var card in player[Zone.Open])
+            Reveal = new();
+            foreach (var card in player[Zone.Reveal])
             {
-                Open.Add(new SerializedCard(card));
+                Reveal.Add(new SerializedCard(card));
             }
         }
 
@@ -232,7 +234,8 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref TotalAgentCount);
             serializer.SerializeValue(ref UsedAgentCount);
             serializer.SerializeValue(ref TurnActionCount);
-            serializer.SerializeValue(ref IsOpened);
+            serializer.SerializeValue(ref IsRevealPhase);
+            serializer.SerializeValue(ref IsRevealed);
             serializer.SerializeValue(ref Lunar);
             serializer.SerializeValue(ref Marsion);
             serializer.SerializeValue(ref Water);
@@ -250,7 +253,7 @@ namespace CCGP.Shared
             SerializedData.SerializeList(serializer, ref Hand);
             SerializedData.SerializeList(serializer, ref Graveyard);
             SerializedData.SerializeList(serializer, ref Agent);
-            SerializedData.SerializeList(serializer, ref Open);
+            SerializedData.SerializeList(serializer, ref Reveal);
         }
     }
 
@@ -378,6 +381,7 @@ namespace CCGP.Shared
     {
         private ulong targetClientID;
         public int YourIndex;
+        public int Round;
         public List<SerializedPlayer> Players;
         public SerializedBoard Board;
         public SerializedImperium Imperium;
@@ -391,6 +395,7 @@ namespace CCGP.Shared
         {
             this.targetClientID = targetClientID;
 
+            Round = match.Round;
             Players = new();
             Board = new SerializedBoard(match.Board);
             Imperium = new SerializedImperium(match.Imperium);
@@ -405,6 +410,7 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
+            serializer.SerializeValue(ref Round);
             serializer.SerializeNetworkSerializable(ref Board);
             serializer.SerializeNetworkSerializable(ref Imperium);
             serializer.SerializeValue(ref FirstPlayerIndex);

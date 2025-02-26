@@ -17,6 +17,7 @@ namespace CCGP.Client
             var imperiumView = Object.FindFirstObjectByType<ImperiumView>();
             var turnView = Object.FindFirstObjectByType<TurnView>();
             var handView = Object.FindFirstObjectByType<HandView>();
+            var battlefieldView = Object.FindFirstObjectByType<BattlefieldView>();
 
             client.AddAspect(gameView);
             client.AddAspect(matchView);
@@ -25,6 +26,7 @@ namespace CCGP.Client
             client.AddAspect(imperiumView);
             client.AddAspect(turnView);
             client.AddAspect(handView);
+            client.AddAspect(battlefieldView);
             client.AddAspect<ClientMessageSystem>();
 
             return client;

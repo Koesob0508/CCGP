@@ -160,7 +160,7 @@ namespace CCGP.Tests.Unit
         public void GameEndsCorrectly()
         {
             flowSystem.StartGame();
-            Assert.DoesNotThrow(() => flowSystem.OnPerformGameEnd(null, null));
+            Assert.DoesNotThrow(() => flowSystem.OnPerformEndGame(null, null));
         }
     }
 }

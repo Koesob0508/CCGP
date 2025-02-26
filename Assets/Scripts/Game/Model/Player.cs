@@ -15,14 +15,15 @@ namespace CCGP.Server
         public const uint InitialTroopCount = 3;
         public const uint InitialVictoryPoint = 0;
 
-        public ulong ID;
+        public ulong ClientID;
         public readonly int Index;
         public uint BaseAgentCount;
         public uint MentatCount;
         public uint TotalAgentCount => BaseAgentCount + MentatCount;
         public uint UsedAgentCount;
         public uint TurnActionCount;
-        public bool IsOpened;
+        public bool IsRevealPhase;
+        public bool IsRevealed;
 
         public uint Lunar;
         public uint Marsion;
@@ -49,7 +50,7 @@ namespace CCGP.Server
 
         public Player(int index, PlayerInfo playerInfo)
         {
-            ID = playerInfo.ClientID;
+            ClientID = playerInfo.ClientID;
             Index = index;
             PlayerInfo = playerInfo;
 
@@ -57,7 +58,8 @@ namespace CCGP.Server
             MentatCount = InitialMentatCount;
 
             TurnActionCount = InitialTurnActionCount;
-            IsOpened = false;
+            IsRevealPhase = false;
+            IsRevealed = false;
 
             Water = InitialWater;
 
@@ -82,7 +84,7 @@ namespace CCGP.Server
                         return graveyard;
                     case Zone.Agent:
                         return agent;
-                    case Zone.Open:
+                    case Zone.Reveal:
                         return open;
                     default:
                         LogUtility.LogError<Player>($"잘못된 Zone입니다: {z}");
