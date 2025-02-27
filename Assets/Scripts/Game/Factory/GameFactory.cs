@@ -9,6 +9,7 @@
             game.AddAspect<DataSystem>();
             game.AddAspect<MatchSystem>();
             game.AddAspect<BoardSystem>();
+            game.AddAspect<RoundRewardSystem>();
             game.AddAspect<ImperiumSystem>();
             game.AddAspect<ActionSystem>();
             game.AddAspect<FlowSystem>();

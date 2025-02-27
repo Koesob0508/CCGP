@@ -146,6 +146,7 @@ namespace CCGP.Shared
         public uint FremenInfluence;
 
         public uint Troop;
+        public uint Attack;
         public uint Persuasion;
         public uint BasePersuasion;
         public uint VictoryPoint;
@@ -183,6 +184,7 @@ namespace CCGP.Shared
             FremenInfluence = player.FremenInfluence;
 
             Troop = player.Troop;
+            Attack = player.Attack;
             Persuasion = player.Persuasion;
             BasePersuasion = player.BasePersuasion;
             VictoryPoint = player.VictoryPoint;
@@ -244,6 +246,7 @@ namespace CCGP.Shared
             serializer.SerializeValue(ref BeneGesseritInfluence);
             serializer.SerializeValue(ref FremenInfluence);
             serializer.SerializeValue(ref Troop);
+            serializer.SerializeValue(ref Attack);
             serializer.SerializeValue(ref Persuasion);
             serializer.SerializeValue(ref BasePersuasion);
             serializer.SerializeValue(ref VictoryPoint);
@@ -377,11 +380,35 @@ namespace CCGP.Shared
         }
     }
 
+    public class SerializedRoundReward : INetworkSerializable
+    {
+        public string ID;
+        public string Name;
+        public uint Phase;
+
+        public SerializedRoundReward() { }
+
+        public SerializedRoundReward(RoundReward roundReward)
+        {
+            ID = roundReward.ID;
+            Name = roundReward.Name;
+            Phase = roundReward.Phase;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref ID);
+            serializer.SerializeValue(ref Name);
+            serializer.SerializeValue(ref Phase);
+        }
+    }
+
     public class SerializedMatch : INetworkSerializable
     {
         private ulong targetClientID;
         public int YourIndex;
         public int Round;
+        public SerializedRoundReward RoundReward;
         public List<SerializedPlayer> Players;
         public SerializedBoard Board;
         public SerializedImperium Imperium;
@@ -396,6 +423,7 @@ namespace CCGP.Shared
             this.targetClientID = targetClientID;
 
             Round = match.Round;
+            RoundReward = new SerializedRoundReward(match.RoundReward);
             Players = new();
             Board = new SerializedBoard(match.Board);
             Imperium = new SerializedImperium(match.Imperium);
@@ -411,6 +439,7 @@ namespace CCGP.Shared
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref Round);
+            serializer.SerializeNetworkSerializable(ref RoundReward);
             serializer.SerializeNetworkSerializable(ref Board);
             serializer.SerializeNetworkSerializable(ref Imperium);
             serializer.SerializeValue(ref FirstPlayerIndex);

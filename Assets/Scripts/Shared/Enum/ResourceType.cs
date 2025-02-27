@@ -7,6 +7,7 @@ namespace CCGP.Shared
         Lunar,
         Water,
         Troop,
+        Attack,
         Persuasion,
         BasePersuasion,
         Mentat,

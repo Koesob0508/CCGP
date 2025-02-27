@@ -128,6 +128,8 @@ namespace CCGP.Server
             var match = action.Match;
             foreach (var player in match.Players)
             {
+                player.Attack = 0;
+
                 var playCards = new List<Card>();
 
                 foreach (var card in player[Zone.Agent])
@@ -238,6 +240,9 @@ namespace CCGP.Server
                     break;
                 case ResourceType.Troop:
                     player.Troop += amount;
+                    break;
+                case ResourceType.Attack:
+                    player.Attack += amount;
                     break;
                 case ResourceType.Persuasion:
                     player.Persuasion += amount;

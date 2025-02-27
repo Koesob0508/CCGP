@@ -25,6 +25,7 @@ namespace CCGP.Server
                 players.Add(player);
             }
 
+            var roundReward = new RoundReward();
             var imperium = ImperiumFactory.Create();
 
             match = new Match(players, board, imperium);

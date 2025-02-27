@@ -31,6 +31,8 @@ namespace CCGP.Client
         public GameObject AgentSeat_2;
         public GameObject AgentSeat_3;
         public GameObject AgentSeat_4;
+        public GameObject Panel_Attack;
+        public TMP_Text Text_Attack;
 
         private List<GameObject> Object_Agents;
 
@@ -110,6 +112,18 @@ namespace CCGP.Client
                     Text_SpacingGuild.text = ClientPlayer.SpacingGuildInfluence.ToString();
                     Text_BeneGesserit.text = ClientPlayer.BeneGesseritInfluence.ToString();
                     Text_Fremen.text = ClientPlayer.FremenInfluence.ToString();
+
+                    if (ClientPlayer.Attack > 0)
+                    {
+                        Text_Attack.text = ClientPlayer.Attack.ToString();
+                        Panel_Attack.SetActive(true);
+                    }
+                    else
+                    {
+                        Panel_Attack.SetActive(false);
+                        Text_Attack.text = "-1";
+                    }
+
 
                     foreach (var agent in Object_Agents)
                     {

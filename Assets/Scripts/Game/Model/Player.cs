@@ -35,6 +35,7 @@ namespace CCGP.Server
         public uint FremenInfluence;
 
         public uint Troop;
+        public uint Attack;
         public uint Persuasion;
         public uint BasePersuasion;
         public uint VictoryPoint;

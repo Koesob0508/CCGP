@@ -1,0 +1,874 @@
+{
+    "RoundRewards": [
+        {
+            "ID": "00-001",
+            "Name": "Neurose",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-002",
+            "Name": "Nervosität",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-003",
+            "Name": "Unruhe",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-004",
+            "Name": "Zaghaftigkeit",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-005",
+            "Name": "Verunsicherung",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-006",
+            "Name": "Leichte Angst",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-007",
+            "Name": "Schüchternheit",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-008",
+            "Name": "Melancholie",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-009",
+            "Name": "Schwermut",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-010",
+            "Name": "Besorgnis",
+            "Phase": "1",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Lunar",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-011",
+            "Name": "Zwangsneurose",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-012",
+            "Name": "Phobische Angst",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-013",
+            "Name": "Paranoide Tendenzen",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-014",
+            "Name": "Hysterische Reaktion",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-015",
+            "Name": "Depressive Verstimmung",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-016",
+            "Name": "Identitätskonflikt",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-017",
+            "Name": "Existenzkrise",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-018",
+            "Name": "Ambivalenz",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-019",
+            "Name": "Narzisstische Verletzung",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-020",
+            "Name": "Überwältigende Angst",
+            "Phase": "2",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Marsion",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-021",
+            "Name": "Schizophrenie",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-022",
+            "Name": "Psychose",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-023",
+            "Name": "Dissoziation",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-024",
+            "Name": "Wahnsinn",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-025",
+            "Name": "Zerbrochene Realität",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-026",
+            "Name": "Tiefgreifende Paranoia",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-027",
+            "Name": "Schwere Depression",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-028",
+            "Name": "Katatonie",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-029",
+            "Name": "Extremes Trauma",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        },
+        {
+            "ID": "00-030",
+            "Name": "Selbstverlust",
+            "Phase": "3",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "3"
+                }
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "2"
+                }
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "GainResourcesAction",
+                "Info": {
+                    "ResourceType": "Troop",
+                    "Amount": "1"
+                }
+            }
+        }
+    ]
+}

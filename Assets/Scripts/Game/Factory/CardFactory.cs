@@ -14,19 +14,19 @@ namespace CCGP.Server
             {
                 if (_cards == null)
                 {
-                    _cards = LoadInitialCards();
+                    _cards = LoadCards();
                 }
                 return _cards;
             }
         }
 
-        private static Dictionary<string, Dictionary<string, object>> LoadInitialCards()
+        private static Dictionary<string, Dictionary<string, object>> LoadCards()
         {
             var file = Resources.Load<TextAsset>("CardList");
 
             if (file == null)
             {
-                LogUtility.LogError<Card>("CardList.json을 찾을 수 없습니다!");
+                LogUtility.LogError("[CardFactory] CardList.json을 찾을 수 없습니다!", colorName: ColorCodes.Red);
                 return null;
             }
 
@@ -97,6 +97,7 @@ namespace CCGP.Server
             var cardData = Cards[id];
             Card card = CreateCard(cardData);
             card.AddAspect<Target>();
+            AddAbilities(card, cardData);
 
             return card;
         }
@@ -111,6 +112,22 @@ namespace CCGP.Server
             card.Load(data);
 
             return card;
+        }
+
+        private static void AddAbilities(Card card, Dictionary<string, object> data)
+        {
+            if (data.ContainsKey("Abilities") == false) return;
+
+            var AbilityDatas = (List<object>)data["Abilities"];
+            var abilities = card.AddAspect<Abilities>();
+
+            foreach (object entry in AbilityDatas)
+            {
+                var abilityData = (Dictionary<string, object>)entry;
+                var ability = new Ability();
+                ability.Load(abilityData);
+                abilities.AddAbility(ability);
+            }
         }
     }
 }
