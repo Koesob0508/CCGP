@@ -60,7 +60,7 @@ namespace CCGP.Server
             this.AddObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.AddObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.AddObserver(OnRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.AddObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -84,7 +84,7 @@ namespace CCGP.Server
             this.RemoveObserver(OnPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.RemoveObserver(OnGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.RemoveObserver(OnGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.RemoveObserver(OnOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.RemoveObserver(OnRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
 
             // Not Phase, Not Change, Just Notify
             this.RemoveObserver(OnCancelTryPlayCard, Global.CancelNotification<TryPlayCardAction>(), Container);
@@ -140,6 +140,8 @@ namespace CCGP.Server
 
         private async void OnStartTurn(object sender, object args)
         {
+            var action = args as StartTurnAction;
+
             UpdateData();
 
             await UniTask.Yield();
@@ -243,7 +245,7 @@ namespace CCGP.Server
             var action = args as PlayCardAction;
             var sCard = new SerializedCard(action.Card);
 
-            Send((ushort)GameCommand.PlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+            Send((ushort)GameCommand.PlayCard, action.Player.ClientID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
         private async void OnGainResources(object sender, object args)
@@ -277,7 +279,7 @@ namespace CCGP.Server
             }
         }
 
-        private async void OnOpenCards(object sender, object args)
+        private async void OnRevealCards(object sender, object args)
         {
             UpdateData();
 
@@ -285,14 +287,15 @@ namespace CCGP.Server
 
             LogUtility.Log<GameMessageSystem>("Send Open Cards", colorName: ColorCodes.Server);
 
-            var action = args as OpenCardsAction;
+            var action = args as RevealCardsAction;
             var sPlayer = new SerializedPlayer(action.Player);
 
             foreach (var playerInfo in Game.PlayerInfos)
             {
-                Send((ushort)GameCommand.GenerateCard, playerInfo.ClientID, sPlayer, NetworkDelivery.ReliableFragmentedSequenced);
+                Send((ushort)GameCommand.RevealCards, playerInfo.ClientID, sPlayer, NetworkDelivery.ReliableFragmentedSequenced);
             }
         }
+
         #endregion
 
         #region Not Phase, Not Change, Just Notify : No Need Update Data
@@ -321,10 +324,11 @@ namespace CCGP.Server
                 LogUtility.Log("CurrentAction.Player is null");
             }
 
-            var targetID = player.ID;
+            var targetID = player.ClientID;
 
             Send((ushort)GameCommand.ShowAvailableTiles, targetID, sTiles, NetworkDelivery.ReliableFragmentedSequenced);
         }
+
         private void OnCancelTryPlayCard(object sender, object args)
         {
             LogUtility.Log<GameMessageSystem>("Send Cancel Try Play Card", colorName: ColorCodes.Server);
@@ -332,7 +336,7 @@ namespace CCGP.Server
             var action = args as TryPlayCardAction;
             var sCard = new SerializedCard(action.Card);
 
-            Send((ushort)GameCommand.CancelTryPlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+            Send((ushort)GameCommand.CancelTryPlayCard, action.Player.ClientID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
         private void OnCancelPlayCard(object sender, object args)
@@ -342,7 +346,7 @@ namespace CCGP.Server
             var action = args as PlayCardAction;
             var sCard = new SerializedCard(action.Card);
 
-            Send((ushort)GameCommand.CancelPlayCard, action.Player.ID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
+            Send((ushort)GameCommand.CancelPlayCard, action.Player.ClientID, sCard, NetworkDelivery.ReliableFragmentedSequenced);
         }
 
         #endregion

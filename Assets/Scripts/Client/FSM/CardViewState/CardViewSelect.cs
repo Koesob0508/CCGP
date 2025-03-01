@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using CCGP.Server;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
@@ -10,18 +9,18 @@ namespace CCGP.Client
 {
     public class CardViewSelect : BaseCardViewState
     {
-        PlayerView Player;
+        HandView Hand;
 
         public CardViewSelect(CardView handler, BaseStateMachine fsm) : base(handler, fsm) { }
 
         public override void OnInitialize()
         {
-            Player = Handler.GetComponentInParent<PlayerView>();
+            Hand = Handler.GetComponentInParent<HandView>();
         }
 
         public override void OnEnter()
         {
-            Handler.transform.SetParent(Player.SelectedCard.transform);
+            Handler.transform.SetParent(Hand.Root_SelectedCard.transform);
 
             SetScale();
             SetPosition();
@@ -43,7 +42,7 @@ namespace CCGP.Client
 
             UnsetOrder();
 
-            Handler.transform.SetParent(Player.Hand.transform);
+            Handler.transform.SetParent(Hand.Root_Hand.transform);
         }
 
         public override void OnUpdate()

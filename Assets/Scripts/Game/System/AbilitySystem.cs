@@ -9,12 +9,14 @@ namespace CCGP.Server
         public void Activate()
         {
             this.AddObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.AddObserver(OnPerformRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
             this.AddObserver(OnPerformAbility, Global.PerformNotification<AbilityAction>(), Container);
         }
 
         public void Deactivate()
         {
             this.RemoveObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
+            this.RemoveObserver(OnPerformRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
             this.RemoveObserver(OnPerformAbility, Global.PerformNotification<AbilityAction>(), Container);
         }
 
@@ -24,12 +26,34 @@ namespace CCGP.Server
 
             if (action.Card.TryGetAspect(out Target target))
             {
-                if (target.Selected.TryGetAspect(out Abilities abilities))
+                var tile = target.Selected;
+                if (tile.TryGetAspect(out Abilities abilities))
                 {
                     foreach (var ability in abilities.AbilityList)
                     {
                         var abilityAction = new AbilityAction(action.Player, ability);
                         Container.AddReaction(abilityAction);
+                    }
+                }
+            }
+        }
+
+        private void OnPerformRevealCards(object sender, object args)
+        {
+            var action = args as RevealCardsAction;
+
+            foreach (var card in action.Cards)
+            {
+                if (card.TryGetAspect(out Abilities abilities))
+                {
+                    foreach (var ability in abilities.AbilityList)
+                    {
+                        if (ability.Type == AbilityType.Reveal)
+                        {
+                            LogUtility.Log<AbilitySystem>($"{card.Name} cast ability {ability.ActionName}", colorName: ColorCodes.Server);
+                            var abilityAction = new AbilityAction(action.Player, ability);
+                            Container.AddReaction(abilityAction);
+                        }
                     }
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CCGP.Shared;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -73,17 +74,10 @@ namespace CCGP.Server
             foreach (object entry in AbilityDatas)
             {
                 var abilityData = (Dictionary<string, object>)entry;
-                abilities.AddAbility(LoadAbility(tile, abilityData));
+                var ability = new Ability();
+                ability.Load(abilityData);
+                abilities.AddAbility(ability);
             }
-        }
-
-        public static Ability LoadAbility(Tile tile, Dictionary<string, object> data)
-        {
-            // var ability = tile.AddAspect<Ability>();
-            var ability = new Ability();
-            ability.ActionName = (string)data["Action"];
-            ability.UserInfo = data["Info"];
-            return ability;
         }
     }
 }

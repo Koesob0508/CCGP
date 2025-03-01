@@ -9,6 +9,16 @@
                 "Yellow",
                 "Blue",
                 "Green"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
             ]
         },
         {
@@ -21,6 +31,16 @@
                 "SpacingGuild",
                 "BeneGesserit",
                 "Fremen"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
             ]
         },
         {
@@ -30,6 +50,16 @@
             "Persuasion": 1,
             "Space": [
                 "Blue"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
             ]
         },
         {
@@ -39,6 +69,16 @@
             "Persuasion": 1,
             "Space": [
                 "Yellow"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
             ]
         },
         {
@@ -48,6 +88,16 @@
             "Persuasion": 0,
             "Space": [
                 "Green"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Attack",
+                        "Amount": "1"
+                    }
+                }
             ]
         },
         {
@@ -55,7 +105,17 @@
             "Name": "Speech",
             "Cost": 0,
             "Persuasion": 2,
-            "Space": []
+            "Space": [],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "2"
+                    }
+                }
+            ]
         },
         {
             "ID": "00-007",
@@ -82,6 +142,13 @@
                 "SpacingGuild",
                 "BeneGesserit",
                 "Fremen"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Agent",
+                    "Action": "DrawCardsAction",
+                    "Info": "1"
+                }
             ]
         },
         {
@@ -89,7 +156,25 @@
             "Name": "Spice Must Flow",
             "Cost": 9,
             "Persuasion": 0,
-            "Space": []
+            "Space": [],
+            "Abilities": [
+                {
+                    "Type": "Get",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "VictoryPoint",
+                        "Amount": "1"
+                    }
+                },
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Marsion",
+                        "Amount": "1"
+                    }
+                }
+            ]
         }
     ]
 }

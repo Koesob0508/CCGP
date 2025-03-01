@@ -1540,9 +1540,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC120\uD0DD : \uBA5C\uB780\uC9C0\uB97C \uCD5C\uB300 3\uAC1C\uAE4C\uC9C0
-    \uC9C0\uBD88\uD569\uB2C8\uB2E4. \uC194\uB77C\uB9AC\uB97C \uCD5C\uB300 8\uAC1C\uAE4C\uC9C0
-    \uC5BB\uC2B5\uB2C8\uB2E4."
+  m_text: "\uB0B4\uC6A9 \uC5C6\uC74C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0fa13e3abfd668d489388d58145e0cda, type: 2}
   m_sharedMaterial: {fileID: -1071778797846860174, guid: 0fa13e3abfd668d489388d58145e0cda, type: 2}

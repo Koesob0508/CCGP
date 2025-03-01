@@ -13,10 +13,12 @@ namespace CCGP.Server
             this.AddObserver(OnPerformStartGame, Global.PerformNotification<StartGameAction>(), Container);
             this.AddObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
             this.AddObserver(OnPerformStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
+            this.AddObserver(OnPerformEndTurn, Global.PerformNotification<EndTurnAction>(), Container);
+            this.AddObserver(OnPerformEndRound, Global.PerformNotification<EndRoundAction>(), Container);
 
             // Client message notify
             this.AddObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
-            this.AddObserver(OnReceivedTryOpenCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
+            this.AddObserver(OnReceivedTryRevealCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
 
             // Player Game Action
             this.AddObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
@@ -25,7 +27,7 @@ namespace CCGP.Server
             this.AddObserver(OnPerformPlayCard, Global.PerformNotification<PlayCardAction>(), Container);
             this.AddObserver(OnPerformGainResources, Global.PerformNotification<GainResourcesAction>(), Container);
             this.AddObserver(OnPerformGenerateCard, Global.PerformNotification<GenerateCardAction>(), Container);
-            this.AddObserver(OnPerformOpenCards, Global.PerformNotification<OpenCardsAction>(), Container);
+            this.AddObserver(OnPerformRevealCards, Global.PerformNotification<RevealCardsAction>(), Container);
         }
 
         public void Deactivate()
@@ -33,8 +35,11 @@ namespace CCGP.Server
             this.RemoveObserver(OnPerformStartGame, Global.PerformNotification<StartGameAction>(), Container);
             this.RemoveObserver(OnPerformStartRound, Global.PerformNotification<StartRoundAction>(), Container);
             this.RemoveObserver(OnPerformStartTurn, Global.PerformNotification<StartTurnAction>(), Container);
+            this.RemoveObserver(OnPerformEndTurn, Global.PerformNotification<EndTurnAction>(), Container);
+            this.RemoveObserver(OnPerformEndRound, Global.PerformNotification<EndRoundAction>(), Container);
 
             this.RemoveObserver(OnReceivedTryPlayCard, Global.MessageNotification(GameCommand.TryPlayCard), Container);
+            this.RemoveObserver(OnReceivedTryRevealCards, Global.MessageNotification(GameCommand.TryOpenCards), Container);
 
             this.RemoveObserver(OnPerformRoundStartDraw, Global.PerformNotification<RoundStartDrawAction>(), Container);
             this.RemoveObserver(OnPerformDrawCards, Global.PerformNotification<DrawCardsAction>(), Container);
@@ -55,16 +60,18 @@ namespace CCGP.Server
 
         private void OnPerformStartRound(object sender, object args)
         {
+            var action = args as StartRoundAction;
+
             var batchAction = new RoundStartDrawAction();
 
             Container.AddReaction(batchAction);
 
-            // foreach (var player in Container.GetMatch().Players)
-            // {
-            //     // TurnCount랑 AgentCount 회복 필요
-            //     var action = new DrawCardsAction(player, Player.InitialHand);
-            //     Container.AddReaction(action);
-            // }
+            foreach (var player in action.Match.Players)
+            {
+                player.IsRevealPhase = false;
+                player.IsRevealed = false;
+                player.UsedAgentCount = 0;
+            }
         }
 
         private void OnPerformRoundStartDraw(object sender, object args)
@@ -83,8 +90,63 @@ namespace CCGP.Server
 
             var player = action.Match.Players[action.TargetPlayerIndex];
 
-            RestoreTurnActionCount(player);
-            player.IsOpened = false;
+            if (player.TotalAgentCount > player.UsedAgentCount)
+            {
+                RestoreTurnActionCount(player);
+            }
+            else if (player.TotalAgentCount == player.UsedAgentCount)
+            {
+                // Notify 보내야함. Reveal 모드로 전환 필요.
+                LogUtility.Log<PlayerSystem>($"RevealPhase로 지정", colorName: ColorCodes.Logic);
+                player.IsRevealPhase = true;
+            }
+            else
+            {
+                LogUtility.LogWarning<PlayerSystem>("사용한 에이전트 숫자가 전체 에이전트 숫자보다 큼", colorName: ColorCodes.Red);
+            }
+        }
+
+        private void OnPerformEndTurn(object sender, object args)
+        {
+            var action = args as EndTurnAction;
+
+            var match = action.Match;
+            var player = match.Players[action.TargetPlayerIndex];
+
+            if (player.TurnActionCount > 0)
+            {
+                for (int i = 0; i < player.TurnActionCount; i++)
+                {
+                    PayAgentCount(player);
+                }
+            }
+        }
+
+        private void OnPerformEndRound(object sender, object args)
+        {
+            var action = args as EndRoundAction;
+            var match = action.Match;
+            foreach (var player in match.Players)
+            {
+                player.Attack = 0;
+
+                var playCards = new List<Card>();
+
+                foreach (var card in player[Zone.Agent])
+                {
+                    playCards.Add(card);
+                }
+
+                foreach (var card in player[Zone.Reveal])
+                {
+                    playCards.Add(card);
+                }
+
+                foreach (var card in playCards)
+                {
+                    ChangeZone(card, Zone.Graveyard);
+                }
+            }
         }
 
         private void OnPerformDrawCards(object sender, object args)
@@ -115,22 +177,16 @@ namespace CCGP.Server
             Container.Perform(action);
         }
 
-        private void OnReceivedTryOpenCards(object sender, object args)
+        private void OnReceivedTryRevealCards(object sender, object args)
         {
-            LogUtility.Log<PlayerSystem>("Received OnTryOpenCard", colorName: ColorCodes.Logic);
+            LogUtility.Log<PlayerSystem>("Received OnTryRevealCard", colorName: ColorCodes.Logic);
             var sData = args as SerializedData;
             var sPlayer = sData.Get<SerializedPlayer>();
 
-            // 검증은 해야지. 얘가 턴인지
             var match = Container.GetMatch();
-            if (match.CurrentPlayerIndex != sPlayer.Index)
-            {
-                LogUtility.LogWarning<PlayerSystem>("턴이 아닌데 카드 오픈 시도");
-                return;
-            }
-
             var player = match.Players[sPlayer.Index];
-            var action = new OpenCardsAction(player);
+
+            var action = new RevealCardsAction(player);
             Container.Perform(action);
         }
 
@@ -185,6 +241,9 @@ namespace CCGP.Server
                 case ResourceType.Troop:
                     player.Troop += amount;
                     break;
+                case ResourceType.Attack:
+                    player.Attack += amount;
+                    break;
                 case ResourceType.Persuasion:
                     player.Persuasion += amount;
                     break;
@@ -216,9 +275,9 @@ namespace CCGP.Server
             ChangeZone(card, Zone.Hand, player);
         }
 
-        private void OnPerformOpenCards(object sender, object args)
+        private void OnPerformRevealCards(object sender, object args)
         {
-            var action = args as OpenCardsAction;
+            var action = args as RevealCardsAction;
 
             var player = action.Player;
 
@@ -231,12 +290,12 @@ namespace CCGP.Server
 
             foreach (var handCard in handCopy)
             {
-                ChangeZone(handCard, Zone.Open);
+                ChangeZone(handCard, Zone.Reveal);
             }
 
             action.Cards = handCopy;
 
-            player.IsOpened = true;
+            player.IsRevealed = true;
         }
 
         #region Utility
