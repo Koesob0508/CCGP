@@ -18,14 +18,14 @@ namespace CCGP.Client
 
         private void OnUpdateData(object sender, object args)
         {
-            LogUtility.Log<MatchView>("Update Match", colorName: ColorCodes.Client);
+            // LogUtility.Log<MatchView>("Update Match", colorName: ColorCodes.Client);
 
-            var sData = args as SerializedData;
+            // var sData = args as SerializedData;
 
-            if (sData != null)
-            {
-                Data = sData.Get<SerializedMatch>();
-            }
+            // if (sData != null)
+            // {
+            //     Data = sData.Get<SerializedMatch>();
+            // }
         }
     }
 }

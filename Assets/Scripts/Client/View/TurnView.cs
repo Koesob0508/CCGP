@@ -41,47 +41,47 @@ namespace CCGP.Client
         {
             // 버튼에 등록할 이벤트
             // 턴 종료 메시지를 보낼 것
-            this.PostNotification(ClientDialect.EndTurn, Player);
+            // this.PostNotification(ClientDialect.EndTurn, Player);
         }
 
         private void OnClickOpenCard()
         {
-            this.PostNotification(ClientDialect.OpenCard, Player);
+            // this.PostNotification(ClientDialect.OpenCard, Player);
         }
 
         private void OnStartGame(object sender, object args)
         {
-            Match = GetComponent<MatchView>().Data;
-            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            // Match = GetComponent<MatchView>().Data;
+            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            RefreshButton();
+            // RefreshButton();
         }
 
         private void OnStartTurn(object sender, object args)
         {
-            Match = GetComponent<MatchView>().Data;
-            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            // Match = GetComponent<MatchView>().Data;
+            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            LogUtility.Log<TurnView>($"Start Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
-            RefreshButton();
+            // LogUtility.Log<TurnView>($"Start Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
+            // RefreshButton();
         }
 
         private void OnRevealCards(object sender, object args)
         {
-            Match = GetComponent<MatchView>().Data;
-            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            // Match = GetComponent<MatchView>().Data;
+            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            // Match값 보고 Open을 인지할 것
-            RefreshButton();
+            // // Match값 보고 Open을 인지할 것
+            // RefreshButton();
         }
 
         private void OnEndGame(object sender, object args)
         {
-            Match = GetComponent<MatchView>().Data;
-            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            // Match = GetComponent<MatchView>().Data;
+            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            LogUtility.Log<TurnView>($"End Game", colorName: ColorCodes.ClientSequencer);
-            CloseButton();
+            // LogUtility.Log<TurnView>($"End Game", colorName: ColorCodes.ClientSequencer);
+            // CloseButton();
         }
 
         private void RefreshButton()

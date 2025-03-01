@@ -7,14 +7,8 @@ namespace CCGP.Client
     {
         public IContainer Container { get; set; }
 
-        public virtual void Activate()
-        {
-            
-        }
+        public virtual void Activate() {}
 
-        public virtual void Deactivate()
-        {
-            
-        }
+        public virtual void Deactivate() {}
     }
 }

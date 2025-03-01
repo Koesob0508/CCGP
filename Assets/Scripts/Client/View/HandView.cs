@@ -40,99 +40,99 @@ namespace CCGP.Client
 
         private void OnStartGame(object sender, object args)
         {
-            HandCards = new();
-            PlayerIndex = GetComponent<PlayerView>().ClientPlayer.Index;
+            // HandCards = new();
+            // PlayerIndex = GetComponent<PlayerView>().ClientPlayer.Index;
         }
 
         private void OnRoundStartDraw(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sAction = sData.Get<SerializedRoundStartDrawAction>();
+            // var sData = args as SerializedData;
+            // var sAction = sData.Get<SerializedRoundStartDrawAction>();
 
-            foreach (var card in sAction[PlayerIndex])
-            {
-                var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
-                cardView.UpdateData(card);
-                cardView.Enable();
+            // foreach (var card in sAction[PlayerIndex])
+            // {
+            //     var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
+            //     cardView.UpdateData(card);
+            //     cardView.Enable();
 
-                HandCards.Add(cardView);
-            }
+            //     HandCards.Add(cardView);
+            // }
         }
 
         private void OnDrawCards(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sAction = sData.Get<SerializedDrawCardsAction>();
+            // var sData = args as SerializedData;
+            // var sAction = sData.Get<SerializedDrawCardsAction>();
 
-            LogUtility.Log<HandView>($"{sAction.Player.ClientID} Player draw cards", colorName: ColorCodes.ClientSequencer);
+            // LogUtility.Log<HandView>($"{sAction.Player.ClientID} Player draw cards", colorName: ColorCodes.ClientSequencer);
 
-            if (sAction.Player.ClientID == NetworkManager.Singleton.LocalClientId)
-            {
-                foreach (var card in sAction.Cards)
-                {
-                    var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
-                    cardView.UpdateData(card);
-                    cardView.Enable();
+            // if (sAction.Player.ClientID == NetworkManager.Singleton.LocalClientId)
+            // {
+            //     foreach (var card in sAction.Cards)
+            //     {
+            //         var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
+            //         cardView.UpdateData(card);
+            //         cardView.Enable();
 
-                    HandCards.Add(cardView);
-                }
-            }
+            //         HandCards.Add(cardView);
+            //     }
+            // }
         }
 
         private void OnGenerateCards(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sCard = sData.Get<SerializedCard>();
+            // var sData = args as SerializedData;
+            // var sCard = sData.Get<SerializedCard>();
 
-            LogUtility.Log<HandView>($"Player {sCard.OwnerIndex} generates card.", colorName: ColorCodes.ClientSequencer);
+            // LogUtility.Log<HandView>($"Player {sCard.OwnerIndex} generates card.", colorName: ColorCodes.ClientSequencer);
 
-            if (PlayerIndex == sCard.OwnerIndex)
-            {
-                var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
-                cardView.UpdateData(sCard);
-                cardView.Enable();
+            // if (PlayerIndex == sCard.OwnerIndex)
+            // {
+            //     var cardView = Instantiate(Prefab_CardView, Root_Hand.transform);
+            //     cardView.UpdateData(sCard);
+            //     cardView.Enable();
 
-                HandCards.Add(cardView);
-            }
+            //     HandCards.Add(cardView);
+            // }
         }
 
         private void OnRevealCards(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sPlayer = sData.Get<SerializedPlayer>();
+            // var sData = args as SerializedData;
+            // var sPlayer = sData.Get<SerializedPlayer>();
 
-            LogUtility.Log<HandView>($"Player {sPlayer.Index} reveals Card.", colorName: ColorCodes.ClientSequencer);
+            // LogUtility.Log<HandView>($"Player {sPlayer.Index} reveals Card.", colorName: ColorCodes.ClientSequencer);
 
-            if (PlayerIndex != sPlayer.Index) return;
+            // if (PlayerIndex != sPlayer.Index) return;
 
-            foreach (var cardView in HandCards)
-            {
-                LogUtility.Log<HandView>($"Card {cardView.Name} set active false", colorName: ColorCodes.ClientSequencer);
-                cardView.gameObject.SetActive(false);
-            }
+            // foreach (var cardView in HandCards)
+            // {
+            //     LogUtility.Log<HandView>($"Card {cardView.Name} set active false", colorName: ColorCodes.ClientSequencer);
+            //     cardView.gameObject.SetActive(false);
+            // }
         }
 
         private void OnEndTurn(object sender, object args)
         {
-            var targetCards = new List<CardView>();
+            // var targetCards = new List<CardView>();
 
-            foreach (var cardView in HandCards)
-            {
-                if (cardView.gameObject.activeSelf == false)
-                {
-                    targetCards.Add(cardView);
-                }
-            }
+            // foreach (var cardView in HandCards)
+            // {
+            //     if (cardView.gameObject.activeSelf == false)
+            //     {
+            //         targetCards.Add(cardView);
+            //     }
+            // }
 
-            for (int i = targetCards.Count - 1; i >= 0; i--)
-            {
-                var cardView = targetCards[i];
+            // for (int i = targetCards.Count - 1; i >= 0; i--)
+            // {
+            //     var cardView = targetCards[i];
 
-                HandCards.Remove(cardView);
-                targetCards.Remove(cardView);
+            //     HandCards.Remove(cardView);
+            //     targetCards.Remove(cardView);
 
-                Destroy(cardView.gameObject);
-            }
+            //     Destroy(cardView.gameObject);
+            // }
         }
     }
 }

@@ -26,22 +26,22 @@ namespace CCGP.Client
 
         private void OnUpdateData(object sender, object args)
         {
-            Data = GetComponent<MatchView>().Data.Imperium;
+            // Data = GetComponent<MatchView>().Data.Imperium;
 
-            // Card Update
-            ImperiumCardView[] ImperiumCards = { ImperiumCard_1, ImperiumCard_2, ImperiumCard_3, ImperiumCard_4, ImperiumCard_5 };
+            // // Card Update
+            // ImperiumCardView[] ImperiumCards = { ImperiumCard_1, ImperiumCard_2, ImperiumCard_3, ImperiumCard_4, ImperiumCard_5 };
 
-            foreach (var cardObj in ImperiumCards)
-            {
-                cardObj.gameObject.SetActive(false);
-            }
+            // foreach (var cardObj in ImperiumCards)
+            // {
+            //     cardObj.gameObject.SetActive(false);
+            // }
 
-            for (int i = 0; i < Data.Row.Count; i++)
-            {
-                var imperiumCard = ImperiumCards[i];
-                imperiumCard.UpdateData(Data.Row[i]);
-                imperiumCard.gameObject.SetActive(true);
-            }
+            // for (int i = 0; i < Data.Row.Count; i++)
+            // {
+            //     var imperiumCard = ImperiumCards[i];
+            //     imperiumCard.UpdateData(Data.Row[i]);
+            //     imperiumCard.gameObject.SetActive(true);
+            // }
         }
     }
 }

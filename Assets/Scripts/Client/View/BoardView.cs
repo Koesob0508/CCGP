@@ -36,43 +36,43 @@ namespace CCGP.Client
 
         private void OnUpdateData(object sender, object args)
         {
-            Data = GetComponent<MatchView>().Data.Board;
+            // Data = GetComponent<MatchView>().Data.Board;
 
-            for (int i = 0; i < Data.Tiles.Count; i++)
-            {
-                Tiles[i].gameObject.SetActive(true);
-                Tiles[i].UpdateData(Data.Tiles[i]);
-            }
+            // for (int i = 0; i < Data.Tiles.Count; i++)
+            // {
+            //     Tiles[i].gameObject.SetActive(true);
+            //     Tiles[i].UpdateData(Data.Tiles[i]);
+            // }
         }
 
         private void OnPlayCard(object sender, object args)
         {
-            HideAvailableTiles();
+            // HideAvailableTiles();
         }
 
         private void OnCancel(object sender, object args)
         {
-            HideAvailableTiles();
+            // HideAvailableTiles();
         }
 
         private void OnShowAvailableTiles(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sTiles = sData.Get<SerializedTiles>();
+            // var sData = args as SerializedData;
+            // var sTiles = sData.Get<SerializedTiles>();
 
-            LogUtility.Log<BoardView>("Show available tiles", colorName: ColorCodes.Client);
+            // LogUtility.Log<BoardView>("Show available tiles", colorName: ColorCodes.Client);
 
-            for (int i = 0; i < Data.Tiles.Count; i++)
-            {
-                if (sTiles.Tiles.Contains(Tiles[i].Data))
-                {
-                    Tiles[i].BlockImage.SetActive(false);
-                }
-                else
-                {
-                    Tiles[i].BlockImage.SetActive(true);
-                }
-            }
+            // for (int i = 0; i < Data.Tiles.Count; i++)
+            // {
+            //     if (sTiles.Tiles.Contains(Tiles[i].Data))
+            //     {
+            //         Tiles[i].BlockImage.SetActive(false);
+            //     }
+            //     else
+            //     {
+            //         Tiles[i].BlockImage.SetActive(true);
+            //     }
+            // }
         }
 
         private void HideAvailableTiles()

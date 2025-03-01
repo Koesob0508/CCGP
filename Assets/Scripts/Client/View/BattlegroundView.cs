@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CCGP.Client
 {
-    public class BattlefieldView : BaseView
+    public class BattlegroundView : BaseView
     {
         private int PlayerIndex;
 
@@ -29,42 +29,42 @@ namespace CCGP.Client
 
         private void OnStartGame(object sender, object args)
         {
-            BoardCards = new();
-            PlayerIndex = GetComponent<PlayerView>().ClientPlayer.Index;
+            // BoardCards = new();
+            // PlayerIndex = GetComponent<PlayerView>().ClientPlayer.Index;
         }
 
         private void OnRevealCards(object sender, object args)
         {
-            var sData = args as SerializedData;
-            var sPlayer = sData.Get<SerializedPlayer>();
+            // var sData = args as SerializedData;
+            // var sPlayer = sData.Get<SerializedPlayer>();
 
-            LogUtility.Log<BattlefieldView>($"Player {sPlayer.Index} reveals Card.", colorName: ColorCodes.ClientSequencer);
+            // LogUtility.Log<BattlefieldView>($"Player {sPlayer.Index} reveals Card.", colorName: ColorCodes.ClientSequencer);
 
-            if (sPlayer.Index == PlayerIndex)
-            {
-                foreach (var card in sPlayer.Reveal)
-                {
-                    var boardCardView = Instantiate(Prefab_BoardCard, Root_Battlefield.transform);
-                    boardCardView.UpdateData(card);
-                    BoardCards.Add(boardCardView);
-                }
-            }
-            else
-            {
+            // if (sPlayer.Index == PlayerIndex)
+            // {
+            //     foreach (var card in sPlayer.Reveal)
+            //     {
+            //         var boardCardView = Instantiate(Prefab_BoardCard, Root_Battlefield.transform);
+            //         boardCardView.UpdateData(card);
+            //         BoardCards.Add(boardCardView);
+            //     }
+            // }
+            // else
+            // {
 
-            }
+            // }
         }
 
         private void OnEndRound(object sender, object args)
         {
-            for (int i = BoardCards.Count - 1; i >= 0; i--)
-            {
-                var boardCardView = BoardCards[i];
+            // for (int i = BoardCards.Count - 1; i >= 0; i--)
+            // {
+            //     var boardCardView = BoardCards[i];
 
-                BoardCards.Remove(boardCardView);
+            //     BoardCards.Remove(boardCardView);
 
-                Destroy(boardCardView.gameObject);
-            }
+            //     Destroy(boardCardView.gameObject);
+            // }
         }
     }
 }
