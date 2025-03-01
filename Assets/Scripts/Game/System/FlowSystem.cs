@@ -98,9 +98,6 @@ namespace CCGP.Server
             var action = args as StartRoundAction;
             var match = action.Match;
 
-            match.Round++;
-            LogUtility.Log<FlowSystem>($"라운드 시작. 현재 {match.Round} 라운드입니다.");
-
             var startTurnAction = new StartTurnAction(match.FirstPlayerIndex);
             Container.AddReaction(startTurnAction);
         }
@@ -110,19 +107,15 @@ namespace CCGP.Server
             var action = args as EndRoundAction;
             LogUtility.Log<FlowSystem>("라운드 종료");
 
-            if (action.Match.Round < Match.MaxRound)
-            {
-                var startRoundAction = new StartRoundAction();
-                Container.AddReaction(startRoundAction);
-            }
-            else if (action.Match.Round == Match.MaxRound)
+            if (action.IsEndRound)
             {
                 var gameEndAction = new EndGameAction();
                 Container.AddReaction(gameEndAction);
             }
             else
             {
-                LogUtility.LogWarning<FlowSystem>($"{action.Match.Round} 최고 라운드를 넘어섬", colorName: ColorCodes.Red);
+                var startRoundAction = new StartRoundAction();
+                Container.AddReaction(startRoundAction);
             }
         }
 

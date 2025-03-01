@@ -380,6 +380,25 @@ namespace CCGP.Shared
         }
     }
 
+    public class SerializedRound : INetworkSerializable
+    {
+        public uint Count;
+        public SerializedRoundReward Reward;
+
+        public SerializedRound() { }
+        public SerializedRound(Round round)
+        {
+            Count = round.Count;
+            Reward = new SerializedRoundReward(round.CurrentReward);
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Count);
+            serializer.SerializeNetworkSerializable(ref Reward);
+        }
+    }
+
     public class SerializedRoundReward : INetworkSerializable
     {
         public string ID;
@@ -407,8 +426,7 @@ namespace CCGP.Shared
     {
         private ulong targetClientID;
         public int YourIndex;
-        public int Round;
-        public SerializedRoundReward RoundReward;
+        public SerializedRound Round;
         public List<SerializedPlayer> Players;
         public SerializedBoard Board;
         public SerializedImperium Imperium;
@@ -422,8 +440,7 @@ namespace CCGP.Shared
         {
             this.targetClientID = targetClientID;
 
-            Round = match.Round;
-            RoundReward = new SerializedRoundReward(match.RoundReward);
+            Round = new SerializedRound(match.Round);
             Players = new();
             Board = new SerializedBoard(match.Board);
             Imperium = new SerializedImperium(match.Imperium);
@@ -438,8 +455,8 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeValue(ref Round);
-            serializer.SerializeNetworkSerializable(ref RoundReward);
+            serializer.SerializeNetworkSerializable(ref Round);
+            serializer.SerializeNetworkSerializable(ref Round);
             serializer.SerializeNetworkSerializable(ref Board);
             serializer.SerializeNetworkSerializable(ref Imperium);
             serializer.SerializeValue(ref FirstPlayerIndex);

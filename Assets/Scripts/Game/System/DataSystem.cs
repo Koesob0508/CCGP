@@ -25,15 +25,15 @@ namespace CCGP.Server
                 players.Add(player);
             }
 
-            var roundReward = new RoundReward();
+            var round = RoundFactory.Create();
             var imperium = ImperiumFactory.Create();
 
-            match = new Match(players, board, imperium);
+            match = new Match(players, board, round, imperium);
         }
 
         public void Deactivate()
         {
-            throw new System.NotImplementedException();
+
         }
     }
 

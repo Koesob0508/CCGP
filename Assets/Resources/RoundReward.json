@@ -1,6 +1,26 @@
 {
     "RoundRewards": [
         {
+            "ID": "00-000",
+            "Name": "Dummy",
+            "Phase": "0",
+            "FirstReward": {
+                "Type": "RoundReward",
+                "Action": "DrawCardsAction",
+                "Info": "1"
+            },
+            "SecondReward": {
+                "Type": "RoundReward",
+                "Action": "DrawCardsAction",
+                "Info": "1"
+            },
+            "ThirdReward": {
+                "Type": "RoundReward",
+                "Action": "DrawCardsAction",
+                "Info": "1"
+            }
+        },
+        {
             "ID": "00-001",
             "Name": "Neurose",
             "Phase": "1",

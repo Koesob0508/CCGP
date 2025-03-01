@@ -2,6 +2,7 @@
 {
     public class EndRoundAction : GameAction
     {
+        public bool IsEndRound;
         public Match Match;
     }
 }

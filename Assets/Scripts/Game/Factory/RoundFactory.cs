@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CCGP.Shared;
@@ -6,7 +5,7 @@ using UnityEngine;
 
 namespace CCGP.Server
 {
-    public static class RoundRewardFactory
+    public class RoundFactory
     {
         private static Dictionary<string, Dictionary<string, object>> _roundRewards = null;
         private static Dictionary<string, Dictionary<string, object>> RoundRewards
@@ -19,6 +18,14 @@ namespace CCGP.Server
                 }
                 return _roundRewards;
             }
+        }
+
+        public static Round Create()
+        {
+            var round = new Round();
+            round.Count = 0;
+            round.RewardDeck = CreateRoundRewardDeck();
+            return round;
         }
 
         private static Dictionary<string, Dictionary<string, object>> LoadRoundRewards()
@@ -48,10 +55,11 @@ namespace CCGP.Server
             return result;
         }
 
-        public static List<RoundReward> CreateRoundRewardDeck()
+        private static Stack<RoundReward> CreateRoundRewardDeck()
         {
-            var result = new List<RoundReward>();
+            var result = new Stack<RoundReward>();
 
+            RoundReward dummyReward = null;
             var phase1Reward = new List<RoundReward>();
             var phase2Reward = new List<RoundReward>();
             var phase3Reward = new List<RoundReward>();
@@ -65,6 +73,9 @@ namespace CCGP.Server
 
                 switch (reward.Phase)
                 {
+                    case 0:
+                        dummyReward = reward;
+                        break;
                     case 1:
                         phase1Reward.Add(reward);
                         break;
@@ -89,26 +100,32 @@ namespace CCGP.Server
             var selectedPhase2 = phase2Reward.OrderBy(x => rng.Next()).Take(5).ToList();
             var selectedPhase3 = phase3Reward.OrderBy(x => rng.Next()).Take(3).ToList();
 
-            // 필요한 경우, 세 페이즈의 선택 결과를 하나의 리스트로 합칠 수 있습니다.
-            result = selectedPhase1.Concat(selectedPhase2).Concat(selectedPhase3).ToList();
+            foreach (var reward in phase3Reward)
+            {
+                result.Push(reward);
+            }
+
+            foreach (var reward in phase2Reward)
+            {
+                result.Push(reward);
+            }
+
+            foreach (var reward in phase1Reward)
+            {
+                result.Push(reward);
+            }
+
+            result.Push(dummyReward);
 
             return result;
         }
 
-        public static RoundReward CreateRoundReward(string id)
+        private static RoundReward CreateRoundReward(string id)
         {
             var roundReward = new RoundReward();
             var rewardData = RoundRewards[id];
 
             roundReward.Load(rewardData);
-
-            return roundReward;
-        }
-
-        private static RoundReward CreateRoundReward(Dictionary<string, object> data)
-        {
-            var roundReward = new RoundReward();
-            roundReward.Load(data);
 
             return roundReward;
         }
