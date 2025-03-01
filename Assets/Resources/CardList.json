@@ -1,0 +1,180 @@
+{
+    "Cards": [
+        {
+            "ID": "00-001",
+            "Name": "Signet Ring",
+            "Cost": 0,
+            "Persuasion": 1,
+            "Space": [
+                "Yellow",
+                "Blue",
+                "Green"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-002",
+            "Name": "Diplomacy",
+            "Cost": 0,
+            "Persuasion": 1,
+            "Space": [
+                "Emperor",
+                "SpacingGuild",
+                "BeneGesserit",
+                "Fremen"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-003",
+            "Name": "Blue",
+            "Cost": 0,
+            "Persuasion": 1,
+            "Space": [
+                "Blue"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-004",
+            "Name": "Research",
+            "Cost": 0,
+            "Persuasion": 1,
+            "Space": [
+                "Yellow"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-005",
+            "Name": "Knife",
+            "Cost": 0,
+            "Persuasion": 0,
+            "Space": [
+                "Green"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Attack",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-006",
+            "Name": "Speech",
+            "Cost": 0,
+            "Persuasion": 2,
+            "Space": [],
+            "Abilities": [
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Persuasion",
+                        "Amount": "2"
+                    }
+                }
+            ]
+        },
+        {
+            "ID": "00-007",
+            "Name": "Invitation",
+            "Cost": 0,
+            "Persuasion": 0,
+            "Space": [
+                "Emperor",
+                "SpacingGuild",
+                "BeneGesserit",
+                "Fremen"
+            ]
+        },
+        {
+            "ID": "00-008",
+            "Name": "Folding Space",
+            "Cost": 0,
+            "Persuasion": 0,
+            "Space": [
+                "Yellow",
+                "Blue",
+                "Green",
+                "Emperor",
+                "SpacingGuild",
+                "BeneGesserit",
+                "Fremen"
+            ],
+            "Abilities": [
+                {
+                    "Type": "Agent",
+                    "Action": "DrawCardsAction",
+                    "Info": "1"
+                }
+            ]
+        },
+        {
+            "ID": "00-009",
+            "Name": "Spice Must Flow",
+            "Cost": 9,
+            "Persuasion": 0,
+            "Space": [],
+            "Abilities": [
+                {
+                    "Type": "Get",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "VictoryPoint",
+                        "Amount": "1"
+                    }
+                },
+                {
+                    "Type": "Reveal",
+                    "Action": "GainResourcesAction",
+                    "Info": {
+                        "ResourceType": "Marsion",
+                        "Amount": "1"
+                    }
+                }
+            ]
+        }
+    ]
+}
