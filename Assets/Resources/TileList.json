@@ -4,7 +4,7 @@
       "ID": "00-001",
       "Name": "IMPERIAL BASIN",
       "Space": "Yellow",
-      "Description": "당신은 멜란지를 1개 얻습니다.",
+      "Description": "당신은 마르시온을 1개 얻습니다.",
       "Abilities": [
         {
           "Type": "Tile",
@@ -20,7 +20,7 @@
       "ID": "00-002",
       "Name": "HAGGA BASIN",
       "Space": "Yellow",
-      "Description": "당신은 물 1개를 지불하고 멜란지를 2개 얻습니다.",
+      "Description": "당신은 물 1개를 지불하고 마르시온을 2개 얻습니다.",
       "Cost": {
         "ResourceType": "Water",
         "Amount": "1"
@@ -40,7 +40,7 @@
       "ID": "00-003",
       "Name": "THE GREAT FLAT",
       "Space": "Yellow",
-      "Description": "당신은 물 2개를 지불하고 멜란지를 3개 얻습니다.",
+      "Description": "당신은 물 2개를 지불하고 마르시온을 3개 얻습니다.",
       "Cost": {
         "ResourceType": "Water",
         "Amount": "2"
@@ -58,6 +58,31 @@
     },
     {
       "ID": "00-004",
+      "Name": "THE GREAT FLAT",
+      "Space": "Yellow",
+      "Description": "당신은 물 3개를 지불하고 마르시온을 4개 얻습니다. 카드를 1장 뽑습니다.",
+      "Cost": {
+        "ResourceType": "Water",
+        "Amount": "3"
+      },
+      "Abilities": [
+        {
+          "Type": "Tile",
+          "Action": "GainResourcesAction",
+          "Info": {
+            "ResourceType": "Marsion",
+            "Amount": "3"
+          }
+        },
+        {
+          "Type": "Tile",
+          "Action": "DrawCardsAction",
+          "Info": "1"
+        }
+      ]
+    },
+    {
+      "ID": "00-005",
       "Name": "ARRAKEEN",
       "Space": "Blue",
       "Description": "당신은 카드 1장을 뽑습니다. 그리고 병력 1개를 얻습니다.",
@@ -78,7 +103,7 @@
       ]
     },
     {
-      "ID": "00-005",
+      "ID": "00-006",
       "Name": "CARTHAG",
       "Space": "Blue",
       "Description": "당신은 병력 1개와 설득력 1개를 얻습니다.",
@@ -102,7 +127,7 @@
       ]
     },
     {
-      "ID": "00-006",
+      "ID": "00-007",
       "Name": "RESEARCH STATION",
       "Space": "Blue",
       "Description": "당신은 물 2개를 지불하고 카드 3장을 뽑습니다.",
@@ -119,7 +144,7 @@
       ]
     },
     {
-      "ID": "00-007",
+      "ID": "00-008",
       "Name": "SIETCH TABR",
       "Space": "Blue",
       "Description": "당신은 물 1개와 병력 1개를 얻습니다.",
@@ -147,13 +172,13 @@
       ]
     },
     {
-      "ID": "00-008",
+      "ID": "00-009",
       "Name": "SELL MELANGE",
       "Space": "Yellow",
       "Description": "<b>선택</b> : 멜란지를 최대 3개까지 지불합니다. 솔라리를 최대 8개까지 얻습니다."
     },
     {
-      "ID": "00-009",
+      "ID": "00-010",
       "Name": "SECURE CONTRACT",
       "Space": "Yellow",
       "Description": "당신은 솔라리 3개를 얻습니다.",
@@ -169,7 +194,7 @@
       ]
     },
     {
-      "ID": "00-010",
+      "ID": "00-011",
       "Name": "HIGHT COUNCIL",
       "Space": "Green",
       "Description": "당신은 솔라리 5개를 지불하고 영구적인 설득력 2개를 얻습니다.",
@@ -189,7 +214,7 @@
       ]
     },
     {
-      "ID": "00-011",
+      "ID": "00-012",
       "Name": "MENTAT",
       "Space": "Green",
       "Description": "당신은 솔라리 2개를 지불하고 일회용 요원을 얻습니다. 그리고 카드 1장을 뽑습니다.",
@@ -214,7 +239,7 @@
       ]
     },
     {
-      "ID": "00-012",
+      "ID": "00-013",
       "Name": "RALLY TROOPS",
       "Space": "Green",
       "Description": "당신은 솔라리 4개를 지불하고 병력 4개를 얻습니다.",
@@ -234,7 +259,7 @@
       ]
     },
     {
-      "ID": "00-013",
+      "ID": "00-014",
       "Name": "HALL OF ORATORY",
       "Space": "Green",
       "Description": "당신은 설득력 1개와 병력 1개를 얻습니다.",
@@ -258,7 +283,7 @@
       ]
     },
     {
-      "ID": "00-014",
+      "ID": "00-015",
       "Name": "SWOARDMASTER",
       "Space": "Green",
       "Description": "당신은 솔라리 8개를 지불하고 영구적인 요원을 1개 얻습니다.",
@@ -278,10 +303,10 @@
       ]
     },
     {
-      "ID": "00-015",
+      "ID": "00-016",
       "Name": "CONSPIRE",
       "Space": "Emperor",
-      "Description": "당신은 멜란지 4개를 지불하고 솔라리 1개, 병력 2개, 그리고 설득력 1개를 얻습니다.",
+      "Description": "당신은 멜란지 4개를 지불하고 루나 5개, 병력 2개를 얻습니다.",
       "Cost": {
         "ResourceType": "Marsion",
         "Amount": "4"
@@ -302,19 +327,11 @@
             "ResourceType": "Troop",
             "Amount": "2"
           }
-        },
-        {
-          "Type": "Tile",
-          "Action": "GainResourcesAction",
-          "Info": {
-            "ResourceType": "Persuasion",
-            "Amount": "1"
-          }
         }
       ]
     },
     {
-      "ID": "00-016",
+      "ID": "00-017",
       "Name": "WEALTH",
       "Space": "Emperor",
       "Description": "당신은 솔라리 2개를 얻습니다.",
@@ -330,7 +347,7 @@
       ]
     },
     {
-      "ID": "00-017",
+      "ID": "00-018",
       "Name": "HEIGHLINER",
       "Space": "SpacingGuild",
       "Description": "당신은 멜란지 6개를 지불하고 병력 5개와 물 2개를 얻습니다.",
@@ -358,7 +375,7 @@
       ]
     },
     {
-      "ID": "00-018",
+      "ID": "00-019",
       "Name": "FOLDSPACE",
       "Space": "SpacingGuild",
       "Description": "당신은 단 1번, 어디든 갈 수 있는 카드 1장을 얻습니다.",
@@ -371,7 +388,7 @@
       ]
     },
     {
-      "ID": "00-019",
+      "ID": "00-020",
       "Name": "SELECTIVE BREEDING",
       "Space": "BeneGesserit",
       "Description": "당신은 멜란지 2개를 지불하고 카드를 2장 뽑습니다.",
@@ -388,7 +405,7 @@
       ]
     },
     {
-      "ID": "00-020",
+      "ID": "00-021",
       "Name": "SECRETS",
       "Space": "BeneGesserit",
       "Description": "당신은 일시적인 설득력 2개를 얻습니다.",
@@ -404,7 +421,7 @@
       ]
     },
     {
-      "ID": "00-021",
+      "ID": "00-022",
       "Name": "HARDY WARRIORS",
       "Space": "Fremen",
       "Description": "당신은 물 1개를 지불하고 병력 2개를 얻습니다.",
@@ -424,7 +441,7 @@
       ]
     },
     {
-      "ID": "00-022",
+      "ID": "00-023",
       "Name": "STILLSUITS",
       "Space": "Fremen",
       "Description": "당신은 물 1개를 얻습니다.",

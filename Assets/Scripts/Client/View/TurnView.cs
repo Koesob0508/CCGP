@@ -18,70 +18,70 @@ namespace CCGP.Client
             // GameStart : 내 턴인지 확인해야한다.
             // TurnEnd : 이제 누구의 턴인지 확인해서 활성화 결정해야함
             // 내 턴을 확인해야하므로, Player를 갖고 있어야한다.
-            Button_EndTurn.onClick.AddListener(OnClickEndTurn);
-            Button_RevealCard.onClick.AddListener(OnClickOpenCard);
+            // Button_EndTurn.onClick.AddListener(OnClickEndTurn);
+            // Button_RevealCard.onClick.AddListener(OnClickOpenCard);
 
-            this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
-            this.AddObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
-            this.AddObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
-            this.AddObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            // this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            // this.AddObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
+            // this.AddObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
+            // this.AddObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
         }
 
         public override void Deactivate()
         {
-            Button_EndTurn.onClick = null;
+            // Button_EndTurn.onClick = null;
 
-            this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
-            this.RemoveObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
-            this.RemoveObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
-            this.RemoveObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            // this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            // this.RemoveObserver(OnStartTurn, Global.MessageNotification(GameCommand.StartTurn), Container);
+            // this.RemoveObserver(OnEndGame, Global.MessageNotification(GameCommand.EndGame), Container);
+            // this.RemoveObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
         }
 
         private void OnClickEndTurn()
         {
             // 버튼에 등록할 이벤트
             // 턴 종료 메시지를 보낼 것
-            // this.PostNotification(ClientDialect.EndTurn, Player);
+            this.PostNotification(ClientDialect.EndTurn, Player);
         }
 
         private void OnClickOpenCard()
         {
-            // this.PostNotification(ClientDialect.OpenCard, Player);
+            this.PostNotification(ClientDialect.OpenCard, Player);
         }
 
         private void OnStartGame(object sender, object args)
         {
-            // Match = GetComponent<MatchView>().Data;
-            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            Match = GetComponent<MatchView>().Data;
+            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            // RefreshButton();
+            RefreshButton();
         }
 
         private void OnStartTurn(object sender, object args)
         {
-            // Match = GetComponent<MatchView>().Data;
-            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            Match = GetComponent<MatchView>().Data;
+            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            // LogUtility.Log<TurnView>($"Start Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
-            // RefreshButton();
+            LogUtility.Log<TurnView>($"Start Turn : {Match.CurrentPlayerIndex}", colorName: ColorCodes.ClientSequencer);
+            RefreshButton();
         }
 
         private void OnRevealCards(object sender, object args)
         {
-            // Match = GetComponent<MatchView>().Data;
-            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            Match = GetComponent<MatchView>().Data;
+            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            // // Match값 보고 Open을 인지할 것
-            // RefreshButton();
+            // Match값 보고 Open을 인지할 것
+            RefreshButton();
         }
 
         private void OnEndGame(object sender, object args)
         {
-            // Match = GetComponent<MatchView>().Data;
-            // Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
+            Match = GetComponent<MatchView>().Data;
+            Player = GetComponent<PlayerView>().Data.Find(p => p.ClientID == NetworkManager.Singleton.LocalClientId);
 
-            // LogUtility.Log<TurnView>($"End Game", colorName: ColorCodes.ClientSequencer);
-            // CloseButton();
+            LogUtility.Log<TurnView>($"End Game", colorName: ColorCodes.ClientSequencer);
+            CloseButton();
         }
 
         private void RefreshButton()

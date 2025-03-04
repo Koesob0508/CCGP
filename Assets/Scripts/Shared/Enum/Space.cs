@@ -13,6 +13,7 @@ namespace CCGP.Shared
         SpacingGuild = 1 << 4,
         BeneGesserit = 1 << 5,
         Fremen = 1 << 6,
+        Sponsor = Emperor | SpacingGuild | BeneGesserit | Fremen,
         Any = ~0
     }
 

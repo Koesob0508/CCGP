@@ -19,7 +19,7 @@ namespace CCGP.Client
 
         private void OnStartGame(object sender, object args)
         {
-            // GamePanel.SetActive(true);
+            GamePanel.SetActive(true);
         }
     }
 }

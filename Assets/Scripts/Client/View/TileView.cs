@@ -26,6 +26,7 @@ namespace CCGP.Client
 
         [Header("Basic")]
         public TMP_Text Text_Name;
+        public TMP_Text Text_ID;
         public Image Icon;
         public GameObject BlockImage;
         public List<Sprite> IconSprites;
@@ -57,133 +58,138 @@ namespace CCGP.Client
 
         public void UpdateData(SerializedTile tile)
         {
-            // Data = tile;
+            Data = tile;
 
-            // Text_Name.text = tile.Name;
-            // Text_Info.text = $"{tile.Description}";
+            Text_Name.text = tile.Name;
+            Text_Info.text = $"{tile.Description}";
+            Text_ID.gameObject.SetActive(false);
 
-            // if (tile.AgentIndex != -1)
-            // {
-            //     Object_Agent.SetActive(true);
-            // }
-            // else
-            // {
-            //     Object_Agent.SetActive(false);
-            // }
+            if (tile.AgentIndex != -1)
+            {
+                Object_Agent.SetActive(true);
+            }
+            else
+            {
+                Object_Agent.SetActive(false);
+            }
 
-            // switch (tile.Space)
-            // {
-            //     case Shared.Space.Yellow:
-            //         Icon.sprite = IconSprites[6];
-            //         break;
-            //     case Shared.Space.Green:
-            //         Icon.sprite = IconSprites[5];
-            //         break;
-            //     case Shared.Space.Blue:
-            //         Icon.sprite = IconSprites[4];
-            //         break;
-            //     case Shared.Space.Emperor:
-            //         Icon.sprite = IconSprites[3];
-            //         break;
-            //     case Shared.Space.SpacingGuild:
-            //         Icon.sprite = IconSprites[2];
-            //         break;
-            //     case Shared.Space.BeneGesserit:
-            //         Icon.sprite = IconSprites[1];
-            //         break;
-            //     case Shared.Space.Fremen:
-            //         Icon.sprite = IconSprites[0];
-            //         break;
-            // }
+            switch (tile.Space)
+            {
+                case Shared.Space.Yellow:
+                    Icon.sprite = IconSprites[6];
+                    break;
+                case Shared.Space.Green:
+                    Icon.sprite = IconSprites[5];
+                    break;
+                case Shared.Space.Blue:
+                    Icon.sprite = IconSprites[4];
+                    break;
+                case Shared.Space.Emperor:
+                    // Icon.sprite = IconSprites[3];
+                    Icon.gameObject.SetActive(false);
+                    break;
+                case Shared.Space.SpacingGuild:
+                    // Icon.sprite = IconSprites[2];
+                    Icon.gameObject.SetActive(false);
+                    break;
+                case Shared.Space.BeneGesserit:
+                    // Icon.sprite = IconSprites[1];
+                    Icon.gameObject.SetActive(false);
+                    break;
+                case Shared.Space.Fremen:
+                    // Icon.sprite = IconSprites[0];
+                    Icon.gameObject.SetActive(false);
+                    break;
+            }
 
-            // switch (tile.CostType)
-            // {
-            //     case ResourceType.None:
-            //         Panel_Cost.SetActive(false);
-            //         break;
-            //     case ResourceType.Lunar:
-            //         Panel_Cost.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_Lunar, out var color);
-            //         Image_Cost.color = color;
-            //         Text_Cost.text = tile.CostAmount.ToString();
-            //         break;
-            //     case ResourceType.Marsion:
-            //         Panel_Cost.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_Marsion, out color);
-            //         Image_Cost.color = color;
-            //         Text_Cost.text = tile.CostAmount.ToString();
-            //         break;
-            //     case ResourceType.Water:
-            //         Panel_Cost.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_Water, out color);
-            //         Image_Cost.color = color;
-            //         Text_Cost.text = tile.CostAmount.ToString();
-            //         break;
-            // }
+            switch (tile.CostType)
+            {
+                case ResourceType.None:
+                    Panel_Cost.SetActive(false);
+                    break;
+                case ResourceType.Lunar:
+                    Panel_Cost.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_Lunar, out var color);
+                    Image_Cost.color = color;
+                    Text_Cost.text = tile.CostAmount.ToString();
+                    break;
+                case ResourceType.Marsion:
+                    Panel_Cost.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_Marsion, out color);
+                    Image_Cost.color = color;
+                    Text_Cost.text = tile.CostAmount.ToString();
+                    break;
+                case ResourceType.Water:
+                    Panel_Cost.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_Water, out color);
+                    Image_Cost.color = color;
+                    Text_Cost.text = tile.CostAmount.ToString();
+                    break;
+            }
 
-            // switch (tile.ConditionType)
-            // {
-            //     case ConditionType.None:
-            //         Panel_Condition.SetActive(false);
-            //         break;
-            //     case ConditionType.Emperor:
-            //         Panel_Condition.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_Emperor, out var color);
-            //         Image_Condition.color = color;
-            //         Text_Condition.text = tile.ConditionAmount.ToString();
-            //         break;
-            //     case ConditionType.SpacingGuild:
-            //         Panel_Condition.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_SpacingGuild, out color);
-            //         Image_Condition.color = color;
-            //         Text_Condition.text = tile.ConditionAmount.ToString();
-            //         break;
-            //     case ConditionType.BeneGesserit:
-            //         Panel_Condition.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_BeneGesserit, out color);
-            //         Image_Condition.color = color;
-            //         Text_Condition.text = tile.ConditionAmount.ToString();
-            //         break;
-            //     case ConditionType.Fremen:
-            //         Panel_Condition.SetActive(true);
-            //         ColorUtility.TryParseHtmlString(Color_Fremen, out color);
-            //         Image_Condition.color = color;
-            //         Text_Condition.text = tile.ConditionAmount.ToString();
-            //         break;
-            // }
+            switch (tile.ConditionType)
+            {
+                case ConditionType.None:
+                    Panel_Condition.SetActive(false);
+                    break;
+                case ConditionType.Emperor:
+                    Panel_Condition.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_Emperor, out var color);
+                    Image_Condition.color = color;
+                    Text_Condition.text = tile.ConditionAmount.ToString();
+                    break;
+                case ConditionType.SpacingGuild:
+                    Panel_Condition.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_SpacingGuild, out color);
+                    Image_Condition.color = color;
+                    Text_Condition.text = tile.ConditionAmount.ToString();
+                    break;
+                case ConditionType.BeneGesserit:
+                    Panel_Condition.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_BeneGesserit, out color);
+                    Image_Condition.color = color;
+                    Text_Condition.text = tile.ConditionAmount.ToString();
+                    break;
+                case ConditionType.Fremen:
+                    Panel_Condition.SetActive(true);
+                    ColorUtility.TryParseHtmlString(Color_Fremen, out color);
+                    Image_Condition.color = color;
+                    Text_Condition.text = tile.ConditionAmount.ToString();
+                    break;
+            }
         }
 
         public void OnPointerEnter()
         {
-            // Object_Info.SetActive(true);
+            Object_Info.SetActive(true);
 
-            // var canvas = Object_Info.AddComponent<Canvas>();
-            // var scaler = Object_Info.AddComponent<CanvasScaler>();
+            var canvas = Object_Info.AddComponent<Canvas>();
+            var scaler = Object_Info.AddComponent<CanvasScaler>();
 
-            // canvas.overrideSorting = true;
-            // canvas.sortingOrder = 100;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 100;
 
-            // scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            // scaler.referenceResolution = new Vector2(1920, 1080);
-            // scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            // scaler.matchWidthOrHeight = 0f;
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0f;
         }
 
         public void OnPointerExit()
         {
-            // Object_Info.SetActive(false);
+            Object_Info.SetActive(false);
 
-            // var scaler = Object_Info.GetComponent<CanvasScaler>();
-            // if (scaler != null)
-            // {
-            //     DestroyImmediate(scaler);
-            // }
+            var scaler = Object_Info.GetComponent<CanvasScaler>();
+            if (scaler != null)
+            {
+                DestroyImmediate(scaler);
+            }
 
-            // var canvas = Object_Info.GetComponent<Canvas>();
-            // if (canvas != null)
-            // {
-            //     DestroyImmediate(canvas);
-            // }
+            var canvas = Object_Info.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                DestroyImmediate(canvas);
+            }
         }
     }
 }

@@ -15,16 +15,16 @@ namespace CCGP.Client
 
         public override void Activate()
         {
-            this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
-            this.AddObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
-            this.AddObserver(OnEndRound, Global.MessageNotification(GameCommand.EndRound), Container);
+            // this.AddObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            // this.AddObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            // this.AddObserver(OnEndRound, Global.MessageNotification(GameCommand.EndRound), Container);
         }
 
         public override void Deactivate()
         {
-            this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
-            this.RemoveObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
-            this.RemoveObserver(OnEndRound, Global.MessageNotification(GameCommand.EndRound), Container);
+            // this.RemoveObserver(OnStartGame, Global.MessageNotification(GameCommand.StartGame), Container);
+            // this.RemoveObserver(OnRevealCards, Global.MessageNotification(GameCommand.RevealCards), Container);
+            // this.RemoveObserver(OnEndRound, Global.MessageNotification(GameCommand.EndRound), Container);
         }
 
         private void OnStartGame(object sender, object args)

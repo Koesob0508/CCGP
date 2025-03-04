@@ -262,6 +262,7 @@ namespace CCGP.Shared
 
     public class SerializedTile : INetworkSerializable
     {
+        public string ID;
         public string Name;
         public Space Space;
         public int AgentIndex;
@@ -274,6 +275,7 @@ namespace CCGP.Shared
 
         public SerializedTile(Tile tile)
         {
+            ID = tile.ID;
             Name = tile.Name;
             Space = tile.Space;
             AgentIndex = tile.AgentIndex;
@@ -315,6 +317,7 @@ namespace CCGP.Shared
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
+            serializer.SerializeValue(ref ID);
             serializer.SerializeValue(ref Name);
             serializer.SerializeValue(ref Space);
             serializer.SerializeValue(ref AgentIndex);

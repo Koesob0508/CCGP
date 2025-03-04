@@ -17,6 +17,7 @@ namespace CCGP.Client
         private GameView View;
 
         [Header("Pannel Settings")]
+        public GameObject Canvas_Lobby;
         public GameObject Panel_LobbyList;          // 로비 목록이 보이는 패널
         public GameObject Panel_LobbyRoom;          // 로비에 입장했을 때 보이는 패널
 
@@ -337,6 +338,7 @@ namespace CCGP.Client
         {
             Panel_LobbyList.SetActive(false);
             Panel_LobbyRoom.SetActive(false);
+            Canvas_Lobby.SetActive(false);
         }
         #endregion
 
