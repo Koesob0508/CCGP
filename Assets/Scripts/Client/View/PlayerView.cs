@@ -82,12 +82,12 @@ namespace CCGP.Client
             // this.AddObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
             // Object_Agents = new();
 
-            LocalPlayerView.Activate();
+            // LocalPlayerView.Activate();
         }
 
         public override void Deactivate()
         {
-            LocalPlayerView.Deactivate();
+            // LocalPlayerView.Deactivate();
             // this.RemoveObserver(OnUpdateData, Global.MessageNotification(GameCommand.UpdateData), Container);
         }
 
