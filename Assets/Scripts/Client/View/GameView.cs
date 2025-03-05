@@ -5,7 +5,7 @@ namespace CCGP.Client
 {
     public class GameView : BaseView
     {
-        public GameObject GamePanel;
+        public GameObject Canvas_Game;
 
         public override void Activate()
         {
@@ -19,7 +19,14 @@ namespace CCGP.Client
 
         private void OnStartGame(object sender, object args)
         {
-            GamePanel.SetActive(true);
+            Canvas_Game.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            Canvas_Game.SetActive(false);
+
+            LogUtility.Log<GameView>("Game Canvas set active false");
         }
     }
 }
